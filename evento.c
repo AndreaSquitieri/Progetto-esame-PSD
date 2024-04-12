@@ -4,41 +4,55 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum c_tipo_evento { WORKSHOP = 0, KEYNOTE, PANEL } tipo_evento;
-
-static const char *stringhe_tipo_evento[] = {"Workshop", "Sessione di keynote",
-                                             "Panel di discussione"};
-
-typedef struct c_evento {
-  tipo_evento tipo;
+typedef struct EventoStruct {
+  TipoEvento tipo;
   char *nome;
-  data data;
-} evento_t;
+  Data data;
+} Evento_t;
 
-evento nuovo_evento(tipo_evento tipo, char *nome, data data) {
-  evento nevento = calloc(1, sizeof(evento_t));
-  if (nevento == NULL) {
+Evento nuovo_evento(TipoEvento tipo, char *nome, Data data) {
+  Evento nuovo_evento = calloc(1, sizeof(Evento_t));
+  if (nuovo_evento == NULL) {
     fprintf(stderr, "[ERRORE]: Allocazione oggetto 'evento' fallita.\n");
     return NULL;
   }
-  nevento->data = copia_data(data);
-  nevento->nome = strdup(nome);
-  nevento->tipo = tipo;
-  return nevento;
+  nuovo_evento->data = copia_data(data);
+  nuovo_evento->nome = strdup(nome);
+  nuovo_evento->tipo = tipo;
+  return nuovo_evento;
 }
 
-void set_tipo_evento(evento ev, tipo_evento tipo) { ev->tipo = tipo; }
-void set_data(evento ev, data d) { ev->data = copia_data(d); }
-void set_nome(evento ev, char *nome) { ev->nome = strdup(nome); }
+void set_tipo_evento(Evento evento, TipoEvento tipo) { evento->tipo = tipo; }
+void set_data(Evento evento, Data data) { evento->data = copia_data(data); }
+void set_nome(Evento evento, char *nome) { evento->nome = strdup(nome); }
 
-char *stringa_evento(evento ev) {
-  char *str_data = stringa_data(ev->data);
-  char *str_tipo = stringhe_tipo_evento[ev->tipo];
-  // TODO
+#define FORMAT_EVENTO                                                          \
+  "Evento: \"%s\"\n"                                                           \
+  "Tipo: %s\n"                                                                 \
+  "Data: %s"
+
+static const char *const stringhe_tipo_evento[] = {
+    "Workshop", "Sessione di keynote", "Panel di discussione"};
+
+char *stringa_evento(Evento evento) {
+  const char *str_tipo = stringhe_tipo_evento[evento->tipo];
+  char *str_data = stringa_data(evento->data);
+
+  int len = snprintf(NULL, 0, FORMAT_EVENTO, evento->nome, str_tipo, str_data);
+  char *str_res = calloc(len + 1, sizeof(char));
+  if (snprintf(str_res, len, FORMAT_EVENTO, evento->nome, str_tipo, str_data) <
+      0) {
+    fprintf(stderr, "[ERRORE]: Creazione 'stringa evento' fallita.\n");
+    free(str_data);
+    return NULL;
+  }
+
+  free(str_data);
+  return str_res;
 }
 
-void free_evento(evento ev) {
-  free_data(ev->data);
-  free(ev->nome);
-  free(ev);
+void free_evento(Evento evento) {
+  free_data(evento->data);
+  free(evento->nome);
+  free(evento);
 }
