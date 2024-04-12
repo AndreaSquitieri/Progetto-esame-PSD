@@ -1,5 +1,4 @@
 #include "evento.h"
-#include "data.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,7 +10,7 @@ typedef struct EventoStruct {
 } Evento_t;
 
 Evento nuovo_evento(TipoEvento tipo, char *nome, Data data) {
-  Evento nuovo_evento = calloc(1, sizeof(Evento_t));
+  Evento nuovo_evento = calloc(1, sizeof(*nuovo_evento));
   if (nuovo_evento == NULL) {
     (void)fprintf(stderr, "[ERRORE]: Allocazione oggetto 'evento' fallita.\n");
     return NULL;
