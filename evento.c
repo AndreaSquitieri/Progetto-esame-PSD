@@ -17,14 +17,43 @@ Evento nuovo_evento(TipoEvento tipo, char *nome, Data data) {
     return NULL;
   }
   nuovo_evento->data = copia_data(data);
+  if (nuovo_evento->data == NULL) {
+    (void)fprintf(
+        stderr,
+        "[ERRORE]: Allocazione oggetto 'nuovo_evento->data' fallita.\n");
+    free(nuovo_evento);
+    return NULL;
+  }
   nuovo_evento->nome = strdup(nome);
+  if (nuovo_evento->nome == NULL) {
+    (void)fprintf(
+        stderr,
+        "[ERRORE]: Allocazione oggetto 'nuovo_evento->nome' fallita.\n");
+    free_data(nuovo_evento->data);
+    free(nuovo_evento);
+    return NULL;
+  }
   nuovo_evento->tipo = tipo;
   return nuovo_evento;
 }
 
+int set_data(Evento evento, Data data) {
+  Data temp = copia_data(data);
+  if (temp == NULL) {
+    return -1;
+  }
+  evento->data = temp;
+  return 0;
+}
+int set_nome(Evento evento, char *nome) {
+  char *temp = strdup(nome);
+  if (temp == NULL) {
+    return -1;
+  }
+  evento->nome = temp;
+  return 0;
+}
 void set_tipo_evento(Evento evento, TipoEvento tipo) { evento->tipo = tipo; }
-void set_data(Evento evento, Data data) { evento->data = copia_data(data); }
-void set_nome(Evento evento, char *nome) { evento->nome = strdup(nome); }
 
 #define FORMAT_EVENTO                                                          \
   "Evento: \"%s\"\n"                                                           \
