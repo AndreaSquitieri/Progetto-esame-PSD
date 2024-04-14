@@ -110,8 +110,8 @@ char *to_string_data(ConstData data) {
         "Allocazione oggetto 'str_res' in funzione 'to_string_data' fallita.");
     return NULL;
   }
-  if (snprintf(str_res, 0, FORMATO_DATA, data->giorno, get_month_name(data),
-               data->anno, data->ora, data->minuti) < 0) {
+  if (snprintf(str_res, len + 1, FORMATO_DATA, data->giorno,
+               get_month_name(data), data->anno, data->ora, data->minuti) < 0) {
     log_error("Creazione 'stringa data' in funzione 'to_string_data' fallita.");
     free(str_res);
     return NULL;

@@ -136,13 +136,13 @@ char *to_string_queue_eventi(ConstQueueEventi queue) {
     return NULL;
   }
   size_t size = strlen(res);
-  for (size_t i = 0; i < queue->size; i++) {
+  for (size_t i = 1; i < queue->size; i++) {
     char *to_cat = to_string_evento(AT(queue, i));
     if (to_cat == NULL) {
       free(res);
       return NULL;
     }
-    size += strlen(to_cat);
+    size += strlen(to_cat) + 1;
     char *temp = realloc(res, (size + 1) * sizeof(char));
     if (temp == NULL) {
       free(res);
@@ -150,7 +150,7 @@ char *to_string_queue_eventi(ConstQueueEventi queue) {
       return NULL;
     }
     res = temp;
-    strcat(res, to_cat);
+    strcat(strcat(res, "\n\n"), to_cat);
     free(to_cat);
   }
   return res;

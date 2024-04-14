@@ -3,3 +3,5 @@
 *.log
 tmp/
 .editorconfig
+*.o
+progetto-psd

@@ -5,8 +5,8 @@
 # @version 0.1
 
 
-progetto-psd:	main.o evento.o data.o
-	gcc main.o evento.o data.o -o progetto-psd
+progetto-psd:	main.o evento.o data.o logging.o queue_eventi.o
+	gcc main.o evento.o data.o queue_eventi.o logging.o -o progetto-psd
 
 main.o:	main.c evento.h
 	gcc -c main.c

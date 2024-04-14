@@ -119,8 +119,8 @@ char *to_string_evento(ConstEvento evento) {
     return NULL;
   }
 
-  if (snprintf(str_res, len, FORMAT_EVENTO, evento->nome, str_tipo, str_data) <
-      0) {
+  if (snprintf(str_res, len + 1, FORMAT_EVENTO, evento->nome, str_tipo,
+               str_data) < 0) {
     log_error("Creazione 'stringa evento' fallita.");
     free(str_data);
     free(str_res);

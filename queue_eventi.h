@@ -12,5 +12,6 @@ Evento get_evento_at(QueueEventi queue, size_t index);
 Evento dequeue_evento(QueueEventi queue);
 int enqueue_evento(QueueEventi queue, Evento val);
 void free_queue(QueueEventi queue);
+char *to_string_queue_eventi(ConstQueueEventi queue);
 
 #endif // QUEUE_EVENTI_H_
