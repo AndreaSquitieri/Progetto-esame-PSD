@@ -36,7 +36,7 @@ int main() {
     free(printable);
   }
   puts("");
-  puts("I love you from the bottom of my heart");
+  puts("I love you from the bottom of my heart.");
   puts("");
   remove_evento_at(queue, 3);
 
