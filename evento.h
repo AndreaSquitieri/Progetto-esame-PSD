@@ -9,7 +9,7 @@ typedef const struct EventoStruct *ConstEvento;
 
 typedef enum { WORKSHOP = 0, KEYNOTE, PANEL } TipoEvento;
 
-Evento new_evento(TipoEvento tipo, const char *nome, Data data);
+Evento new_evento(TipoEvento tipo, const char *nome, ConstData data);
 Evento copy_evento(ConstEvento evento);
 int set_tipo_evento(Evento evento, TipoEvento tipo);
 int set_data(Evento evento, Data data);

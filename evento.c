@@ -10,13 +10,13 @@ typedef struct EventoStruct {
   Data data;
 } Evento_t;
 
-Evento new_evento(TipoEvento tipo, const char *nome, const Data data) {
+Evento new_evento(TipoEvento tipo, const char *nome, ConstData data) {
   Evento nuovo_evento = calloc(1, sizeof(*nuovo_evento));
   if (nuovo_evento == NULL) {
     log_error("Allocazione oggetto 'evento' fallita.");
     return NULL;
   }
-  nuovo_evento->data = copia_data(data);
+  nuovo_evento->data = copy_data(data);
   if (nuovo_evento->data == NULL) {
     log_error("Allocazione oggetto 'nuovo_evento->data' fallita.");
     free(nuovo_evento);
@@ -44,7 +44,7 @@ Data get_data(ConstEvento evento) {
   if (evento == NULL) {
     return NULL;
   }
-  return copia_data(evento->data);
+  return copy_data(evento->data);
 }
 char *get_nome(ConstEvento evento) {
   if (evento == NULL) {
@@ -64,7 +64,7 @@ int set_data(Evento evento, const Data data) {
     log_error("Passato puntatore NULL alla funzione 'set_data'.");
     return -1;
   }
-  Data temp = copia_data(data);
+  Data temp = copy_data(data);
   if (temp == NULL) {
     log_error("Copia di 'data' in 'set_data' fallita.");
     return -1;
@@ -105,7 +105,7 @@ static const char *const stringhe_tipo_evento[] = {
 char *to_string_evento(ConstEvento evento) {
   const char *str_tipo = stringhe_tipo_evento[evento->tipo];
 
-  char *str_data = stringa_data(evento->data);
+  char *str_data = to_string_data(evento->data);
   if (str_data == NULL) {
     log_error("Allocazione oggetto 'str_data' fallita.");
     return NULL;
