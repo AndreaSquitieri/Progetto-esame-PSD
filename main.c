@@ -18,18 +18,18 @@ int main() {
   unsigned int ora = 0;
   unsigned int minuti = 0;
   (void)scanf("%d/%d/%d %d:%d", &giorno, &mese, &anno, &ora, &minuti);
-  Data data = new_data(minuti, ora, giorno, mese, anno);
-  if (data == NULL) {
-    printf("Errore data\n");
-  }
   for (int i = 0; i < 5; i++) {
+    Data data = new_data((minuti + i) % 60, ora, giorno, mese, anno);
+    if (data == NULL) {
+      printf("Errore data\n");
+    }
     Evento event = new_evento(tipo, temp, data);
     if (event == NULL) {
       printf("Errore evento\n");
     }
     enqueue_evento(queue, event);
+    free_data(data);
   }
-  free_data(data);
   char *printable = to_string_queue_eventi(queue);
   if (printable != NULL) {
     printf("%s\n", printable);

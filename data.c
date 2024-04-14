@@ -112,7 +112,9 @@ char *to_string_data(ConstData data) {
   }
   if (snprintf(str_res, len + 1, FORMATO_DATA, data->giorno,
                get_month_name(data), data->anno, data->ora, data->minuti) < 0) {
+
     log_error("Creazione 'stringa data' in funzione 'to_string_data' fallita.");
+    log_error(str_res);
     free(str_res);
     return NULL;
   }

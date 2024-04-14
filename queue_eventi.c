@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define INIT_QUEUE_CAPACITY 16
+#define INIT_QUEUE_CAPACITY 4
 #define GROWTH_FACTOR 2
 
 #define CALC_POS(A, B) ((A)->head + (B)) % (A)->capacity
@@ -24,8 +24,13 @@ static int resize_buffer(QueueEventi queue, size_t new_size) {
   if (new_buffer == NULL) {
     return -2;
   }
+  /*
   for (size_t i = queue->head, j = 0; j < queue->size; i++, j++) {
     new_buffer[j] = queue->vet[i % queue->capacity];
+  }
+   */
+  for (size_t j = 0; j < queue->size; j++) {
+    new_buffer[j] = AT(queue, j);
   }
 
   queue->capacity = new_size;
@@ -145,7 +150,7 @@ char *to_string_queue_eventi(ConstQueueEventi queue) {
       free(res);
       return NULL;
     }
-    size += strlen(to_cat) + 1;
+    size += strlen(to_cat) + 2;
     char *temp = realloc(res, (size + 1) * sizeof(char));
     if (temp == NULL) {
       free(res);
