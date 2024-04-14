@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define INIT_QUEUE_CAPACITY 4
+#define INIT_QUEUE_CAPACITY 16
 #define GROWTH_FACTOR 2
 
 #define CALC_POS(A, B) ((A)->head + (B)) % (A)->capacity
@@ -16,6 +16,7 @@ struct QueueEventiStruct {
   size_t head, tail;
 };
 
+/// Enlarges the buffer contained in the queue
 static int resize_buffer(QueueEventi queue, size_t new_size) {
   if (new_size < queue->capacity) {
     return -1;
@@ -135,6 +136,7 @@ Evento remove_evento_at(QueueEventi queue, size_t index) {
   return res;
 }
 
+#define SEPARATOR "\n\n"
 char *to_string_queue_eventi(ConstQueueEventi queue) {
   if (queue == NULL || queue->size == 0) {
     return NULL;
@@ -145,12 +147,14 @@ char *to_string_queue_eventi(ConstQueueEventi queue) {
   }
   size_t size = strlen(res);
   for (size_t i = 1; i < queue->size; i++) {
+
     char *to_cat = to_string_evento(AT(queue, i));
     if (to_cat == NULL) {
       free(res);
       return NULL;
     }
-    size += strlen(to_cat) + 2;
+
+    size += strlen(to_cat) + strlen(SEPARATOR);
     char *temp = realloc(res, (size + 1) * sizeof(char));
     if (temp == NULL) {
       free(res);
@@ -158,9 +162,13 @@ char *to_string_queue_eventi(ConstQueueEventi queue) {
       return NULL;
     }
     res = temp;
-    strcat(strcat(res, "\n\n"), to_cat);
+
+    strncat(res, SEPARATOR, size - strlen(res));
+    strncat(res, to_cat, size - strlen(res));
+
     free(to_cat);
   }
+
   return res;
 }
 
