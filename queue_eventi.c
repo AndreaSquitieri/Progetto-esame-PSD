@@ -5,15 +5,38 @@
 
 #define INIT_QUEUE_CAPACITY 16
 #define GROWTH_FACTOR 2
-#define CALC_POS(A, B) (A->head + B) % A->capacity
-#define AT(A, B) A->vet[CALC_POS(A, B)]
 
-typedef struct QueueEventiStruct {
+#define CALC_POS(A, B) ((A)->head + (B)) % (A)->capacity
+#define AT(A, B) (A)->vet[CALC_POS(A, B)]
+
+struct QueueEventiStruct {
   Evento *vet;
   size_t size;
   size_t capacity;
   size_t head, tail;
-} QueueEventi_t;
+};
+
+static int resize_buffer(QueueEventi queue, size_t new_size) {
+  if (new_size < queue->capacity) {
+    return -1;
+  }
+  Evento *new_buffer = calloc(new_size, sizeof(Evento));
+  if (new_buffer == NULL) {
+    return -2;
+  }
+  for (size_t i = queue->head, j = 0; j < queue->size; i++, j++) {
+    new_buffer[j] = queue->vet[i % queue->capacity];
+  }
+
+  queue->capacity = new_size;
+  queue->head = 0;
+  queue->tail = queue->size;
+
+  free(queue->vet);
+  queue->vet = new_buffer;
+
+  return 0;
+}
 
 QueueEventi new_queue_eventi(void) {
   QueueEventi queue = calloc(1, sizeof(*queue));
@@ -42,40 +65,20 @@ int empty_queue_eventi(ConstQueueEventi queue) {
   return (queue->size == 0);
 }
 
-static int resize_buffer(QueueEventi queue, size_t new_size) {
-  if (new_size < queue->capacity) {
-    return -1;
-  }
-  Evento *new_buffer = calloc(new_size, sizeof(Evento));
-  if (new_buffer == NULL) {
-    return -2;
-  }
-  for (size_t i = queue->head, j = 0; j < queue->size; i++, j++) {
-    new_buffer[j] = queue->vet[i % queue->capacity];
-  }
-
-  queue->capacity = new_size;
-  queue->head = 0;
-  queue->tail = queue->size;
-
-  free(queue->vet);
-  queue->vet = new_buffer;
-
-  return 0;
-}
-
-int enqueue_evento(QueueEventi queue, Evento val) {
+int enqueue_evento(QueueEventi queue, Evento evento) {
   if (queue == NULL) {
     return -1;
   }
-
+  if (evento == NULL) {
+    return -2;
+  }
   if (queue->size == queue->capacity) {
     if (resize_buffer(queue, queue->capacity * GROWTH_FACTOR)) {
-      return -2;
+      return -3;
     }
   }
 
-  queue->vet[queue->tail] = val;
+  queue->vet[queue->tail] = evento;
   queue->tail = (queue->tail + 1) % queue->capacity;
   queue->size += 1;
   return 0;

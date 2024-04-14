@@ -1,5 +1,6 @@
 #include "queue_eventi.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int main() {
   QueueEventi queue = new_queue_eventi();
@@ -29,6 +30,22 @@ int main() {
     enqueue_evento(queue, event);
   }
   free_data(data);
-  printf("%s\n", to_string_queue_eventi(queue));
+  char *printable = to_string_queue_eventi(queue);
+  if (printable != NULL) {
+    printf("%s\n", printable);
+    free(printable);
+  }
+  puts("");
+  puts("I love you from the bottom of my heart");
+  puts("");
+  remove_evento_at(queue, 3);
+
+  printable = to_string_queue_eventi(queue);
+  if (printable != NULL) {
+    printf("%s\n", printable);
+    free(printable);
+  }
+
+  free_queue(queue);
   return 0;
 }

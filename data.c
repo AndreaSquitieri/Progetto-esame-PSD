@@ -31,7 +31,7 @@ struct DataStruct {
   unsigned char ora;
   unsigned char giorno;
   unsigned char mese;
-  unsigned int anno;
+  unsigned short anno;
 };
 
 static int const months[] = MONTH_DAYS_INITIALIZER;
@@ -42,7 +42,7 @@ static const char *get_month_name(ConstData data) {
 }
 
 Data new_data(unsigned char minuti, unsigned char ora, unsigned char giorno,
-              unsigned char mese, unsigned int anno) {
+              unsigned char mese, unsigned short anno) {
   Data data = malloc(sizeof(*data));
   if (data == NULL) {
     log_error("Allocazione oggetto 'Data' fallita.");
@@ -118,6 +118,7 @@ char *to_string_data(ConstData data) {
   }
   return str_res;
 }
+
 Data copy_data(ConstData data) {
   if (data == NULL) {
     return NULL;
@@ -163,7 +164,7 @@ int is_valid_data(ConstData data) {
   return data->mese <= MONTHS && data->giorno <= months[data->mese - 1];
 }
 
-unsigned char get_ora(ConstData data) {
+int get_ora(ConstData data) {
   if (data == NULL) {
     log_error("Passato puntatore NULL alla funzione 'get_ora'.");
     return -1;
@@ -171,7 +172,7 @@ unsigned char get_ora(ConstData data) {
   return data->ora;
 }
 
-unsigned char get_minuti(ConstData data) {
+int get_minuti(ConstData data) {
   if (data == NULL) {
     log_error("Passato puntatore NULL alla funzione 'get_minuti'.");
     return -1;
@@ -179,7 +180,7 @@ unsigned char get_minuti(ConstData data) {
   return data->minuti;
 }
 
-unsigned char get_giorno(ConstData data) {
+int get_giorno(ConstData data) {
   if (data == NULL) {
     log_error("Passato puntatore NULL alla funzione 'get_giorno'.");
     return -1;
@@ -187,7 +188,7 @@ unsigned char get_giorno(ConstData data) {
   return data->giorno;
 }
 
-unsigned char get_mese(ConstData data) {
+int get_mese(ConstData data) {
   if (data == NULL) {
     log_error("Passato puntatore NULL alla funzione 'get_mese'.");
     return -1;
@@ -195,7 +196,7 @@ unsigned char get_mese(ConstData data) {
   return data->mese;
 }
 
-unsigned int get_anno(ConstData data) {
+int get_anno(ConstData data) {
   if (data == NULL) {
     log_error("Passato puntatore NULL alla funzione 'get_anno'.");
     return -1;
