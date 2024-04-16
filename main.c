@@ -1,9 +1,9 @@
-#include "queue_eventi.h"
+#include "event_queue.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 int main() {
-  QueueEventi queue = new_queue_eventi();
+  EventQueue queue = new_event_queue();
   char temp[100];
   printf("Inserire nuovo evento\n");
   printf("Inserire nome: ");
@@ -19,18 +19,18 @@ int main() {
   unsigned int minuti = 0;
   (void)scanf("%d/%d/%d %d:%d", &giorno, &mese, &anno, &ora, &minuti);
   for (int i = 0; i < 5; i++) {
-    Data data = new_data((minuti + i) % 60, ora, giorno, mese, anno);
-    if (data == NULL) {
+    Date date = new_date((minuti + i) % 60, ora, giorno, mese, anno);
+    if (date == NULL) {
       printf("Errore data\n");
     }
-    Evento event = new_evento(tipo, temp, data);
+    Event event = new_event(tipo, temp, date);
     if (event == NULL) {
       printf("Errore evento\n");
     }
-    enqueue_evento(queue, event);
-    free_data(data);
+    enqueue_event(queue, event);
+    free_date(date);
   }
-  char *printable = to_string_queue_eventi(queue);
+  char *printable = to_string_event_queue(queue);
   if (printable != NULL) {
     printf("%s\n", printable);
     free(printable);
@@ -38,9 +38,9 @@ int main() {
   puts("");
   puts("I love you from the bottom of my heart.");
   puts("");
-  remove_evento_at(queue, 3);
+  remove_event_at(queue, 3);
 
-  printable = to_string_queue_eventi(queue);
+  printable = to_string_event_queue(queue);
   if (printable != NULL) {
     printf("%s\n", printable);
     free(printable);
