@@ -138,6 +138,8 @@ Event remove_event_at(EventQueue queue, size_t index) {
 
 #define SEPARATOR "\n\n"
 char *to_string_event_queue(ConstEventQueue queue) {
+  // TODO
+  // There is a very expensive realloc in this code, I should change it
   if (queue == NULL || queue->size == 0) {
     return NULL;
   }

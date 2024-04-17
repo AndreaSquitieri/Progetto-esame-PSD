@@ -4,7 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+static unsigned int event_id_couter = 0;
+
 typedef struct EventStruct {
+  unsigned int id;
   EventType type;
   char *name;
   Date date;
@@ -30,6 +33,8 @@ Event new_event(EventType type, const char *name, ConstDate date) {
     return NULL;
   }
   new_event->type = type;
+  new_event->id = event_id_couter;
+  event_id_couter += 1;
   return new_event;
 }
 
@@ -40,13 +45,13 @@ Event copy_event(ConstEvent event) {
   return new_event(event->type, event->name, event->date);
 }
 
-Date get_date(ConstEvent event) {
+ConstDate get_event_date(ConstEvent event) {
   if (event == NULL) {
     return NULL;
   }
-  return copy_date(event->date);
+  return event->date;
 }
-char *get_name(ConstEvent event) {
+char *get_event_name(ConstEvent event) {
   if (event == NULL) {
     return NULL;
   }
@@ -59,7 +64,7 @@ EventType get_type_event(ConstEvent event) {
   return event->type;
 }
 
-int set_date(Event event, const Date date) {
+int set_event_date(Event event, const Date date) {
   if (event == NULL) {
     log_error("Passato puntatore NULL alla funzione 'set_date'.");
     return -1;
@@ -72,7 +77,7 @@ int set_date(Event event, const Date date) {
   event->date = temp;
   return 0;
 }
-int set_name(Event event, const char *name) {
+int set_event_name(Event event, const char *name) {
   if (event == NULL) {
     log_error("Passato puntatore NULL alla funzione 'set_name'.");
     return -1;
