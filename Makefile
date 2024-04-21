@@ -19,11 +19,11 @@ TARGET = $(BIN_DIR)/progetto-psd
 all:	$(TARGET)
 
 $(TARGET):	$(OBJECTS)
-	mkdir $(BIN_DIR)
+	mkdir -p $(BIN_DIR)
 	$(CC) $(LDFLAGS) $^ -o $@
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
-	mkdir $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
