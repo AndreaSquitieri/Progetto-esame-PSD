@@ -3,14 +3,14 @@
 
 #include "mevent.h"
 
-typedef struct BstEventStruct *BstEvent;
-typedef struct BstEventStruct *ConstBstEvent;
+typedef struct EventBstStruct *EventBst;
+typedef struct EventBstStruct *ConstEventBst;
 
-BstEvent new_event_bst(void);
-int bst_insert_event(BstEvent bst, Event event);
-Event bst_remove_event(BstEvent bst, ConstEvent event);
-void print_event_bst(ConstBstEvent bst);
-char *to_string_event_bst(ConstBstEvent bst);
-void free_event_bst(BstEvent bst);
+EventBst new_event_bst(void);
+int bst_insert_event(EventBst bst, Event event);
+Event bst_remove_event(EventBst bst, ConstEvent event);
+void print_event_bst(ConstEventBst bst);
+char *to_string_event_bst(ConstEventBst bst);
+void free_event_bst(EventBst bst);
 
 #endif // EVENT_BST_H_

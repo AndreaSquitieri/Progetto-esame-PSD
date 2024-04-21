@@ -4,22 +4,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct BstEventNodeStruct *BstEventNode;
+typedef struct EventBstNodeStruct *EventBstNode;
 
-struct BstEventNodeStruct {
+struct EventBstNodeStruct {
   Event value;
-  BstEventNode parent;
-  BstEventNode left;
-  BstEventNode right;
+  EventBstNode parent;
+  EventBstNode left;
+  EventBstNode right;
 };
 
-struct BstEventStruct {
-  BstEventNode root;
+struct EventBstStruct {
+  EventBstNode root;
   size_t size;
 };
 
-BstEvent new_event_bst(void) {
-  BstEvent bst = calloc(1, sizeof(*bst));
+EventBst new_event_bst(void) {
+  EventBst bst = calloc(1, sizeof(*bst));
   if (bst == NULL) {
     return NULL;
   }
@@ -28,19 +28,19 @@ BstEvent new_event_bst(void) {
   return bst;
 }
 
-int bst_insert_event(BstEvent bst, Event event) {
+int bst_insert_event(EventBst bst, Event event) {
   if (bst == NULL) {
     log_error("Bst is NULL in 'bst_insert_event'");
     return -1;
   }
-  BstEventNode to_insert = calloc(1, sizeof(*to_insert));
+  EventBstNode to_insert = calloc(1, sizeof(*to_insert));
   if (to_insert == NULL) {
     log_error("Failed to create 'to_insert' in function 'bst_insert_event'");
     return -1;
   }
   to_insert->value = event;
-  BstEventNode parent = NULL;
-  BstEventNode temp = bst->root;
+  EventBstNode parent = NULL;
+  EventBstNode temp = bst->root;
   while (temp != NULL) {
     parent = temp;
     if (cmp_event(to_insert->value, temp->value) < 0) {
@@ -61,8 +61,8 @@ int bst_insert_event(BstEvent bst, Event event) {
   return 0;
 }
 
-static BstEventNode bst_search_event(BstEvent bst, ConstEvent event) {
-  BstEventNode res = bst->root;
+static EventBstNode bst_search_event(EventBst bst, ConstEvent event) {
+  EventBstNode res = bst->root;
   while (res != NULL && !is_same_instance_event(event, res->value)) {
     if (cmp_event(event, res->value) < 0) {
       res = res->left;
@@ -73,8 +73,8 @@ static BstEventNode bst_search_event(BstEvent bst, ConstEvent event) {
   return res;
 }
 
-static void bst_shift_nodes(BstEvent bst, BstEventNode node_a,
-                            BstEventNode node_b) {
+static void bst_shift_nodes(EventBst bst, EventBstNode node_a,
+                            EventBstNode node_b) {
   if (node_a->parent == NULL) {
     bst->root = node_b;
   } else if (node_a == node_a->parent->left) {
@@ -86,7 +86,7 @@ static void bst_shift_nodes(BstEvent bst, BstEventNode node_a,
     node_b->parent = node_a->parent;
   }
 }
-static BstEventNode bst_maximum(BstEventNode node) {
+static EventBstNode bst_maximum(EventBstNode node) {
   if (node == NULL) {
     return NULL;
   }
@@ -95,7 +95,7 @@ static BstEventNode bst_maximum(BstEventNode node) {
   }
   return node;
 }
-static BstEventNode bst_minimum(BstEventNode node) {
+static EventBstNode bst_minimum(EventBstNode node) {
   if (node == NULL) {
     return NULL;
   }
@@ -104,14 +104,14 @@ static BstEventNode bst_minimum(BstEventNode node) {
   }
   return node;
 }
-static BstEventNode bst_predeccessor(BstEventNode node) {
+static EventBstNode bst_predeccessor(EventBstNode node) {
   if (node == NULL) {
     return NULL;
   }
   if (node->left != NULL) {
     return bst_maximum(node->left);
   }
-  BstEventNode res = node->parent;
+  EventBstNode res = node->parent;
   while (res != NULL && node == res->left) {
     node = res;
     res = res->parent;
@@ -119,14 +119,14 @@ static BstEventNode bst_predeccessor(BstEventNode node) {
   return res;
 }
 
-static BstEventNode bst_successor(BstEventNode node) {
+static EventBstNode bst_successor(EventBstNode node) {
   if (node == NULL) {
     return NULL;
   }
   if (node->right != NULL) {
     return bst_minimum(node->right);
   }
-  BstEventNode res = node->parent;
+  EventBstNode res = node->parent;
   while (res != NULL && node == res->right) {
     node = res;
     res = res->parent;
@@ -134,8 +134,8 @@ static BstEventNode bst_successor(BstEventNode node) {
   return res;
 }
 
-Event bst_remove_event(BstEvent bst, ConstEvent event) {
-  BstEventNode to_delete = bst_search_event(bst, event);
+Event bst_remove_event(EventBst bst, ConstEvent event) {
+  EventBstNode to_delete = bst_search_event(bst, event);
   if (to_delete == NULL) {
     return NULL;
   }
@@ -144,7 +144,7 @@ Event bst_remove_event(BstEvent bst, ConstEvent event) {
   } else if (to_delete->right == NULL) {
     bst_shift_nodes(bst, to_delete, to_delete->left);
   } else {
-    BstEventNode temp = bst_successor(to_delete);
+    EventBstNode temp = bst_successor(to_delete);
     if (temp->parent != to_delete) {
       bst_shift_nodes(bst, temp, temp->right);
       temp->right = to_delete->right;
@@ -161,7 +161,7 @@ Event bst_remove_event(BstEvent bst, ConstEvent event) {
 }
 
 #define SEPARATOR "\n\n"
-static void print_event_bst_nodes(BstEventNode node) {
+static void print_event_bst_nodes(EventBstNode node) {
   if (node == NULL) {
     return;
   }
@@ -175,9 +175,9 @@ static void print_event_bst_nodes(BstEventNode node) {
   print_event_bst_nodes(node->right);
 }
 
-void print_event_bst(ConstBstEvent bst) { print_event_bst_nodes(bst->root); }
+void print_event_bst(ConstEventBst bst) { print_event_bst_nodes(bst->root); }
 
-static char *to_string_event_bst_nodes(BstEventNode node) {
+static char *to_string_event_bst_nodes(EventBstNode node) {
   // TODO
   // Again, very expensive realloc, should find a way to do something better
   if (node == NULL) {
@@ -221,11 +221,11 @@ static char *to_string_event_bst_nodes(BstEventNode node) {
   return res;
 }
 
-char *to_string_event_bst(ConstBstEvent bst) {
+char *to_string_event_bst(ConstEventBst bst) {
   return to_string_event_bst_nodes(bst->root);
 }
 
-static void free_event_bst_nodes(BstEventNode node) {
+static void free_event_bst_nodes(EventBstNode node) {
   if (node == NULL) {
     return;
   }
@@ -237,7 +237,7 @@ static void free_event_bst_nodes(BstEventNode node) {
   free(node);
 }
 
-void free_event_bst(BstEvent bst) {
+void free_event_bst(EventBst bst) {
   free_event_bst_nodes(bst->root);
   free(bst);
 }

@@ -23,7 +23,7 @@ typedef enum {
   "Indicare l'operazione che si desidera effetuare: "
 
 int main(void) {
-  BstEvent bst = new_event_bst();
+  EventBst bst = new_event_bst();
   puts(WELCOME_MESSAGE);
   MenuChoice choice = 0;
   do {

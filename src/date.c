@@ -62,7 +62,7 @@ Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
   return date;
 }
 
-static int cmp_date_component(unsigned int a, unsigned int b) {
+static inline int cmp_date_component(unsigned int a, unsigned int b) {
   if (a < b) {
     return -1;
   }
