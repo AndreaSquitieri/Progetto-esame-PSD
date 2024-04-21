@@ -6,5 +6,6 @@ bin/
 build/
 .cache/
 .editorconfig
+compile_commands.json
 *.o
 progetto-psd
