@@ -2,6 +2,9 @@
 .idea
 *.log
 tmp/
+bin/
+build/
+.cache/
 .editorconfig
 *.o
 progetto-psd
