@@ -8,7 +8,7 @@ typedef struct BstEventStruct *ConstBstEvent;
 
 BstEvent new_event_bst(void);
 int bst_insert_event(BstEvent bst, Event event);
-Event bst_remove_event(BstEvent bst, Event event);
+Event bst_remove_event(BstEvent bst, ConstEvent event);
 char *to_string_event_bst(ConstBstEvent bst);
 void free_event_bst(BstEvent bst);
 

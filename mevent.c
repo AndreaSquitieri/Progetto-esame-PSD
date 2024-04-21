@@ -1,4 +1,5 @@
 #include "mevent.h"
+#include "date.h"
 #include "logging.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,6 +37,22 @@ Event new_event(EventType type, const char *name, ConstDate date) {
   new_event->id = event_id_couter;
   event_id_couter += 1;
   return new_event;
+}
+
+int is_same_instance_event(ConstEvent event_a, ConstEvent event_b) {
+  return event_a->id == event_b->id;
+}
+
+int cmp_event(ConstEvent event_a, ConstEvent event_b) {
+  int date_comparison =
+      cmp_date(get_event_date(event_a), get_event_date(event_b));
+  if (date_comparison < 0) {
+    return -1;
+  } else if (date_comparison > 0) {
+    return 1;
+  } else {
+    return strcmp(get_event_name(event_a), get_event_name(event_b));
+  }
 }
 
 Event copy_event(ConstEvent event) {

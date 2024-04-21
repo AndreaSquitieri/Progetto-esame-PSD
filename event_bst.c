@@ -1,5 +1,6 @@
 #include "event_bst.h"
 #include "logging.h"
+#include "mevent.h"
 #include <stdlib.h>
 
 typedef struct BstEventNodeStruct *BstEventNode;
@@ -26,9 +27,6 @@ BstEvent new_event_bst(void) {
   return bst;
 }
 int bst_insert_event(BstEvent bst, Event event) {
-  // TODO
-  // The comparison for now is only based on the date
-  // I would like to fallback to alphabetidal order whenever two dates coincides
   if (bst == NULL) {
     log_error("Bst is NULL in 'bst_insert_event'");
     return -1;
@@ -43,8 +41,7 @@ int bst_insert_event(BstEvent bst, Event event) {
   BstEventNode temp = bst->root;
   while (temp != NULL) {
     parent = temp;
-    if (cmp_date(get_event_date(to_insert->value),
-                 get_event_date(temp->value)) < 0) {
+    if (cmp_event(to_insert->value, temp->value) < 0) {
       temp = temp->left;
     } else {
       temp = temp->right;
@@ -53,8 +50,7 @@ int bst_insert_event(BstEvent bst, Event event) {
   to_insert->parent = parent;
   if (parent == NULL) {
     bst->root = to_insert;
-  } else if (cmp_date(get_event_date(to_insert->value),
-                      get_event_date(parent->value)) < 0) {
+  } else if (cmp_event(to_insert->value, parent->value) < 0) {
     parent->left = to_insert;
   } else {
     parent->right = to_insert;
@@ -62,6 +58,33 @@ int bst_insert_event(BstEvent bst, Event event) {
   return 0;
 }
 
-Event bst_remove_event(BstEvent bst, Event event) {}
+static BstEventNode bst_search_event(BstEvent bst, ConstEvent event) {
+  BstEventNode res = bst->root;
+  while (res != NULL && !is_same_instance_event(event, res->value)) {
+    if (cmp_event(event, res->value) < 0) {
+      res = res->left;
+    } else {
+      res = res->right;
+    }
+  }
+  return res;
+}
+
+static void bst_shift_nodes(BstEvent bst, BstEventNode node_a,
+                            BstEventNode node_b) {
+  if (node_a->parent == NULL) {
+    bst->root = node_b;
+  } else if (node_a == node_a) {
+  }
+}
+
+Event bst_remove_event(BstEvent bst, ConstEvent event) {
+  BstEventNode to_delete = bst_search_event(bst, event);
+  if (to_delete == NULL) {
+    return NULL;
+  }
+  if (to_delete->left == NULL) {
+  }
+}
 char *to_string_event_bst(ConstBstEvent bst) {}
 void free_event_bst(BstEvent bst) {}
