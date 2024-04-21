@@ -62,7 +62,7 @@ Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
   return date;
 }
 
-static int cmp_number(unsigned int a, unsigned int b) {
+static int cmp_date_component(unsigned int a, unsigned int b) {
   if (a < b) {
     return -1;
   }
@@ -74,30 +74,30 @@ static int cmp_number(unsigned int a, unsigned int b) {
 
 int cmp_date(ConstDate date_a, ConstDate date_b) {
   // Compare 'year'
-  int result = cmp_number(date_a->year, date_b->year);
+  int result = cmp_date_component(date_a->year, date_b->year);
   if (result != 0) {
     return result;
   }
   // Compare 'month'
-  result = cmp_number(date_a->month, date_b->month);
+  result = cmp_date_component(date_a->month, date_b->month);
   if (result != 0) {
     return result;
   }
 
   // Compare 'day'
-  result = cmp_number(date_a->day, date_b->day);
+  result = cmp_date_component(date_a->day, date_b->day);
   if (result != 0) {
     return result;
   }
 
   // Compare 'hour'
-  result = cmp_number(date_a->hour, date_b->hour);
+  result = cmp_date_component(date_a->hour, date_b->hour);
   if (result != 0) {
     return result;
   }
 
   // Compare 'minutes'
-  return cmp_number(date_a->minutes, date_b->minutes);
+  return cmp_date_component(date_a->minutes, date_b->minutes);
 }
 
 #define FORMAT_DATE "%d %s %d, %02d:%02d"
