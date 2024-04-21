@@ -25,11 +25,6 @@ static int resize_buffer(EventQueue queue, size_t new_size) {
   if (new_buffer == NULL) {
     return -2;
   }
-  /*
-  for (size_t i = queue->head, j = 0; j < queue->size; i++, j++) {
-    new_buffer[j] = queue->vet[i % queue->capacity];
-  }
-   */
   for (size_t j = 0; j < queue->size; j++) {
     new_buffer[j] = AT(queue, j);
   }

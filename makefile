@@ -5,23 +5,26 @@
 # @version 0.1
 
 
-progetto-psd:	main.o evento.o data.o logging.o queue_eventi.o
-	gcc main.o evento.o data.o queue_eventi.o logging.o -o progetto-psd
+progetto-psd:	main.o mevent.o date.o logging.o event_queue.o event_bst.o
+	gcc main.o mevent.o date.o event_queue.o event_bst.o logging.o -o progetto-psd
 
-main.o:	main.c evento.h
+main.o:	main.c mevent.h
 	gcc -c main.c
 
-data.o:	data.c
-	gcc -c data.c
+date.o:	date.c
+	gcc -c date.c
 
-evento.o: evento.c data.h logging.h
-	gcc -c evento.c
+mevent.o: mevent.c date.h logging.h
+	gcc -c mevent.c
 
 logging.o:	logging.c
 	gcc -c logging.c
 
-queue_eventi.o:	queue_eventi.c evento.h data.h
-	gcc -c queue_eventi.c
+event_queue.o:	event_queue.c mevent.h date.h
+	gcc -c event_queue.c
+
+event_bst.o:	event_queue.c mevent.h date.h
+	gcc -c event_bst.c
 
 clean:
 	rm -f *.o progetto-psd
