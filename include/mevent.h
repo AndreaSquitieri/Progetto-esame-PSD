@@ -9,7 +9,7 @@ typedef const struct EventStruct *ConstEvent;
 
 typedef enum { WORKSHOP = 0, KEYNOTE, PANEL } EventType;
 
-Event new_event(EventType type, const char *nome, ConstDate date);
+Event new_event(EventType type, const char *name, Date date);
 Event copy_event(ConstEvent event);
 int is_same_instance_event(ConstEvent event_a, ConstEvent event_b);
 int set_type_event(Event event, EventType type);

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static unsigned int event_id_couter = 0;
+static unsigned int event_id_counter = 0;
 
 typedef struct EventStruct {
   unsigned int id;
@@ -14,18 +14,19 @@ typedef struct EventStruct {
   Date date;
 } Event_t;
 
-Event new_event(EventType type, const char *name, ConstDate date) {
+Event new_event(EventType type, const char *name, Date date) {
+  if (name == NULL) {
+    return NULL;
+  }
+  if (date == NULL) {
+    return NULL;
+  }
   Event new_event = calloc(1, sizeof(*new_event));
   if (new_event == NULL) {
     log_error("Allocazione oggetto 'event' fallita.");
     return NULL;
   }
-  new_event->date = copy_date(date);
-  if (new_event->date == NULL) {
-    log_error("Allocazione oggetto 'new_event->date' fallita.");
-    free(new_event);
-    return NULL;
-  }
+  new_event->date = date;
   new_event->name = strdup(name);
   if (new_event->name == NULL) {
     log_error("Allocazione oggetto 'new_event->name' fallita.");
@@ -34,8 +35,8 @@ Event new_event(EventType type, const char *name, ConstDate date) {
     return NULL;
   }
   new_event->type = type;
-  new_event->id = event_id_couter;
-  event_id_couter += 1;
+  new_event->id = event_id_counter;
+  event_id_counter += 1;
   return new_event;
 }
 
