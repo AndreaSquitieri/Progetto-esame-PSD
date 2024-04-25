@@ -1,5 +1,6 @@
 #include "date.h"
 #include "logging.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #define MONTHS 12
@@ -46,7 +47,7 @@ Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
   Date date = malloc(sizeof(*date));
   if (date == NULL) {
     log_error("Allocazione oggetto 'Date' fallita.");
-    return NULL;
+    return NULL_DATE;
   }
   date->minutes = minutes;
   date->hour = hour;
@@ -57,7 +58,7 @@ Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
   if (!is_valid_date(date)) {
     log_error("Tentativo di creazione date non valida");
     free(date);
-    return NULL;
+    return NULL_DATE;
   }
   return date;
 }
@@ -101,24 +102,28 @@ int cmp_date(ConstDate date_a, ConstDate date_b) {
 }
 
 #define FORMAT_DATE "%d %s %d, %02d:%02d"
-char *to_string_date(ConstDate date) {
-  int len = snprintf(NULL, 0, FORMAT_DATE, date->day, get_month_name(date),
-                     date->year, date->hour, date->minutes);
-  char *str_res = calloc(len + 1, sizeof(char));
-  if (str_res == NULL) {
-    log_error(
-        "Allocazione oggetto 'str_res' in funzione 'to_string_date' fallita.");
-    return NULL;
-  }
-  if (snprintf(str_res, len + 1, FORMAT_DATE, date->day, get_month_name(date),
-               date->year, date->hour, date->minutes) < 0) {
+void print_date(ConstDate date) {
+  printf(FORMAT_DATE, date->day, get_month_name(date), date->year, date->hour,
+         date->minutes);
+}
 
-    log_error("Creazione 'stringa date' in funzione 'to_string_date' fallita.");
-    log_error(str_res);
-    free(str_res);
-    return NULL;
+#define MAXSIZE 102
+Date read_date(void) {
+  char temp[MAXSIZE] = {0};
+  if (read_line(temp, MAXSIZE)) {
+    return NULL_DATE;
   }
-  return str_res;
+  int day = 0;
+  int month = 0;
+  int year = 0;
+  int hour = 0;
+  int minutes = 0;
+  if (sscanf(temp, "%d/%d/%d %d:%d", &day, &month, &year, &hour, &minutes) !=
+      5) {
+    return NULL_DATE;
+  }
+  Date date = new_date(minutes, hour, day, month, year);
+  return date;
 }
 
 Date copy_date(ConstDate date) {

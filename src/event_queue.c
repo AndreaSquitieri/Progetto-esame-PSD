@@ -132,41 +132,14 @@ Event remove_event_at(EventQueue queue, size_t index) {
 }
 
 #define SEPARATOR "\n\n"
-char *to_string_event_queue(ConstEventQueue queue) {
-  // TODO
-  // There is a very expensive realloc in this code, I should change it
+void print_event_queue(ConstEventQueue queue) {
   if (queue == NULL || queue->size == 0) {
-    return NULL;
+    return;
   }
-  char *res = to_string_event(AT(queue, 0));
-  if (res == NULL) {
-    return NULL;
+  for (size_t i = 0; i < queue->size; i++) {
+    print_event(AT(queue, 0));
+    printf(SEPARATOR);
   }
-  size_t size = strlen(res);
-  for (size_t i = 1; i < queue->size; i++) {
-
-    char *to_cat = to_string_event(AT(queue, i));
-    if (to_cat == NULL) {
-      free(res);
-      return NULL;
-    }
-
-    size += strlen(to_cat) + strlen(SEPARATOR);
-    char *temp = realloc(res, (size + 1) * sizeof(char));
-    if (temp == NULL) {
-      free(res);
-      free(to_cat);
-      return NULL;
-    }
-    res = temp;
-
-    strncat(res, SEPARATOR, size - strlen(res));
-    strncat(res, to_cat, size - strlen(res));
-
-    free(to_cat);
-  }
-
-  return res;
 }
 
 void free_queue(EventQueue queue) {

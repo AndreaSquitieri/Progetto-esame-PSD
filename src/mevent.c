@@ -1,6 +1,7 @@
 #include "mevent.h"
 #include "date.h"
 #include "logging.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,9 +41,14 @@ Event new_event(EventType type, const char *name, Date date) {
   return new_event;
 }
 
+int is_valid_event_type(int type){
+	return type >= 0 && type <= 2;
+}
+
 int is_same_instance_event(ConstEvent event_a, ConstEvent event_b) {
   return event_a->id == event_b->id;
 }
+
 
 int cmp_event(ConstEvent event_a, ConstEvent event_b) {
   int date_comparison =
@@ -84,12 +90,12 @@ EventType get_type_event(ConstEvent event) {
   return event->type;
 }
 
-int set_event_date(Event event, ConstDate date) {
+int set_event_date(Event event, Date date) {
   if (event == NULL) {
     log_error("Passato puntatore NULL alla funzione 'set_date'.");
     return -1;
   }
-  Date temp = copy_date(date);
+  Date temp = date;
   if (temp == NULL) {
     log_error("Copia di 'date' in 'set_date' fallita.");
     return -1;
@@ -126,37 +132,46 @@ static const char *const stringhe_type_event[] = {
 #define FORMAT_EVENT                                                           \
   "Id: %u\n"                                                                   \
   "Evento: \"%s\"\n"                                                           \
-  "Tipo: %s\n"                                                                 \
-  "Data: %s"
+  "Tipo: %s"
+void print_event(ConstEvent event) {
+  printf(FORMAT_EVENT, event->id, event->name,
+         stringhe_type_event[event->type]);
+	puts("");
+  printf("Data: ");
+  print_date(event->date);
+}
 
-char *to_string_event(ConstEvent event) {
-  const char *str_type = stringhe_type_event[event->type];
+#define MAXSIZE 102
 
-  char *str_date = to_string_date(event->date);
-  if (str_date == NULL) {
-    log_error("Allocazione oggetto 'str_date' fallita.");
-    return NULL;
+Event read_event(void) {
+  // Read event name
+  printf("Inserisci nome evento [Max 100 caratteri]: ");
+  char name[MAXSIZE] = {0};
+  if (read_line(name, MAXSIZE)) {
+    return NULL_EVENT;
   }
 
-  int len = snprintf(NULL, 0, FORMAT_EVENT, event->id, event->name, str_type,
-                     str_date);
+  // Read event type
+  int type = -1;
+  do {
+    printf(EVENT_TYPE_MENU);
+    ResultInt res = read_int();
+    if (res.error_code) {
+      continue;
+    }
+    type = res.value - 1;
+  } while ((type < 0 || type > 2) && printf("Valore inserito non valido\n"));
 
-  char *str_res = calloc(len + 1, sizeof(char));
-  if (str_res == NULL) {
-    log_error("Allocazione oggetto 'str_res' fallita.");
-    return NULL;
-  }
+  // Read event date
+  Date date = NULL;
+  do {
+    printf("Inserisci data evento (DD/MM/AAAA hh:mm): ");
+    date = read_date();
+  } while (date == NULL && printf("Data inserita non valida\n"));
 
-  if (snprintf(str_res, len + 1, FORMAT_EVENT, event->id, event->name, str_type,
-               str_date) < 0) {
-    log_error("Creazione 'stringa event' fallita.");
-    free(str_date);
-    free(str_res);
-    return NULL;
-  }
-
-  free(str_date);
-  return str_res;
+  // Return event
+  Event event = new_event(type, name, date);
+  return event;
 }
 
 void free_event(Event event) {

@@ -196,66 +196,14 @@ static void print_event_bst_nodes(EventBstNode node) {
     return;
   }
   print_event_bst_nodes(node->left);
-  char *to_print = to_string_event(node->value);
-  if (to_print == NULL) {
-    return;
-  }
-  printf("%s%s", to_print, SEPARATOR);
-  free(to_print);
+  print_event(node->value);
+  printf(SEPARATOR);
   print_event_bst_nodes(node->right);
 }
 
 void print_event_bst(ConstEventBst bst) { print_event_bst_nodes(bst->root); }
 
-static char *to_string_event_bst_nodes(EventBstNode node) {
-  // TODO
-  // Again, very expensive realloc, should find a way to do something better
-  if (node == NULL) {
-    return NULL;
-  }
-  char *res = to_string_event_bst_nodes(node->left);
-  size_t size = strlen(res);
-  char *to_cat = to_string_event(node->value);
-  if (to_cat == NULL) {
-    free(res);
-    return NULL;
-  }
-  size += strlen(to_cat) + strlen(SEPARATOR);
-  char *temp = realloc(res, (size + 1) * sizeof(char));
-  if (temp == NULL) {
-    free(res);
-    free(to_cat);
-    return NULL;
-  }
-  res = temp;
-  strncat(res, SEPARATOR, size - strlen(res));
-  strncat(res, to_cat, size - strlen(res));
-  free(to_cat);
-
-  to_cat = to_string_event_bst_nodes(node->right);
-  if (to_cat == NULL) {
-    free(res);
-    return NULL;
-  }
-  size += strlen(to_cat) + strlen(SEPARATOR);
-  temp = realloc(res, (size + 1) * sizeof(char));
-  if (temp == NULL) {
-    free(res);
-    free(to_cat);
-    return NULL;
-  }
-  res = temp;
-  strncat(res, SEPARATOR, size - strlen(res));
-  strncat(res, to_cat, size - strlen(res));
-  free(to_cat);
-  return res;
-}
-
 size_t get_bst_size(ConstEventBst bst) { return bst->size; }
-
-char *to_string_event_bst(ConstEventBst bst) {
-  return to_string_event_bst_nodes(bst->root);
-}
 
 static void free_event_bst_nodes(EventBstNode node) {
   if (node == NULL) {
