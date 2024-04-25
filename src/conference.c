@@ -164,6 +164,7 @@ int edit_conference_event(Conference conf) {
     }
   }
   if (bst_insert_event(conf->bst, to_edit)) {
+    free_event(to_edit);
     puts("Qualcosa è andato storto durante la modifica dell'evento");
     return -1;
   }

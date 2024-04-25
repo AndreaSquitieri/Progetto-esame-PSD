@@ -42,6 +42,7 @@ int main(void) {
     printf(MENU);
     int temp = read_menu_choice();
     if (temp == -1) {
+      puts("Opzione inserita non valida");
       continue;
     }
     choice = temp;

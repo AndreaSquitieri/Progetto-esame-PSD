@@ -146,7 +146,7 @@ static void internal_copy(Date dest, ConstDate src) {
 int is_leap(ConstDate date) {
   if (date == NULL_DATE) {
     log_error("L'oggetto 'date' passato come parametro alla funzione 'is_leap' "
-              "non risulta alloato");
+              "non risulta allocato");
     return -1;
   }
 
@@ -156,6 +156,12 @@ int is_leap(ConstDate date) {
 #define MINUTES_IN_HOUR 60
 #define HOURS_IN_DAY 24
 int is_valid_date(ConstDate date) {
+  if (date == NULL_DATE) {
+    log_error(
+        "L'oggetto 'date' passato come parametro alla funzione 'is_valid_date' "
+        "non risulta allocato");
+    return -1;
+  }
   if (date->minutes >= MINUTES_IN_HOUR) {
     return 0;
   }
