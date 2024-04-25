@@ -26,7 +26,7 @@ Conference new_conference(void) {
 
 int add_conference_event(Conference conf) {
   Event event = read_event();
-  if (event == NULL) {
+  if (event == NULL_EVENT) {
     return -1;
   }
   bst_insert_event(conf->bst, event);
@@ -57,7 +57,7 @@ int remove_conference_event(Conference conf) {
     return 1; // Action aborted by the user
   }
   Event removed = bst_remove_event_by_id(conf->bst, res);
-  if (removed == NULL) {
+  if (removed == NULL_EVENT) {
     puts("Qualcosa è andato storto durante la rimozione dell'evento");
     return -1;
   }
@@ -100,11 +100,11 @@ static int edit_conference_event_type(Conference conf, Event to_edit) {
 }
 
 static int edit_conference_event_date(Conference conf, Event to_edit) {
-  Date date = NULL;
+  Date date = NULL_DATE;
   do {
     printf("Inserisci data evento (DD/MM/AAAA hh:mm): ");
     date = read_date();
-  } while (date == NULL && printf("Data inserita non valida\n"));
+  } while (date == NULL_DATE && printf("Data inserita non valida\n"));
   return set_event_date(to_edit, date);
 }
 
@@ -131,7 +131,7 @@ int edit_conference_event(Conference conf) {
     return 1; // Action aborted by the user
   }
   Event to_edit = bst_remove_event_by_id(conf->bst, res);
-  if (to_edit == NULL) {
+  if (to_edit == NULL_EVENT) {
     printf("Qualcosa è andato storto durante la ricerca dell'evento\n");
     return -1;
   }

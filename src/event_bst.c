@@ -30,7 +30,7 @@ EventBst new_event_bst(void) {
 }
 
 int bst_insert_event(EventBst bst, Event event) {
-  if (bst == NULL) {
+  if (bst == NULL_EVENT_BST) {
     log_error("Bst is NULL in 'bst_insert_event'");
     return -1;
   }
@@ -155,10 +155,10 @@ static EventBstNode bst_successor(EventBstNode node) {
   return res;
 }
 
-Event bst_remove_node(EventBst bst, EventBstNode to_delete) {
+static Event bst_remove_node(EventBst bst, EventBstNode to_delete) {
 
   if (to_delete == NULL) {
-    return NULL;
+    return NULL_EVENT;
   }
   if (to_delete->left == NULL) {
     bst_shift_nodes(bst, to_delete, to_delete->right);
@@ -218,6 +218,9 @@ static void free_event_bst_nodes(EventBstNode node) {
 }
 
 void free_event_bst(EventBst bst) {
+  if (bst == NULL_EVENT_BST) {
+    return;
+  }
   free_event_bst_nodes(bst->root);
   free(bst);
 }

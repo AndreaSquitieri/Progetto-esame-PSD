@@ -17,15 +17,15 @@ typedef struct EventStruct {
 
 Event new_event(EventType type, const char *name, Date date) {
   if (name == NULL) {
-    return NULL;
+    return NULL_EVENT;
   }
-  if (date == NULL) {
-    return NULL;
+  if (date == NULL_DATE) {
+    return NULL_EVENT;
   }
   Event new_event = calloc(1, sizeof(*new_event));
   if (new_event == NULL) {
     log_error("Allocazione oggetto 'event' fallita.");
-    return NULL;
+    return NULL_EVENT;
   }
   new_event->date = date;
   new_event->name = strdup(name);
@@ -33,7 +33,7 @@ Event new_event(EventType type, const char *name, Date date) {
     log_error("Allocazione oggetto 'new_event->name' fallita.");
     free_date(new_event->date);
     free(new_event);
-    return NULL;
+    return NULL_EVENT;
   }
   new_event->type = type;
   new_event->id = event_id_counter;
@@ -41,14 +41,11 @@ Event new_event(EventType type, const char *name, Date date) {
   return new_event;
 }
 
-int is_valid_event_type(int type){
-	return type >= 0 && type <= 2;
-}
+int is_valid_event_type(int type) { return type >= 0 && type <= 2; }
 
 int is_same_instance_event(ConstEvent event_a, ConstEvent event_b) {
   return event_a->id == event_b->id;
 }
-
 
 int cmp_event(ConstEvent event_a, ConstEvent event_b) {
   int date_comparison =
@@ -63,8 +60,8 @@ int cmp_event(ConstEvent event_a, ConstEvent event_b) {
 }
 
 Event copy_event(ConstEvent event) {
-  if (event == NULL) {
-    return NULL;
+  if (event == NULL_EVENT) {
+    return NULL_EVENT;
   }
   return new_event(event->type, event->name, event->date);
 }
@@ -72,39 +69,34 @@ Event copy_event(ConstEvent event) {
 unsigned int get_event_id(ConstEvent event) { return event->id; }
 
 ConstDate get_event_date(ConstEvent event) {
-  if (event == NULL) {
-    return NULL;
+  if (event == NULL_EVENT) {
+    return NULL_DATE;
   }
   return event->date;
 }
 char *get_event_name(ConstEvent event) {
-  if (event == NULL) {
+  if (event == NULL_EVENT) {
     return NULL;
   }
   return strdup(event->name);
 }
 EventType get_type_event(ConstEvent event) {
-  if (event == NULL) {
+  if (event == NULL_EVENT) {
     return -1;
   }
   return event->type;
 }
 
 int set_event_date(Event event, Date date) {
-  if (event == NULL) {
+  if (event == NULL_EVENT) {
     log_error("Passato puntatore NULL alla funzione 'set_date'.");
     return -1;
   }
-  Date temp = date;
-  if (temp == NULL) {
-    log_error("Copia di 'date' in 'set_date' fallita.");
-    return -1;
-  }
-  event->date = temp;
+  event->date = date;
   return 0;
 }
 int set_event_name(Event event, const char *name) {
-  if (event == NULL) {
+  if (event == NULL_EVENT) {
     log_error("Passato puntatore NULL alla funzione 'set_name'.");
     return -1;
   }
@@ -118,7 +110,7 @@ int set_event_name(Event event, const char *name) {
   return 0;
 }
 int set_event_type(Event event, EventType type) {
-  if (event == NULL) {
+  if (event == NULL_EVENT) {
     log_error("Passato puntatore NULL alla funzione 'set_event_type'.");
     return -1;
   }
@@ -136,7 +128,7 @@ static const char *const stringhe_type_event[] = {
 void print_event(ConstEvent event) {
   printf(FORMAT_EVENT, event->id, event->name,
          stringhe_type_event[event->type]);
-	puts("");
+  puts("");
   printf("Data: ");
   print_date(event->date);
 }
@@ -160,14 +152,15 @@ Event read_event(void) {
       continue;
     }
     type = res.value - 1;
-  } while ((type < 0 || type > 2) && printf("Valore inserito non valido\n"));
+  } while (!is_valid_event_type(type) &&
+           printf("Valore inserito non valido\n"));
 
   // Read event date
-  Date date = NULL;
+  Date date = NULL_DATE;
   do {
     printf("Inserisci data evento (DD/MM/AAAA hh:mm): ");
     date = read_date();
-  } while (date == NULL && printf("Data inserita non valida\n"));
+  } while (date == NULL_DATE && printf("Data inserita non valida\n"));
 
   // Return event
   Event event = new_event(type, name, date);

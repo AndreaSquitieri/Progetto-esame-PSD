@@ -127,8 +127,8 @@ Date read_date(void) {
 }
 
 Date copy_date(ConstDate date) {
-  if (date == NULL) {
-    return NULL;
+  if (date == NULL_DATE) {
+    return NULL_DATE;
   }
   return new_date(date->minutes, date->hour, date->day, date->month,
                   date->year);
@@ -144,7 +144,7 @@ static void internal_copy(Date dest, ConstDate src) {
 
 #define LEAP_CHECK(A) (((A) % 4) == 0 && ((A) % 100) != 0) || ((A) % 400) == 0
 int is_leap(ConstDate date) {
-  if (date == NULL) {
+  if (date == NULL_DATE) {
     log_error("L'oggetto 'date' passato come parametro alla funzione 'is_leap' "
               "non risulta alloato");
     return -1;
@@ -172,7 +172,7 @@ int is_valid_date(ConstDate date) {
 }
 
 int get_hour(ConstDate date) {
-  if (date == NULL) {
+  if (date == NULL_DATE) {
     log_error("Passato puntatore NULL alla funzione 'get_hour'.");
     return -1;
   }
@@ -180,7 +180,7 @@ int get_hour(ConstDate date) {
 }
 
 int get_minutes(ConstDate date) {
-  if (date == NULL) {
+  if (date == NULL_DATE) {
     log_error("Passato puntatore NULL alla funzione 'get_minutes'.");
     return -1;
   }
@@ -188,7 +188,7 @@ int get_minutes(ConstDate date) {
 }
 
 int get_day(ConstDate date) {
-  if (date == NULL) {
+  if (date == NULL_DATE) {
     log_error("Passato puntatore NULL alla funzione 'get_day'.");
     return -1;
   }
@@ -196,7 +196,7 @@ int get_day(ConstDate date) {
 }
 
 int get_month(ConstDate date) {
-  if (date == NULL) {
+  if (date == NULL_DATE) {
     log_error("Passato puntatore NULL alla funzione 'get_month'.");
     return -1;
   }
@@ -204,7 +204,7 @@ int get_month(ConstDate date) {
 }
 
 int get_year(ConstDate date) {
-  if (date == NULL) {
+  if (date == NULL_DATE) {
     log_error("Passato puntatore NULL alla funzione 'get_year'.");
     return -1;
   }
