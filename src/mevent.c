@@ -49,11 +49,11 @@ int cmp_event(ConstEvent event_a, ConstEvent event_b) {
       cmp_date(get_event_date(event_a), get_event_date(event_b));
   if (date_comparison < 0) {
     return -1;
-  } else if (date_comparison > 0) {
-    return 1;
-  } else {
-    return strcmp(get_event_name(event_a), get_event_name(event_b));
   }
+  if (date_comparison > 0) {
+    return 1;
+  }
+  return strcmp(get_event_name(event_a), get_event_name(event_b));
 }
 
 Event copy_event(ConstEvent event) {
@@ -62,6 +62,8 @@ Event copy_event(ConstEvent event) {
   }
   return new_event(event->type, event->name, event->date);
 }
+
+unsigned int get_event_id(ConstEvent event) { return event->id; }
 
 ConstDate get_event_date(ConstEvent event) {
   if (event == NULL) {
@@ -82,7 +84,7 @@ EventType get_type_event(ConstEvent event) {
   return event->type;
 }
 
-int set_event_date(Event event, const Date date) {
+int set_event_date(Event event, ConstDate date) {
   if (event == NULL) {
     log_error("Passato puntatore NULL alla funzione 'set_date'.");
     return -1;
@@ -105,6 +107,7 @@ int set_event_name(Event event, const char *name) {
     log_error("Copia di 'name' in 'set_name' fallita.");
     return -1;
   }
+  free(event->name);
   event->name = temp;
   return 0;
 }
@@ -121,6 +124,7 @@ static const char *const stringhe_type_event[] = {
     "Workshop", "Sessione di keynote", "Panel di discussione"};
 
 #define FORMAT_EVENT                                                           \
+  "Id: %u\n"                                                                   \
   "Evento: \"%s\"\n"                                                           \
   "Tipo: %s\n"                                                                 \
   "Data: %s"
@@ -134,7 +138,8 @@ char *to_string_event(ConstEvent event) {
     return NULL;
   }
 
-  int len = snprintf(NULL, 0, FORMAT_EVENT, event->name, str_type, str_date);
+  int len = snprintf(NULL, 0, FORMAT_EVENT, event->id, event->name, str_type,
+                     str_date);
 
   char *str_res = calloc(len + 1, sizeof(char));
   if (str_res == NULL) {
@@ -142,7 +147,7 @@ char *to_string_event(ConstEvent event) {
     return NULL;
   }
 
-  if (snprintf(str_res, len + 1, FORMAT_EVENT, event->name, str_type,
+  if (snprintf(str_res, len + 1, FORMAT_EVENT, event->id, event->name, str_type,
                str_date) < 0) {
     log_error("Creazione 'stringa event' fallita.");
     free(str_date);

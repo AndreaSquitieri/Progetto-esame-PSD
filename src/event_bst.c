@@ -1,6 +1,7 @@
 #include "event_bst.h"
 #include "logging.h"
 #include "mevent.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -73,6 +74,26 @@ static EventBstNode bst_search_event(EventBst bst, ConstEvent event) {
   return res;
 }
 
+static EventBstNode bst_nodes_search_event_by_id(EventBstNode node,
+                                                 unsigned int id) {
+  if (node == NULL) {
+    return NULL;
+  }
+  if (get_event_id(node->value) == id) {
+    return node;
+  }
+  EventBstNode temp = NULL;
+  temp = bst_nodes_search_event_by_id(node->left, id);
+  if (temp != NULL) {
+    return temp;
+  }
+  return bst_nodes_search_event_by_id(node->right, id);
+}
+
+static EventBstNode bst_search_event_by_id(EventBst bst, unsigned int id) {
+  return bst_nodes_search_event_by_id(bst->root, id);
+}
+
 static void bst_shift_nodes(EventBst bst, EventBstNode node_a,
                             EventBstNode node_b) {
   if (node_a->parent == NULL) {
@@ -134,8 +155,8 @@ static EventBstNode bst_successor(EventBstNode node) {
   return res;
 }
 
-Event bst_remove_event(EventBst bst, ConstEvent event) {
-  EventBstNode to_delete = bst_search_event(bst, event);
+Event bst_remove_node(EventBst bst, EventBstNode to_delete) {
+
   if (to_delete == NULL) {
     return NULL;
   }
@@ -156,8 +177,17 @@ Event bst_remove_event(EventBst bst, ConstEvent event) {
   }
   Event value = to_delete->value;
   free(to_delete);
-  bst->size -= 1;
   return value;
+}
+
+Event bst_remove_event(EventBst bst, ConstEvent event) {
+  EventBstNode to_delete = bst_search_event(bst, event);
+  return bst_remove_node(bst, to_delete);
+}
+
+Event bst_remove_event_by_id(EventBst bst, unsigned int id) {
+  EventBstNode to_delete = bst_search_event_by_id(bst, id);
+  return bst_remove_node(bst, to_delete);
 }
 
 #define SEPARATOR "\n\n"
@@ -220,6 +250,8 @@ static char *to_string_event_bst_nodes(EventBstNode node) {
   free(to_cat);
   return res;
 }
+
+size_t get_bst_size(ConstEventBst bst) { return bst->size; }
 
 char *to_string_event_bst(ConstEventBst bst) {
   return to_string_event_bst_nodes(bst->root);
