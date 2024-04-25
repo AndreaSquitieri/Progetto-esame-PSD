@@ -21,7 +21,7 @@ struct EventBstStruct {
 EventBst new_event_bst(void) {
   EventBst bst = calloc(1, sizeof(*bst));
   if (bst == NULL) {
-    return NULL;
+    return NULL_EVENT_BST;
   }
   bst->root = NULL;
   bst->size = 0;

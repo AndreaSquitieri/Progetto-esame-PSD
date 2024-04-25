@@ -2,6 +2,8 @@
 #define EVENT_BST_H_
 
 #include "mevent.h"
+#include <stdlib.h>
+#define NULL_EVENT_BST NULL
 
 typedef struct EventBstStruct *EventBst;
 typedef struct EventBstStruct *ConstEventBst;
