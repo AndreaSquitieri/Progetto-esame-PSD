@@ -49,3 +49,21 @@ ResultInt read_int(void) {
   res.value = choice;
   return res;
 }
+
+void *my_alloc(unsigned long nmemb, unsigned long size) {
+  void *p = malloc(nmemb * size);
+  if (p == NULL) {
+    printf("Allocazione fallita\n");
+    exit(EXIT_FAILURE);
+  }
+  return p;
+}
+
+void *my_realloc(void *p, unsigned long nmemb, unsigned long size) {
+  void *temp = realloc(p, nmemb * size);
+  if (temp == NULL) {
+    printf("Allocazione fallita\n");
+    exit(EXIT_FAILURE);
+  }
+  return temp;
+}

@@ -62,8 +62,6 @@ int main(void) {
       break;
     case ASSIGN_ROOM:
       // TODO
-      // I still don't know what I should do in this section, but I guess that
-      // we'll find out
       break;
     case EXIT:
       break;
