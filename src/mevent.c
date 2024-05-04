@@ -167,6 +167,11 @@ Event read_event(void) {
   return event;
 }
 
+int is_event_equal(ConstEvent event_a, ConstEvent event_b) {
+  return event_a != NULL_EVENT && event_b != NULL_EVENT &&
+         event_a->id == event_b->id;
+}
+
 void free_event(Event event) {
   free_date(event->date);
   free(event->name);

@@ -12,6 +12,7 @@ int is_valid_event_type(int type);
 Event new_event(EventType type, const char *name, Date date);
 Event copy_event(ConstEvent event);
 int is_same_instance_event(ConstEvent event_a, ConstEvent event_b);
+int is_event_equal(ConstEvent event_a, ConstEvent event_b);
 int set_event_type(Event event, EventType type);
 int set_event_date(Event event, Date date);
 int set_event_name(Event event, const char *name);

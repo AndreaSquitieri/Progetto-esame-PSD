@@ -1,5 +1,6 @@
 #include "conference.h"
 #include "event_bst.h"
+#include "event_list.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +16,7 @@ Conference new_conference(void) {
   if (bst == NULL_EVENT_BST) {
     return NULL_CONFERENCE;
   }
+  EventList list = new_event_list();
   Conference conf = calloc(1, sizeof(*conf));
   if (conf == NULL) {
     free_event_bst(bst);
