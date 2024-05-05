@@ -177,6 +177,7 @@ static Event bst_remove_node(EventBst bst, EventBstNode to_delete) {
   }
   Event value = to_delete->value;
   free(to_delete);
+  bst->size -= 1;
   return value;
 }
 
