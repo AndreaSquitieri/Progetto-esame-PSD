@@ -105,6 +105,11 @@ int set_event_start_date(Event event, Date start_date) {
     log_error("Passato puntatore NULL alla funzione 'set_event_start_date'.");
     return -1;
   }
+  if (cmp_date(start_date, event->end_date) > 0) {
+    log_error(
+        "Data inizio superiore alla data di fine in 'set_event_start_date'.");
+    return -2;
+  }
   free_date(event->start_date);
   event->start_date = start_date;
   return 0;
@@ -115,6 +120,12 @@ int set_event_end_date(Event event, Date end_date) {
     log_error("Passato puntatore NULL alla funzione 'set_event_end_date'.");
     return -1;
   }
+  if (cmp_date(end_date, event->start_date) < 0) {
+    log_error(
+        "Data fine inferiore alla data di inizio in 'set_event_end_date'.");
+    return -2;
+  }
+  free_date(event->end_date);
   event->end_date = end_date;
   return 0;
 }
@@ -192,8 +203,9 @@ Event read_event(void) {
   Date end_date = NULL_DATE;
   do {
     printf("Inserisci data fine evento (DD/MM/AAAA hh:mm): ");
-    start_date = read_date();
-  } while (start_date == NULL_DATE && printf("Data inserita non valida\n"));
+    end_date = read_date();
+  } while ((end_date == NULL_DATE || cmp_date(start_date, end_date) > 0) &&
+           printf("Data inserita non valida\n"));
 
   // Return event
   Event event = new_event(type, name, start_date, end_date);

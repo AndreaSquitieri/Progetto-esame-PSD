@@ -101,37 +101,37 @@ static int edit_conference_event_type(Conference conf, Event to_edit) {
   return 0;
 }
 
-static int edit_conference_event_date(Conference conf, Event to_edit) {
+static int edit_conference_event_start_date(Conference conf, Event to_edit) {
   Date date = NULL_DATE;
   do {
-    printf("Inserisci data evento (DD/MM/AAAA hh:mm): ");
+    printf("Inserisci data inizio evento (DD/MM/AAAA hh:mm): ");
     date = read_date();
   } while (date == NULL_DATE && printf("Data inserita non valida\n"));
-  return set_event_date(to_edit, date);
+  return set_event_start_date(to_edit, date);
 }
 
-static int edit_conference_event_duration(Conference conf, Event to_edit) {
-  Duration duration = NULL_DURATION;
+static int edit_conference_event_end_date(Conference conf, Event to_edit) {
+  Date date = NULL_DATE;
   do {
-    printf("Inserisci durata evento (hh:mm): ");
-    duration = read_duration();
-  } while (duration == NULL_DURATION && printf("Durata inserita non valida\n"));
-  return set_event_duration(to_edit, duration);
+    printf("Inserisci data fine evento (DD/MM/AAAA hh:mm): ");
+    date = read_date();
+  } while (date == NULL_DATE && printf("Data inserita non valida\n"));
+  return set_event_end_date(to_edit, date);
 }
 
 #define EDIT_MENU                                                              \
   "[1] Nome\n"                                                                 \
   "[2] Tipo\n"                                                                 \
-  "[3] Data\n"                                                                 \
-  "[4] Durata\n"                                                               \
+  "[3] Data inizio\n"                                                          \
+  "[4] Data fine\n"                                                            \
   "[5] Esci\n"                                                                 \
   "Selezionare cosa si desidera modificare: "
 
 typedef enum {
   EDIT_EVENT_TITLE = 1,
   EDIT_EVENT_TYPE,
-  EDIT_EVENT_DATE,
-  EDIT_EVENT_DURATION,
+  EDIT_EVENT_START_DATE,
+  EDIT_EVENT_END_DATE,
   EDIT_EVENT_EXIT
 } EditMenuChoice;
 
@@ -152,7 +152,7 @@ int edit_conference_event(Conference conf) {
   while (flag) {
     printf(EDIT_MENU);
     ResultInt res = read_int();
-    if (res.error_code || res.value < 1 || res.value > 4) {
+    if (res.error_code || res.value < 1 || res.value > EDIT_EVENT_EXIT) {
       puts("Valore inserito non valido");
       continue;
     }
@@ -163,11 +163,17 @@ int edit_conference_event(Conference conf) {
     case EDIT_EVENT_TYPE: {
       edit_conference_event_type(conf, to_edit);
     } break;
-    case EDIT_EVENT_DATE: {
-      edit_conference_event_date(conf, to_edit);
+    case EDIT_EVENT_START_DATE: {
+      if (edit_conference_event_start_date(conf, to_edit)) {
+        printf("Qualcosa è andato storto durante la modifica della data di "
+               "inizio dell'evento\n");
+      }
     } break;
-    case EDIT_EVENT_DURATION: {
-      edit_conference_event_duration(conf, to_edit);
+    case EDIT_EVENT_END_DATE: {
+      if (edit_conference_event_end_date(conf, to_edit)) {
+        printf("Qualcosa è andato storto durante la modifica della data di "
+               "fine dell'evento\n");
+      }
       break;
     }
     case EDIT_EVENT_EXIT:
