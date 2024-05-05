@@ -61,5 +61,11 @@ bool is_room_free_for_event(Room room, Event event) {
 
 void free_room(Room room) {
   free(room->name);
+
+  // TODO
+  // I think that this should be good enough
+  // But keep in mind that it isn't freeing the events stored
+  free(room->booked_events);
+
   free(room);
 }
