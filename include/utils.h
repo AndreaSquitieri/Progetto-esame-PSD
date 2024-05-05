@@ -17,7 +17,8 @@ typedef struct {
   "Seleziona tipologia evento (1, 2 o 3): "
 
 Event read_event(void);
-int read_line(char *line, int size);
+
+__attribute_warn_unused_result__ int read_line(char *line, int size);
 ResultInt read_int(void);
 void *my_alloc(unsigned long nmemb, unsigned long size);
 __attribute_warn_unused_result__ void *my_realloc(void *p, unsigned long nmemb,

@@ -1,6 +1,7 @@
 #ifndef EVENT_H_
 #define EVENT_H_
 #include "date.h"
+#include "duration.h"
 
 #define NULL_EVENT NULL
 
@@ -9,7 +10,7 @@ typedef const struct EventStruct *ConstEvent;
 
 typedef enum { WORKSHOP = 0, KEYNOTE, PANEL } EventType;
 int is_valid_event_type(int type);
-Event new_event(EventType type, const char *name, Date date);
+Event new_event(EventType type, const char *name, Date date, Duration duration);
 Event copy_event(ConstEvent event);
 int is_same_instance_event(ConstEvent event_a, ConstEvent event_b);
 int is_event_equal(ConstEvent event_a, ConstEvent event_b);

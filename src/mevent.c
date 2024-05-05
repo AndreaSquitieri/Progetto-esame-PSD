@@ -1,5 +1,6 @@
 #include "mevent.h"
 #include "date.h"
+#include "duration.h"
 #include "logging.h"
 #include "utils.h"
 #include <stdio.h>
@@ -13,9 +14,11 @@ typedef struct EventStruct {
   EventType type;
   char *name;
   Date date;
+  Duration duration;
 } Event_t;
 
-Event new_event(EventType type, const char *name, Date date) {
+Event new_event(EventType type, const char *name, Date date,
+                Duration duration) {
   if (name == NULL) {
     return NULL_EVENT;
   }
@@ -28,6 +31,7 @@ Event new_event(EventType type, const char *name, Date date) {
     return NULL_EVENT;
   }
   new_event->date = date;
+  new_event->duration = duration;
   new_event->name = strdup(name);
   if (new_event->name == NULL) {
     log_error("Allocazione oggetto 'new_event->name' fallita.");
@@ -63,7 +67,8 @@ Event copy_event(ConstEvent event) {
   if (event == NULL_EVENT) {
     return NULL_EVENT;
   }
-  return new_event(event->type, event->name, event->date);
+  return new_event(event->type, event->name, copy_date(event->date),
+                   copy_duration(event->duration));
 }
 
 unsigned int get_event_id(ConstEvent event) { return event->id; }
@@ -131,6 +136,9 @@ void print_event(ConstEvent event) {
   puts("");
   printf("Data: ");
   print_date(event->date);
+  puts("");
+  printf("Durata ");
+  print_duration(event->duration);
 }
 
 #define MAXSIZE 102
@@ -162,8 +170,14 @@ Event read_event(void) {
     date = read_date();
   } while (date == NULL_DATE && printf("Data inserita non valida\n"));
 
+  Duration duration = NULL_DURATION;
+  do {
+    printf("Inserisci durata evento (hh:mm): ");
+    duration = read_duration();
+  } while (duration == NULL_DURATION && printf("Durata inserita non valida\n"));
+
   // Return event
-  Event event = new_event(type, name, date);
+  Event event = new_event(type, name, date, duration);
   return event;
 }
 
@@ -175,5 +189,6 @@ int is_event_equal(ConstEvent event_a, ConstEvent event_b) {
 void free_event(Event event) {
   free_date(event->date);
   free(event->name);
+  free(event->duration);
   free(event);
 }
