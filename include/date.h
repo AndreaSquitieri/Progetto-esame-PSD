@@ -13,6 +13,7 @@ int is_leap(ConstDate date);
 int cmp_date(ConstDate date_a, ConstDate date_b);
 void print_date(ConstDate date);
 Date read_date(void);
+
 Date copy_date(ConstDate date);
 void free_date(Date date);
 

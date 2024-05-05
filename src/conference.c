@@ -110,17 +110,28 @@ static int edit_conference_event_date(Conference conf, Event to_edit) {
   return set_event_date(to_edit, date);
 }
 
+static int edit_conference_event_duration(Conference conf, Event to_edit) {
+  Duration duration = NULL_DURATION;
+  do {
+    printf("Inserisci durata evento (hh:mm): ");
+    duration = read_duration();
+  } while (duration == NULL_DURATION && printf("Durata inserita non valida\n"));
+  return set_event_duration(to_edit, duration);
+}
+
 #define EDIT_MENU                                                              \
   "[1] Nome\n"                                                                 \
   "[2] Tipo\n"                                                                 \
   "[3] Data\n"                                                                 \
-  "[4] Esci\n"                                                                 \
+  "[4] Durata\n"                                                               \
+  "[5] Esci\n"                                                                 \
   "Selezionare cosa si desidera modificare: "
 
 typedef enum {
   EDIT_EVENT_TITLE = 1,
   EDIT_EVENT_TYPE,
   EDIT_EVENT_DATE,
+  EDIT_EVENT_DURATION,
   EDIT_EVENT_EXIT
 } EditMenuChoice;
 
@@ -155,6 +166,10 @@ int edit_conference_event(Conference conf) {
     case EDIT_EVENT_DATE: {
       edit_conference_event_date(conf, to_edit);
     } break;
+    case EDIT_EVENT_DURATION: {
+      edit_conference_event_duration(conf, to_edit);
+      break;
+    }
     case EDIT_EVENT_EXIT:
       flag = 0;
       break;

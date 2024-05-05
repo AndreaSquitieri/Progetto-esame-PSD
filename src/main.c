@@ -62,6 +62,8 @@ int main(void) {
       break;
     case ASSIGN_ROOM:
       // TODO
+      // Assegna una stanza ad un evento
+
       break;
     case EXIT:
       break;
