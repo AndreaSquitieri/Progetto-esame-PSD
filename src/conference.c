@@ -1,5 +1,6 @@
 #include "conference.h"
 #include "event_bst.h"
+#include "room.h"
 #include "room_list.h"
 #include "utils.h"
 #include <stdio.h>
@@ -23,6 +24,7 @@ Conference new_conference(void) {
   }
   Conference conf = my_alloc(1, sizeof(*conf));
   conf->bst = bst;
+  conf->rooms = room_list;
   return conf;
 }
 
@@ -32,6 +34,15 @@ int add_conference_event(Conference conf) {
     return -1;
   }
   bst_insert_event(conf->bst, event);
+  return 0;
+}
+
+int add_conference_room(Conference conf) {
+  Room room = read_room();
+  if (room == NULL_ROOM) {
+    return -1;
+  }
+  cons_room_list(conf->rooms, room);
   return 0;
 }
 

@@ -1,6 +1,7 @@
 #include "room_list.h"
 #include "room.h"
 #include "utils.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 #define INIT_CAPACITY 16

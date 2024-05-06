@@ -17,6 +17,8 @@ int room_assign_event(Room room, Event event);
 
 Event room_remove_event(Room room, Event event);
 
+Room read_room(void);
+
 bool is_room_free_for_event(Room room, Event event);
 void free_room(Room room);
 

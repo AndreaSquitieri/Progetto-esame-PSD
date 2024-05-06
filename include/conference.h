@@ -13,6 +13,7 @@ int add_conference_event(Conference conf);
 int edit_conference_event(Conference conf);
 int remove_conference_event(Conference conf);
 int display_conference_schedule(ConstConference conf);
+int add_conference_room(Conference conf);
 
 void free_conference(Conference conf);
 

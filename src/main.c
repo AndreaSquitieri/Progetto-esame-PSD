@@ -1,4 +1,5 @@
 #include "conference.h"
+#include "logging.h"
 #include "utils.h"
 #include <stdio.h>
 
@@ -9,7 +10,7 @@ typedef enum {
   REMOVE_EVENT,
   EDIT_EVENT,
   DISPLAY_SCHEDULE,
-  ASSIGN_ROOM,
+  ADD_ROOM,
   EXIT
 } MenuChoice;
 
@@ -19,7 +20,7 @@ typedef enum {
   "[2]: Rimuovi evento\n"                                                      \
   "[3]: Modifica evento\n"                                                     \
   "[4]: Mostra eventi\n"                                                       \
-  "[5]: Assegna stanza\n"                                                      \
+  "[5]: Aggiungi stanza\n"                                                     \
   "[6]: Esci\n"                                                                \
   "Indicare l'operazione che si desidera effetuare: "
 
@@ -36,6 +37,10 @@ int read_menu_choice(void) {
 
 int main(void) {
   Conference conf = new_conference();
+  if (conf == NULL_CONFERENCE) {
+    log_error("Creazione della conferenza fallita");
+    return -1;
+  }
   puts(WELCOME_MESSAGE);
   MenuChoice choice = 0;
   do {
@@ -60,10 +65,11 @@ int main(void) {
     case DISPLAY_SCHEDULE:
       display_conference_schedule(conf);
       break;
-    case ASSIGN_ROOM:
+    case ADD_ROOM:
       // TODO
       // Assegna una stanza ad un evento
 
+      add_conference_room(conf);
       break;
     case EXIT:
       break;
