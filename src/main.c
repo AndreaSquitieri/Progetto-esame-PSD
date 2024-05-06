@@ -11,6 +11,7 @@ typedef enum {
   EDIT_EVENT,
   DISPLAY_SCHEDULE,
   ADD_ROOM,
+  DISPLAY_ROOMS,
   EXIT
 } MenuChoice;
 
@@ -20,8 +21,9 @@ typedef enum {
   "[2]: Rimuovi evento\n"                                                      \
   "[3]: Modifica evento\n"                                                     \
   "[4]: Mostra eventi\n"                                                       \
-  "[5]: Aggiungi stanza\n"                                                     \
-  "[6]: Esci\n"                                                                \
+  "[5]: Aggiungi sala\n"                                                       \
+  "[6]: Mostra sale\n"                                                         \
+  "[7]: Esci\n"                                                                \
   "Indicare l'operazione che si desidera effetuare: "
 
 int read_menu_choice(void) {
@@ -66,11 +68,12 @@ int main(void) {
       display_conference_schedule(conf);
       break;
     case ADD_ROOM:
-      // TODO
-      // Assegna una stanza ad un evento
-
       add_conference_room(conf);
       break;
+    case DISPLAY_ROOMS: {
+      display_conference_rooms(conf);
+      break;
+    }
     case EXIT:
       break;
     }

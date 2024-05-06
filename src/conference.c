@@ -210,6 +210,10 @@ int display_conference_schedule(ConstConference conf) {
   print_event_bst(conf->bst);
   return 0;
 }
+int display_conference_rooms(ConstConference conf) {
+  print_room_list(conf->rooms);
+  return 0;
+}
 
 void free_conference(Conference conf) {
   free_event_bst(conf->bst);

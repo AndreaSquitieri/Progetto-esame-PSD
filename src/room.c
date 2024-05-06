@@ -62,6 +62,9 @@ bool is_room_free_for_event(Room room, Event event) {
   return true;
 }
 
+#define FORMAT_ROOM "Nome: %s"
+void print_room(Room room) { printf(FORMAT_ROOM, room->name); }
+
 void free_room(Room room) {
   free(room->name);
 

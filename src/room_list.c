@@ -66,6 +66,14 @@ Room get_at_room_list(RoomList list, int pos) {
   return list->array[pos];
 }
 
+void print_room_list(RoomList list) {
+  for (int i = 0; i < list->size; i++) {
+    printf("[Sala %d]\n", i + 1);
+    print_room(list->array[i]);
+    puts("");
+  }
+}
+
 void free_room_list(RoomList list) {
   for (int i = 0; i < list->size; i++) {
     free_room(list->array[i]);

@@ -23,6 +23,8 @@ int get_pos_room_list(RoomList list, Room to_search);
 
 Room get_at_room_list(RoomList list, int pos);
 
+void print_room_list(RoomList list);
+
 void free_room_list(RoomList list);
 
 #endif /* ROOM_LIST_H */

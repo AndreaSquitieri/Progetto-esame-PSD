@@ -20,6 +20,9 @@ Event room_remove_event(Room room, Event event);
 Room read_room(void);
 
 bool is_room_free_for_event(Room room, Event event);
+
+void print_room(Room room);
+
 void free_room(Room room);
 
 #endif // ROOM_H_
