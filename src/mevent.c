@@ -1,6 +1,7 @@
 #include "mevent.h"
 #include "date.h"
 #include "logging.h"
+#include "room.h"
 #include "utils.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -13,6 +14,7 @@ typedef struct EventStruct {
   unsigned int id;
   EventType type;
   char *name;
+  Room assigned_room;
   Date start_date;
   Date end_date;
 } Event_t;
@@ -31,6 +33,7 @@ Event new_event(EventType type, const char *name, Date start_date,
   new_event->name = my_strdup(name);
   new_event->type = type;
   new_event->id = event_id_counter;
+  new_event->assigned_room = NULL_ROOM;
   event_id_counter += 1;
   return new_event;
 }
@@ -88,6 +91,17 @@ EventType get_type_event(ConstEvent event) {
     return -1;
   }
   return event->type;
+}
+int set_event_room(Event event, Room room) {
+  if (event == NULL_EVENT) {
+    log_error("Passato puntatore NULL alla funzione 'set_event_start_date'.");
+    return -1;
+  }
+  if (event->assigned_room != NULL_ROOM) {
+    room_remove_event(event->assigned_room, event);
+  }
+  event->assigned_room = room;
+  return 0;
 }
 
 int set_event_start_date(Event event, Date start_date) {
@@ -154,6 +168,11 @@ void print_event(ConstEvent event) {
   printf(FORMAT_EVENT, event->id, event->name,
          stringhe_type_event[event->type]);
   puts("");
+  if (event->assigned_room != NULL_ROOM) {
+    printf("Sala: ");
+    print_room(event->assigned_room);
+    puts("");
+  }
   printf("Data inizio: ");
   print_date(event->start_date);
   puts("");

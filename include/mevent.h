@@ -19,6 +19,12 @@ int set_event_type(Event event, EventType type);
 int set_event_start_date(Event event, Date start_date);
 int set_event_end_date(Event event, Date end_date);
 int set_event_name(Event event, const char *name);
+
+// TODO
+// This sucks
+typedef struct RoomStruct *Room;
+int set_event_room(Event event, Room room);
+
 int cmp_event(ConstEvent event_a, ConstEvent event_b);
 EventType get_type_event(ConstEvent event);
 ConstDate get_event_start_date(ConstEvent event);

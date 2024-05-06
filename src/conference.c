@@ -1,5 +1,6 @@
 #include "conference.h"
 #include "event_bst.h"
+#include "mevent.h"
 #include "room.h"
 #include "room_list.h"
 #include "utils.h"
@@ -212,6 +213,48 @@ int display_conference_schedule(ConstConference conf) {
 }
 int display_conference_rooms(ConstConference conf) {
   print_room_list(conf->rooms);
+  return 0;
+}
+
+int conference_assign_event_to_room(Conference conf) {
+  int res = conference_select_event(
+      conf, "Inserisci l'id dell'evento da assegnare [inserire un numero "
+            "negativo "
+            "per annullare l'operazione]: ");
+  if (res < 0) {
+    return 1; // Action aborted by the user
+  }
+  Event to_assign = bst_remove_event_by_id(conf->bst, res);
+  if (to_assign == NULL_EVENT) {
+    printf("Qualcosa è andato storto durante la ricerca dell'evento\n");
+    return -1;
+  }
+  print_room_list(conf->rooms);
+  // TODO
+  // check that the sale number is valid
+  printf("Inserisci numero sala: ");
+  ResultInt res_room = read_int();
+  if (res_room.error_code) {
+    printf("Qualcosa è andato storto\n");
+    return -2;
+  }
+  int pos = res_room.value - 1;
+
+  Room room = get_at_room_list(conf->rooms, pos);
+  if (room == NULL_ROOM) {
+    printf("Qualcosa è andato storto durante la ricerca della sala\n");
+    return -3;
+  }
+  if (room_assign_event(room, to_assign)) {
+    printf("La sala è già occupata\n");
+    return 2;
+  }
+
+  set_event_room(to_assign, room);
+  bst_insert_event(conf->bst, to_assign);
+  // TODO
+  // Make this better by not removing the event
+
   return 0;
 }
 

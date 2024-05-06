@@ -15,6 +15,7 @@ int remove_conference_event(Conference conf);
 int display_conference_schedule(ConstConference conf);
 int display_conference_rooms(ConstConference conf);
 int add_conference_room(Conference conf);
+int conference_assign_event_to_room(Conference conf);
 
 void free_conference(Conference conf);
 
