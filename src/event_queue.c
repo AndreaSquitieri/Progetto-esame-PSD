@@ -1,4 +1,5 @@
 #include "event_queue.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,7 +22,7 @@ static int resize_buffer(EventQueue queue, size_t new_size) {
   if (new_size < queue->capacity) {
     return -1;
   }
-  Event *new_buffer = calloc(new_size, sizeof(Event));
+  Event *new_buffer = my_alloc(new_size, sizeof(Event));
   if (new_buffer == NULL) {
     return -2;
   }
@@ -40,12 +41,12 @@ static int resize_buffer(EventQueue queue, size_t new_size) {
 }
 
 EventQueue new_event_queue(void) {
-  EventQueue queue = calloc(1, sizeof(*queue));
+  EventQueue queue = my_alloc(1, sizeof(*queue));
 
   if (queue == NULL) {
     return NULL;
   }
-  queue->vet = calloc(INIT_QUEUE_CAPACITY, sizeof(Event));
+  queue->vet = my_alloc(INIT_QUEUE_CAPACITY, sizeof(Event));
 
   if (queue->vet == NULL) {
     free(queue);

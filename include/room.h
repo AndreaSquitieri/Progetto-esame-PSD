@@ -9,6 +9,9 @@
 typedef struct RoomStruct *Room;
 
 Room new_room(const char *name);
+
+bool is_room_equal(Room room_a, Room room_b);
+
 const char *get_room_name(Room room);
 int room_assign_event(Room room, Event event);
 

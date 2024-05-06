@@ -1,6 +1,6 @@
 #include "conference.h"
 #include "event_bst.h"
-#include "event_list.h"
+#include "room_list.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +9,7 @@
 
 struct ConferenceStruct {
   EventBst bst;
+  RoomList rooms;
 };
 
 Conference new_conference(void) {
@@ -16,12 +17,11 @@ Conference new_conference(void) {
   if (bst == NULL_EVENT_BST) {
     return NULL_CONFERENCE;
   }
-  EventList list = new_event_list();
-  Conference conf = calloc(1, sizeof(*conf));
-  if (conf == NULL) {
-    free_event_bst(bst);
+  RoomList room_list = new_room_list();
+  if (room_list == NULL_ROOM_LIST) {
     return NULL_CONFERENCE;
   }
+  Conference conf = my_alloc(1, sizeof(*conf));
   conf->bst = bst;
   return conf;
 }

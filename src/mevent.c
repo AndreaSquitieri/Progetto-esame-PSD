@@ -25,20 +25,10 @@ Event new_event(EventType type, const char *name, Date start_date,
   if (start_date == NULL_DATE) {
     return NULL_EVENT;
   }
-  Event new_event = calloc(1, sizeof(*new_event));
-  if (new_event == NULL) {
-    log_error("Allocazione oggetto 'event' fallita.");
-    return NULL_EVENT;
-  }
+  Event new_event = my_alloc(1, sizeof(*new_event));
   new_event->start_date = start_date;
   new_event->end_date = end_date;
-  new_event->name = strdup(name);
-  if (new_event->name == NULL) {
-    log_error("Allocazione oggetto 'new_event->name' fallita.");
-    free_date(new_event->start_date);
-    free(new_event);
-    return NULL_EVENT;
-  }
+  new_event->name = my_strdup(name);
   new_event->type = type;
   new_event->id = event_id_counter;
   event_id_counter += 1;

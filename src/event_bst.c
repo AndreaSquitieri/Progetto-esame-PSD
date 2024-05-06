@@ -1,6 +1,7 @@
 #include "event_bst.h"
 #include "logging.h"
 #include "mevent.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,10 +21,7 @@ struct EventBstStruct {
 };
 
 EventBst new_event_bst(void) {
-  EventBst bst = calloc(1, sizeof(*bst));
-  if (bst == NULL) {
-    return NULL_EVENT_BST;
-  }
+  EventBst bst = my_alloc(1, sizeof(*bst));
   bst->root = NULL;
   bst->size = 0;
   return bst;
@@ -34,11 +32,7 @@ int bst_insert_event(EventBst bst, Event event) {
     log_error("Bst is NULL in 'bst_insert_event'");
     return -1;
   }
-  EventBstNode to_insert = calloc(1, sizeof(*to_insert));
-  if (to_insert == NULL) {
-    log_error("Failed to create 'to_insert' in function 'bst_insert_event'");
-    return -1;
-  }
+  EventBstNode to_insert = my_alloc(1, sizeof(*to_insert));
   to_insert->value = event;
   EventBstNode parent = NULL;
   EventBstNode temp = bst->root;

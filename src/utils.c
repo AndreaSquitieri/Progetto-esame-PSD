@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "logging.h"
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,9 +52,9 @@ ResultInt read_int(void) {
 }
 
 void *my_alloc(unsigned long nmemb, unsigned long size) {
-  void *p = malloc(nmemb * size);
+  void *p = calloc(nmemb, size);
   if (p == NULL) {
-    printf("Allocazione fallita\n");
+    log_error("Allocazione fallita\n");
     exit(EXIT_FAILURE);
   }
   return p;
@@ -62,7 +63,16 @@ void *my_alloc(unsigned long nmemb, unsigned long size) {
 void *my_realloc(void *p, unsigned long nmemb, unsigned long size) {
   void *temp = realloc(p, nmemb * size);
   if (temp == NULL) {
-    printf("Allocazione fallita\n");
+    log_error("Allocazione fallita\n");
+    exit(EXIT_FAILURE);
+  }
+  return temp;
+}
+
+char *my_strdup(const char *stringa) {
+  char *temp = strdup(stringa);
+  if (temp == NULL) {
+    log_error("Allocazione fallita\n");
     exit(EXIT_FAILURE);
   }
   return temp;

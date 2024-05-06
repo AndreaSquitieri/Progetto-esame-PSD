@@ -44,11 +44,7 @@ static const char *get_month_name(ConstDate date) {
 
 Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
               unsigned char month, unsigned short year) {
-  Date date = malloc(sizeof(*date));
-  if (date == NULL) {
-    log_error("Allocazione oggetto 'Date' fallita.");
-    return NULL_DATE;
-  }
+  Date date = my_alloc(1, sizeof(*date));
   date->minutes = minutes;
   date->hour = hour;
   date->day = day;

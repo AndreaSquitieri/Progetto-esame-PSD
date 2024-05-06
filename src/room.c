@@ -1,5 +1,7 @@
 #include "room.h"
 #include "event_list.h"
+#include "utils.h"
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -9,26 +11,14 @@ struct RoomStruct {
 };
 
 Room new_room(const char *name) {
-  Room room = malloc(sizeof(*room));
-  if (room == NULL) {
-    return NULL_ROOM;
-  }
-
-  room->name = strdup(name);
-  if (room->name == NULL) {
-    free(room);
-    return NULL_ROOM;
-  }
-
+  Room room = my_alloc(1, sizeof(*room));
+  room->name = my_strdup(name);
   room->booked_events = new_event_list();
-  if (room->booked_events == NULL) {
-    free(room->name);
-    free(room);
-    return NULL_ROOM;
-  }
 
   return room;
 }
+
+bool is_room_equal(Room room_a, Room room_b) { return room_a == room_b; }
 
 const char *get_room_name(Room room) { return room->name; }
 
@@ -66,6 +56,5 @@ void free_room(Room room) {
   // I think that this should be good enough
   // But keep in mind that it isn't freeing the events stored
   free(room->booked_events);
-
   free(room);
 }
