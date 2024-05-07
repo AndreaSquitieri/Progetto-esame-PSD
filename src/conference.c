@@ -227,6 +227,9 @@ static bool are_events_compatible(Event event, va_list args) {
 }
 
 int conference_assign_event_to_room(Conference conf) {
+  // TODO
+  // I should copy the room, not pass a reference
+  // I should also free the memory occupied by the room
   int res = conference_select_event(
       conf, "Inserisci l'id dell'evento da assegnare [inserire un numero "
             "negativo "
