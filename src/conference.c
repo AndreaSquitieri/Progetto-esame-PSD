@@ -227,31 +227,27 @@ static bool are_events_compatible(Event event, va_list args) {
 }
 
 int conference_assign_event_to_room(Conference conf) {
-  // TODO
-  // I should copy the room, not pass a reference
-  // I should also free the memory occupied by the room
-  int res = conference_select_event(
-      conf, "Inserisci l'id dell'evento da assegnare [inserire un numero "
-            "negativo "
-            "per annullare l'operazione]: ");
-  if (res < 0) {
-    return 1; // Action aborted by the user
-  }
-  Event to_assign = bst_get_event_by_id(conf->bst, res);
-  if (to_assign == NULL_EVENT) {
-    printf("Qualcosa è andato storto durante la ricerca dell'evento\n");
-    return -1;
-  }
+  int res = 0;
+  Event to_assign = NULL_EVENT;
+  do {
+    to_assign = bst_get_event_by_id(conf->bst, res);
+  } while (to_assign == NULL_EVENT &&
+           printf("Qualcosa è andato storto durante la ricerca dell'evento\n"));
+
   print_room_list(conf->rooms);
-  // TODO
-  // check that the sale number is valid
-  printf("Inserisci numero sala: ");
-  ResultInt res_room = read_int();
-  if (res_room.error_code) {
-    printf("Qualcosa è andato storto\n");
-    return -2;
-  }
-  int pos = res_room.value - 1;
+
+  int pos = 0;
+  do {
+    printf("Inserisci numero sala: ");
+    ResultInt res_room = read_int();
+    if (res_room.error_code) {
+      printf("Qualcosa è andato storto\n");
+      return -2;
+    }
+    pos = res_room.value - 1;
+
+  } while ((pos < 0 || pos >= get_size_room_list(conf->rooms)) &&
+           printf("Numero sala inseriro non valido\n"));
 
   Room room = get_at_room_list(conf->rooms, pos);
   if (room == NULL_ROOM) {
@@ -263,7 +259,7 @@ int conference_assign_event_to_room(Conference conf) {
     return 1;
   }
 
-  set_event_room(to_assign, room);
+  set_event_room(to_assign, copy_room(room));
   printf("Sala assegnata con successo\n");
 
   return 0;

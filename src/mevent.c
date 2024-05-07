@@ -19,6 +19,10 @@ typedef struct EventStruct {
   Date end_date;
 } Event_t;
 
+void init_event_id_counter(unsigned int id) { event_id_counter = id; }
+
+unsigned int get_event_id_counter(void) { return event_id_counter; }
+
 Event new_event(EventType type, const char *name, Date start_date,
                 Date end_date) {
   if (name == NULL) {
@@ -32,9 +36,11 @@ Event new_event(EventType type, const char *name, Date start_date,
   new_event->end_date = end_date;
   new_event->name = my_strdup(name);
   new_event->type = type;
-  new_event->id = event_id_counter;
   new_event->assigned_room = NULL_ROOM;
+
+  new_event->id = event_id_counter;
   event_id_counter += 1;
+
   return new_event;
 }
 
@@ -60,8 +66,15 @@ Event copy_event(ConstEvent event) {
   if (event == NULL_EVENT) {
     return NULL_EVENT;
   }
-  return new_event(event->type, event->name, copy_date(event->start_date),
-                   copy_date(event->end_date));
+  Event new_event = my_alloc(1, sizeof(*new_event));
+  new_event->start_date = copy_date(event->start_date);
+  new_event->end_date = copy_date(event->end_date);
+  new_event->name = my_strdup(event->name);
+  new_event->type = event->type;
+  new_event->assigned_room = copy_room(event->assigned_room);
+
+  new_event->id = event->id;
+  return new_event;
 }
 
 unsigned int get_event_id(ConstEvent event) { return event->id; }
@@ -103,6 +116,9 @@ int set_event_room(Event event, Room room) {
   if (event == NULL_EVENT) {
     log_error("Passato puntatore NULL alla funzione 'set_event_start_date'.");
     return -1;
+  }
+  if (event->assigned_room != NULL_ROOM) {
+    free_room(event->assigned_room);
   }
   event->assigned_room = room;
   return 0;
@@ -249,5 +265,8 @@ void free_event(Event event) {
   free_date(event->start_date);
   free_date(event->end_date);
   free(event->name);
+  if (event->assigned_room != NULL_ROOM) {
+    free_room(event->assigned_room);
+  }
   free(event);
 }
