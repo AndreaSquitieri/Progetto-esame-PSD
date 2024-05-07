@@ -92,13 +92,17 @@ EventType get_type_event(ConstEvent event) {
   }
   return event->type;
 }
+ConstRoom get_event_room(ConstEvent event) {
+  if (event == NULL_EVENT) {
+    return NULL;
+  }
+  return event->assigned_room;
+}
+
 int set_event_room(Event event, Room room) {
   if (event == NULL_EVENT) {
     log_error("Passato puntatore NULL alla funzione 'set_event_start_date'.");
     return -1;
-  }
-  if (event->assigned_room != NULL_ROOM) {
-    room_remove_event(event->assigned_room, event);
   }
   event->assigned_room = room;
   return 0;

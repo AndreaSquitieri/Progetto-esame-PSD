@@ -2,6 +2,8 @@
 #include "logging.h"
 #include "mevent.h"
 #include "utils.h"
+#include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -179,6 +181,13 @@ Event bst_remove_event(EventBst bst, ConstEvent event) {
   EventBstNode to_delete = bst_search_event(bst, event);
   return bst_remove_node(bst, to_delete);
 }
+Event bst_get_event_by_id(EventBst bst, unsigned int id) {
+  EventBstNode to_delete = bst_search_event_by_id(bst, id);
+  if (to_delete == NULL) {
+    return NULL_EVENT;
+  }
+  return to_delete->value;
+}
 
 Event bst_remove_event_by_id(EventBst bst, unsigned int id) {
   EventBstNode to_delete = bst_search_event_by_id(bst, id);
@@ -210,6 +219,44 @@ static void free_event_bst_nodes(EventBstNode node) {
 
   free_event(node->value);
   free(node);
+}
+
+static bool for_all_nodes(EventBstNode node, EventPredicate predicate,
+                          va_list args) {
+  if (node == NULL) {
+    return true; // Base case: an empty subtree satisfies the condition
+  }
+
+  // Check the current node's value
+  va_list args_copy;
+  va_copy(args_copy, args);
+  bool result = predicate(node->value, args_copy);
+
+  if (!result) {
+    return false; // If the predicate fails for this node's value, return false
+  }
+
+  // Recursively check left and right subtrees
+  return for_all_nodes(node->left, predicate, args) &&
+         for_all_nodes(node->right, predicate, args);
+}
+
+bool bst_for_all(EventBst bst, EventPredicate predicate, ...) {
+  if (bst == NULL_EVENT_BST || bst->root == NULL) {
+    return false; // Handle edge cases where the tree is empty
+  }
+
+  // Initialize variable arguments
+  va_list args;
+  va_start(args, predicate);
+
+  // Call the recursive function starting from the root node
+  bool result = for_all_nodes(bst->root, predicate, args);
+
+  // Clean up variable arguments
+  va_end(args);
+
+  return result;
 }
 
 void free_event_bst(EventBst bst) {

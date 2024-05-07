@@ -4,6 +4,7 @@
 #include "room.h"
 #include "room_list.h"
 #include "utils.h"
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -216,6 +217,15 @@ int display_conference_rooms(ConstConference conf) {
   return 0;
 }
 
+static bool are_events_compatible(Event event, va_list args) {
+  Event second_event = va_arg(args, Event);
+  Room room = va_arg(args, Room);
+  if (!is_room_equal(room, get_event_room(second_event))) {
+    return true;
+  }
+  return !do_events_overlap(event, second_event);
+}
+
 int conference_assign_event_to_room(Conference conf) {
   int res = conference_select_event(
       conf, "Inserisci l'id dell'evento da assegnare [inserire un numero "
@@ -224,7 +234,7 @@ int conference_assign_event_to_room(Conference conf) {
   if (res < 0) {
     return 1; // Action aborted by the user
   }
-  Event to_assign = bst_remove_event_by_id(conf->bst, res);
+  Event to_assign = bst_get_event_by_id(conf->bst, res);
   if (to_assign == NULL_EVENT) {
     printf("Qualcosa è andato storto durante la ricerca dell'evento\n");
     return -1;
@@ -245,15 +255,13 @@ int conference_assign_event_to_room(Conference conf) {
     printf("Qualcosa è andato storto durante la ricerca della sala\n");
     return -3;
   }
-  if (room_assign_event(room, to_assign)) {
-    printf("La sala è già occupata\n");
-    return 2;
+  if (!bst_for_all(conf->bst, are_events_compatible, to_assign, room)) {
+    printf("Non è possible assegnare la sala all'evento\n");
+    return 1;
   }
 
   set_event_room(to_assign, room);
-  bst_insert_event(conf->bst, to_assign);
-  // TODO
-  // Make this better by not removing the event
+  printf("Sala assegnata con successo\n");
 
   return 0;
 }

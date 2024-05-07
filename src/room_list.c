@@ -68,7 +68,9 @@ Room get_at_room_list(RoomList list, int pos) {
 
 void print_room_list(RoomList list) {
   for (int i = 0; i < list->size; i++) {
-    printf("[Sala %d]\n", i + 1);
+    printf("[Sala %d]\n"
+           "Nome: ",
+           i + 1);
     print_room(list->array[i]);
     puts("");
   }
