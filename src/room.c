@@ -34,7 +34,10 @@ Room copy_room(ConstRoom room) {
 }
 
 bool is_room_equal(ConstRoom room_a, ConstRoom room_b) {
-  return room_a == room_b;
+  if (room_a == room_b) {
+    return true;
+  }
+  return room_a != NULL_ROOM && room_b != NULL_ROOM && room_a->id == room_b->id;
 }
 
 Room read_room(void) {

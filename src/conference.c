@@ -220,7 +220,10 @@ int display_conference_rooms(ConstConference conf) {
 static bool are_events_compatible(Event event, va_list args) {
   Event second_event = va_arg(args, Event);
   Room room = va_arg(args, Room);
-  if (!is_room_equal(room, get_event_room(second_event))) {
+  if (is_event_equal(event, second_event)) {
+    return true;
+  }
+  if (!is_room_equal(room, get_event_room(event))) {
     return true;
   }
   return !do_events_overlap(event, second_event);
@@ -230,12 +233,18 @@ int conference_assign_event_to_room(Conference conf) {
   int res = 0;
   Event to_assign = NULL_EVENT;
   do {
+
+    res = conference_select_event(
+        conf, "Inserisci l'id dell'evento da assegnare [inserire un numero "
+              "negativo "
+              "per annullare l'operazione]: ");
+    if (res < 0) {
+      return 1; // Action aborted by the user
+    }
     to_assign = bst_get_event_by_id(conf->bst, res);
   } while (to_assign == NULL_EVENT &&
            printf("Qualcosa è andato storto durante la ricerca dell'evento\n"));
-
   print_room_list(conf->rooms);
-
   int pos = 0;
   do {
     printf("Inserisci numero sala: ");
@@ -256,7 +265,7 @@ int conference_assign_event_to_room(Conference conf) {
   }
   if (!bst_for_all(conf->bst, are_events_compatible, to_assign, room)) {
     printf("Non è possible assegnare la sala all'evento\n");
-    return 1;
+    return 2;
   }
 
   set_event_room(to_assign, copy_room(room));
