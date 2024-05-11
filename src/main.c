@@ -39,8 +39,13 @@ int read_menu_choice(void) {
   return res.value;
 }
 
-int main(void) {
-  FILE *conf_file = fopen("conf.txt", "r");
+int main(int argc, char **argv) {
+  char *filename = "conf.txt";
+  if (argc > 1) {
+    filename = argv[1];
+  }
+
+  FILE *conf_file = fopen(filename, "r");
   Conference conf = NULL_CONFERENCE;
   if (conf_file == NULL) {
     conf = new_conference();
@@ -95,9 +100,9 @@ int main(void) {
     }
   } while (choice != EXIT);
 
-  conf_file = fopen("conf.txt", "w");
+  conf_file = fopen(filename, "w");
   if (conf_file == NULL) {
-    log_error("Impossibile aprire il file conf.txt");
+    log_error("Impossibile aprire il file in scrittura");
     return -2;
   }
   save_conference_to_file(conf, conf_file);
