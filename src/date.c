@@ -3,6 +3,9 @@
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+#define MINUTES_IN_HOUR 60
+#define HOURS_IN_DAY 24
 #define MONTHS 12
 #define MONTH_DAYS_INITIALIZER                                                 \
   { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
@@ -12,6 +15,7 @@
     "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",    \
         "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"               \
   }
+
 typedef enum {
   JANUARY = 1,
   FEBRUARY,
@@ -42,6 +46,39 @@ static const char *get_month_name(ConstDate date) {
   return month_names[date->month - 1];
 }
 
+static int is_leap(ConstDate date) {
+  if (date == NULL_DATE) {
+    log_error("L'oggetto 'date' passato come parametro alla funzione 'is_leap' "
+              "non risulta allocato");
+    return -1;
+  }
+
+  return ((date->year % 4) == 0 && (date->year % 100) != 0) ||
+         (date->year % 400) == 0;
+}
+
+static int is_valid_date(ConstDate date) {
+  if (date == NULL_DATE) {
+    log_error(
+        "L'oggetto 'date' passato come parametro alla funzione 'is_valid_date' "
+        "non risulta allocato");
+    return -1;
+  }
+  if (date->minutes >= MINUTES_IN_HOUR) {
+    return 0;
+  }
+  if (date->hour >= HOURS_IN_DAY) {
+    return 0;
+  }
+  if (date->day == 0 || date->month == 0) {
+    return 0;
+  }
+  if (is_leap(date) && date->month == FEBRUARY) {
+    return date->day <= (months[date->month - 1] + 1);
+  }
+  return date->month <= MONTHS && date->day <= months[date->month - 1];
+}
+
 Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
               unsigned char month, unsigned short year) {
   Date date = my_alloc(1, sizeof(*date));
@@ -70,6 +107,15 @@ static inline int cmp_date_component(unsigned int a, unsigned int b) {
 }
 
 int cmp_date(ConstDate date_a, ConstDate date_b) {
+  if (date_a == NULL_DATE && date_b == NULL_DATE) {
+    return 0;
+  }
+  if (date_a == NULL_DATE) {
+    return -1;
+  }
+  if (date_b == NULL_DATE) {
+    return 1;
+  }
   // Compare 'year'
   int result = cmp_date_component(date_a->year, date_b->year);
   if (result != 0) {
@@ -130,49 +176,6 @@ Date copy_date(ConstDate date) {
                   date->year);
 }
 
-static void internal_copy(Date dest, ConstDate src) {
-  dest->minutes = src->minutes;
-  dest->hour = src->hour;
-  dest->day = src->day;
-  dest->month = src->month;
-  dest->year = src->year;
-}
-
-#define LEAP_CHECK(A) (((A) % 4) == 0 && ((A) % 100) != 0) || ((A) % 400) == 0
-int is_leap(ConstDate date) {
-  if (date == NULL_DATE) {
-    log_error("L'oggetto 'date' passato come parametro alla funzione 'is_leap' "
-              "non risulta allocato");
-    return -1;
-  }
-
-  return LEAP_CHECK(date->year);
-}
-
-#define MINUTES_IN_HOUR 60
-#define HOURS_IN_DAY 24
-int is_valid_date(ConstDate date) {
-  if (date == NULL_DATE) {
-    log_error(
-        "L'oggetto 'date' passato come parametro alla funzione 'is_valid_date' "
-        "non risulta allocato");
-    return -1;
-  }
-  if (date->minutes >= MINUTES_IN_HOUR) {
-    return 0;
-  }
-  if (date->hour >= HOURS_IN_DAY) {
-    return 0;
-  }
-  if (date->day == 0 || date->month == 0) {
-    return 0;
-  }
-  if (is_leap(date) && date->month == FEBRUARY) {
-    return date->day <= (months[date->month - 1] + 1);
-  }
-  return date->month <= MONTHS && date->day <= months[date->month - 1];
-}
-
 int get_hour(ConstDate date) {
   if (date == NULL_DATE) {
     log_error("Passato puntatore NULL alla funzione 'get_hour'.");
@@ -217,14 +220,18 @@ void free_date(Date date) { free(date); }
 
 // Function to save a date to a file
 void save_date_to_file(ConstDate date, FILE *file) {
+  if (date == NULL_DATE) {
+    perror("Date is NULL");
+    return;
+  }
   if (file == NULL) {
     perror("File pointer is NULL");
     return;
   }
 
   // Write date components to the file
-  fprintf(file, "%d %d %d %d %d\n", date->day, date->month, date->year,
-          date->hour, date->minutes);
+  fprintf(file, "%d %d %d %d %d\n", date->minutes, date->hour, date->day,
+          date->month, date->year);
 }
 
 // Function to read a date from a file
@@ -234,10 +241,14 @@ Date read_date_from_file(FILE *file) {
     return NULL_DATE;
   }
 
-  int day, month, year, hour, minutes;
+  int day = 0;
+  int month = 0;
+  int year = 0;
+  int hour = 0;
+  int minutes = 0;
 
   // Read date components from the file
-  if (fscanf(file, "%d %d %d %d %d", &day, &month, &year, &hour, &minutes) !=
+  if (fscanf(file, "%d %d %d %d %d", &minutes, &hour, &day, &month, &year) !=
       5) {
     clean_file(file);
     return NULL_DATE;

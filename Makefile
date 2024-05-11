@@ -1,34 +1,30 @@
-##
-# Progetto esame PSD, Prima traccia
-#
-# @file
-# @version 0.1
-
 CC = gcc
 CFLAGS = -Wall -Wextra -I./include
-LDFLAGS = -L./lib
+LDFLAGS = -Llib
 
-SRC_DIR = src
-OBJ_DIR = build
-BIN_DIR = bin
+SRCDIR = src
+INCDIR = include
+TESTDIR = tests
+BINDIR = bin
+LIBDIR = lib
 
-SOURCES = $(wildcard $(SRC_DIR)/*.c)
-OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-TARGET = $(BIN_DIR)/progetto-psd
+SRCS = $(wildcard $(SRCDIR)/*.c)
+OBJS = $(SRCS:.c=.o)
 
-all:	$(TARGET)
+TEST_SRCS = $(wildcard $(TESTDIR)/date_test/*.c)
+TEST_OBJS = $(TEST_SRCS:.c=.o)
 
-$(TARGET):	$(OBJECTS)
-	mkdir -p $(BIN_DIR)
-	$(CC) $(LDFLAGS) $^ -o $@
+.PHONY: all clean
 
-$(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
-	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+all: $(BINDIR)/program
+
+$(BINDIR)/program: $(OBJS) | $(BINDIR)
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
+
+
+$(BINDIR):
+	mkdir -p $(BINDIR)
+
 
 clean:
-	rm -f $(OBJ_DIR)/*.o $(TARGET)
-
-.PHONY:	all clean
-
-# end
+	rm -rf $(OBJS) $(TEST_OBJS) $(BINDIR)/program
