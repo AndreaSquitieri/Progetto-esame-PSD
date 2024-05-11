@@ -16,8 +16,8 @@ typedef struct {
   "[3]: Panel di discussione\n"                                                \
   "Seleziona tipologia evento (1, 2 o 3): "
 
-Event read_event(void);
-
+void clean_file(FILE *file);
+int read_line_from_file(char *line, int size, FILE *file);
 __attribute_warn_unused_result__ int read_line(char *line, int size);
 ResultInt read_int(void);
 void *my_alloc(unsigned long nmemb, unsigned long size);

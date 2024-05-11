@@ -1,4 +1,5 @@
 #include "event_queue.h"
+#include "room_list.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -133,12 +134,13 @@ Event remove_event_at(EventQueue queue, size_t index) {
 }
 
 #define SEPARATOR "\n\n"
-void print_event_queue(ConstEventQueue queue) {
+void print_event_queue(ConstEventQueue queue, RoomList room_list) {
   if (queue == NULL || queue->size == 0) {
     return;
   }
   for (size_t i = 0; i < queue->size; i++) {
-    print_event(AT(queue, 0));
+    print_event(AT(queue, i),
+                get_room_by_id(room_list, get_event_room_id(AT(queue, i))));
     printf(SEPARATOR);
   }
 }

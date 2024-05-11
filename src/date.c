@@ -214,3 +214,40 @@ int get_year(ConstDate date) {
 }
 
 void free_date(Date date) { free(date); }
+
+// Function to save a date to a file
+void save_date_to_file(ConstDate date, FILE *file) {
+  if (file == NULL) {
+    perror("File pointer is NULL");
+    return;
+  }
+
+  // Write date components to the file
+  fprintf(file, "%d %d %d %d %d\n", date->day, date->month, date->year,
+          date->hour, date->minutes);
+}
+
+// Function to read a date from a file
+Date read_date_from_file(FILE *file) {
+  if (file == NULL) {
+    perror("File pointer is NULL");
+    return NULL_DATE;
+  }
+
+  int day, month, year, hour, minutes;
+
+  // Read date components from the file
+  if (fscanf(file, "%d %d %d %d %d", &day, &month, &year, &hour, &minutes) !=
+      5) {
+    clean_file(file);
+    return NULL_DATE;
+  }
+  clean_file(file);
+
+  // Create a new date object with the read components
+  Date date =
+      new_date((unsigned char)minutes, (unsigned char)hour, (unsigned char)day,
+               (unsigned char)month, (unsigned short)year);
+
+  return date;
+}

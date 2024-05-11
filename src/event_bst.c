@@ -195,17 +195,20 @@ Event bst_remove_event_by_id(EventBst bst, unsigned int id) {
 }
 
 #define SEPARATOR "\n\n"
-static void print_event_bst_nodes(EventBstNode node) {
+static void print_event_bst_nodes(EventBstNode node, RoomList room_list) {
   if (node == NULL) {
     return;
   }
-  print_event_bst_nodes(node->left);
-  print_event(node->value);
+  print_event_bst_nodes(node->left, room_list);
+  print_event(node->value,
+              get_room_by_id(room_list, get_event_room_id(node->value)));
   printf(SEPARATOR);
-  print_event_bst_nodes(node->right);
+  print_event_bst_nodes(node->right, room_list);
 }
 
-void print_event_bst(ConstEventBst bst) { print_event_bst_nodes(bst->root); }
+void print_event_bst(ConstEventBst bst, ConstRoomList room_list) {
+  print_event_bst_nodes(bst->root, room_list);
+}
 
 size_t get_bst_size(ConstEventBst bst) { return bst->size; }
 
@@ -265,4 +268,63 @@ void free_event_bst(EventBst bst) {
   }
   free_event_bst_nodes(bst->root);
   free(bst);
+}
+
+// Helper function to recursively save event BST nodes to a file
+static void save_event_bst_nodes(EventBstNode node, FILE *file) {
+  if (node == NULL) {
+    return;
+  }
+
+  // Save current node's event to the file
+  save_event_to_file(node->value, file);
+
+  // TODO
+  // Add spacing between events
+  // fprintf(file, "\n"); // Add a newline between events
+
+  // Recursively save left and right subtrees
+  save_event_bst_nodes(node->left, file);
+  save_event_bst_nodes(node->right, file);
+}
+
+// Function to save an event BST to a file
+void save_event_bst_to_file(ConstEventBst bst, FILE *file) {
+  if (file == NULL) {
+    perror("File pointer is NULL");
+    return;
+  }
+
+  fprintf(file, "%zu\n", bst->size);
+  // Traverse the BST and save each event to the file
+  save_event_bst_nodes(bst->root, file);
+}
+
+// Function to read an event BST from a file
+EventBst read_event_bst_from_file(FILE *file) {
+  if (file == NULL) {
+    perror("File pointer is NULL");
+    return NULL_EVENT_BST;
+  }
+
+  size_t size = 0;
+  if (fscanf(file, "%zu\n", &size) != 1) {
+    perror("Error reading BST size");
+    return NULL_EVENT_BST;
+  }
+
+  EventBst bst = new_event_bst(); // Create a new empty BST
+
+  // Read event data from the file and insert into the BST
+  for (size_t i = 0; i < size; i++) {
+    Event event = read_event_from_file(file);
+    if (event == NULL_EVENT) {
+      perror("Error reading event data");
+      free_event_bst(bst);
+      return NULL_EVENT_BST;
+    }
+    bst_insert_event(bst, event);
+  }
+
+  return bst;
 }

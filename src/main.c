@@ -40,7 +40,17 @@ int read_menu_choice(void) {
 }
 
 int main(void) {
-  Conference conf = new_conference();
+  FILE *conf_file = fopen("conf.txt", "r");
+  Conference conf = NULL_CONFERENCE;
+  if (conf_file == NULL) {
+    conf = new_conference();
+  } else {
+    conf = read_conference_from_file(conf_file);
+    (void)fclose(conf_file);
+  }
+  if (conf == NULL_CONFERENCE) {
+    conf = new_conference();
+  }
   if (conf == NULL_CONFERENCE) {
     log_error("Creazione della conferenza fallita");
     return -1;
@@ -84,6 +94,15 @@ int main(void) {
       break;
     }
   } while (choice != EXIT);
+
+  conf_file = fopen("conf.txt", "w");
+  if (conf_file == NULL) {
+    log_error("Impossibile aprire il file conf.txt");
+    return -2;
+  }
+  save_conference_to_file(conf, conf_file);
+  (void)fclose(conf_file);
+
   free_conference(conf);
   return 0;
 }

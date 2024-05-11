@@ -8,23 +8,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-static unsigned int event_id_counter = 0;
-
 typedef struct EventStruct {
   unsigned int id;
   EventType type;
   char *name;
-  Room assigned_room;
+  unsigned int assigned_room_id;
   Date start_date;
   Date end_date;
 } Event_t;
 
-void init_event_id_counter(unsigned int id) { event_id_counter = id; }
-
-unsigned int get_event_id_counter(void) { return event_id_counter; }
-
 Event new_event(EventType type, const char *name, Date start_date,
-                Date end_date) {
+                Date end_date, unsigned int id) {
   if (name == NULL) {
     return NULL_EVENT;
   }
@@ -36,10 +30,9 @@ Event new_event(EventType type, const char *name, Date start_date,
   new_event->end_date = end_date;
   new_event->name = my_strdup(name);
   new_event->type = type;
-  new_event->assigned_room = NULL_ROOM;
+  new_event->assigned_room_id = NULL_ROOM_ID;
 
-  new_event->id = event_id_counter;
-  event_id_counter += 1;
+  new_event->id = id;
 
   return new_event;
 }
@@ -71,7 +64,7 @@ Event copy_event(ConstEvent event) {
   new_event->end_date = copy_date(event->end_date);
   new_event->name = my_strdup(event->name);
   new_event->type = event->type;
-  new_event->assigned_room = copy_room(event->assigned_room);
+  new_event->assigned_room_id = event->assigned_room_id;
 
   new_event->id = event->id;
   return new_event;
@@ -105,22 +98,19 @@ EventType get_type_event(ConstEvent event) {
   }
   return event->type;
 }
-ConstRoom get_event_room(ConstEvent event) {
+unsigned int get_event_room_id(ConstEvent event) {
   if (event == NULL_EVENT) {
-    return NULL;
+    return NULL_ROOM_ID;
   }
-  return event->assigned_room;
+  return event->assigned_room_id;
 }
 
-int set_event_room(Event event, Room room) {
+int set_event_room_id(Event event, unsigned int room_id) {
   if (event == NULL_EVENT) {
     log_error("Passato puntatore NULL alla funzione 'set_event_start_date'.");
     return -1;
   }
-  if (event->assigned_room != NULL_ROOM) {
-    free_room(event->assigned_room);
-  }
-  event->assigned_room = room;
+  event->assigned_room_id = room_id;
   return 0;
 }
 
@@ -184,13 +174,13 @@ static const char *const stringhe_type_event[] = {
   "Id: %u\n"                                                                   \
   "Evento: \"%s\"\n"                                                           \
   "Tipo: %s"
-void print_event(ConstEvent event) {
+void print_event(ConstEvent event, ConstRoom assigned_room) {
   printf(FORMAT_EVENT, event->id, event->name,
          stringhe_type_event[event->type]);
   puts("");
-  if (event->assigned_room != NULL_ROOM) {
+  if (assigned_room != NULL_ROOM) {
     printf("Sala: ");
-    print_room(event->assigned_room);
+    print_room(assigned_room);
     puts("");
   }
   printf("Data inizio: ");
@@ -202,7 +192,7 @@ void print_event(ConstEvent event) {
 
 #define MAXSIZE 102
 
-Event read_event(void) {
+Event read_event(unsigned int event_id) {
   // Read event name
   printf("Inserisci nome evento [Max 100 caratteri]: ");
   char name[MAXSIZE] = {0};
@@ -237,7 +227,7 @@ Event read_event(void) {
            printf("Data inserita non valida\n"));
 
   // Return event
-  Event event = new_event(type, name, start_date, end_date);
+  Event event = new_event(type, name, start_date, end_date, event_id);
   return event;
 }
 
@@ -265,8 +255,68 @@ void free_event(Event event) {
   free_date(event->start_date);
   free_date(event->end_date);
   free(event->name);
-  if (event->assigned_room != NULL_ROOM) {
-    free_room(event->assigned_room);
-  }
   free(event);
+}
+
+// Function to save an event to a file
+void save_event_to_file(ConstEvent event, FILE *file) {
+  if (file == NULL) {
+    perror("File pointer is NULL");
+    return;
+  }
+
+  // Write event data to the file
+  fprintf(file, "%u %u %u %s\n", event->id, event->type,
+          event->assigned_room_id, event->name);
+
+  // Save start date to file
+  save_date_to_file(event->start_date, file);
+
+  // Save end date to file
+  save_date_to_file(event->end_date, file);
+}
+
+// Function to read an event from a file
+Event read_event_from_file(FILE *file) {
+  if (file == NULL) {
+    perror("File pointer is NULL");
+    return NULL_EVENT;
+  }
+
+  unsigned int id = 0;
+  unsigned int type = 0;
+  unsigned int assigned_room_id = 0;
+  char name[MAXSIZE];
+
+  // Read event data from the file
+  if (fscanf(file, "%u %u %u", &id, &type, &assigned_room_id) != 3) {
+    clean_file(file);
+    return NULL_EVENT;
+  }
+  (void)fgetc(file);
+  read_line_from_file(name, MAXSIZE, file);
+
+  // Read start date from file
+  Date start_date = read_date_from_file(file);
+  if (start_date == NULL_DATE) {
+    return NULL_EVENT;
+  }
+
+  // Read end date from file
+  Date end_date = read_date_from_file(file);
+  if (end_date == NULL_DATE) {
+    free_date(start_date); // Free allocated memory before returning NULL_EVENT
+    return NULL_EVENT;
+  }
+
+  // Create a new event object with the read data
+  Event event = new_event(type, name, start_date, end_date, id);
+  if (event != NULL_EVENT) {
+    event->assigned_room_id = assigned_room_id;
+  } else {
+    free_date(start_date);
+    free_date(end_date);
+  }
+
+  return event;
 }

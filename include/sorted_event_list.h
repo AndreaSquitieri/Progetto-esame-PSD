@@ -2,6 +2,7 @@
 #define SORTED_EVENT_LIST_H_
 
 #include "mevent.h"
+#include "room_list.h"
 
 typedef struct SortedEventListStruct *SortedEventList;
 typedef const struct SortedEventListStruct *ConstSortedEventList;
@@ -139,6 +140,8 @@ Event get_at_sorted_event_list(SortedEventList sorted_list, int pos);
 int get_size_sorted_event_list(ConstSortedEventList sorted_list);
 
 /**
+ * TODO
+ * Cambiare specifica
  * @brief Stampa la lista di eventi ordinata.
  *
  * @param sorted_list La lista di eventi ordinata da stampare.
@@ -156,7 +159,8 @@ int get_size_sorted_event_list(ConstSortedEventList sorted_list);
  *   Postcondizioni:
  *     - La lista di eventi ordinata viene stampata.
  */
-void print_sorted_event_list(ConstSortedEventList sorted_list);
+void print_sorted_event_list(ConstSortedEventList sorted_list,
+                             RoomList room_list);
 
 /**
  * @brief Libera la memoria allocata per la lista di eventi ordinata.

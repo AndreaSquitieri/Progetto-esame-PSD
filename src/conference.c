@@ -11,6 +11,8 @@
 #define MAXSIZE 102
 
 struct ConferenceStruct {
+  unsigned int event_id_counter;
+  unsigned int room_id_counter;
   EventBst bst;
   RoomList rooms;
 };
@@ -27,29 +29,36 @@ Conference new_conference(void) {
   Conference conf = my_alloc(1, sizeof(*conf));
   conf->bst = bst;
   conf->rooms = room_list;
+  conf->event_id_counter = 0;
+  conf->room_id_counter = NULL_ROOM_ID + 1;
   return conf;
 }
 
 int add_conference_event(Conference conf) {
-  Event event = read_event();
+  Event event = read_event(conf->event_id_counter);
   if (event == NULL_EVENT) {
     return -1;
   }
-  bst_insert_event(conf->bst, event);
+  if (bst_insert_event(conf->bst, event)) {
+    free_event(event);
+    return -2;
+  }
+  conf->event_id_counter += 1;
   return 0;
 }
 
 int add_conference_room(Conference conf) {
-  Room room = read_room();
+  Room room = read_room(conf->room_id_counter);
   if (room == NULL_ROOM) {
     return -1;
   }
   cons_room_list(conf->rooms, room);
+  conf->room_id_counter += 1;
   return 0;
 }
 
 static int conference_select_event(Conference conf, const char *to_print) {
-  print_event_bst(conf->bst);
+  print_event_bst(conf->bst, conf->rooms);
   ResultInt res;
   while (1) {
     printf("%s", to_print);
@@ -195,7 +204,8 @@ int edit_conference_event(Conference conf) {
     }
     if (flag) {
       printf("\n\n");
-      print_event(to_edit);
+      Room room = get_room_by_id(conf->rooms, get_event_room_id(to_edit));
+      print_event(to_edit, room);
       printf("\n\n");
     }
   }
@@ -209,7 +219,7 @@ int edit_conference_event(Conference conf) {
 }
 
 int display_conference_schedule(ConstConference conf) {
-  print_event_bst(conf->bst);
+  print_event_bst(conf->bst, conf->rooms);
   return 0;
 }
 int display_conference_rooms(ConstConference conf) {
@@ -220,10 +230,12 @@ int display_conference_rooms(ConstConference conf) {
 static bool are_events_compatible(Event event, va_list args) {
   Event second_event = va_arg(args, Event);
   Room room = va_arg(args, Room);
+  RoomList room_list = va_arg(args, RoomList);
   if (is_event_equal(event, second_event)) {
     return true;
   }
-  if (!is_room_equal(room, get_event_room(event))) {
+  if (!is_room_equal(room,
+                     get_room_by_id(room_list, get_event_room_id(event)))) {
     return true;
   }
   return !do_events_overlap(event, second_event);
@@ -263,12 +275,13 @@ int conference_assign_event_to_room(Conference conf) {
     printf("Qualcosa è andato storto durante la ricerca della sala\n");
     return -3;
   }
-  if (!bst_for_all(conf->bst, are_events_compatible, to_assign, room)) {
+  if (!bst_for_all(conf->bst, are_events_compatible, to_assign, room,
+                   conf->rooms)) {
     printf("Non è possible assegnare la sala all'evento\n");
     return 2;
   }
 
-  set_event_room(to_assign, copy_room(room));
+  set_event_room_id(to_assign, get_room_id(room));
   printf("Sala assegnata con successo\n");
 
   return 0;
@@ -276,5 +289,66 @@ int conference_assign_event_to_room(Conference conf) {
 
 void free_conference(Conference conf) {
   free_event_bst(conf->bst);
+  free_room_list(conf->rooms);
   free(conf);
+}
+
+void save_conference_to_file(ConstConference conf, FILE *file) {
+  if (conf == NULL_CONFERENCE || file == NULL) {
+    perror("Invalid conference or file pointer");
+    return;
+  }
+
+  // Save event ID counter and room ID counter
+  fprintf(file, "%u %u\n", conf->event_id_counter, conf->room_id_counter);
+
+  // Save events
+  save_event_bst_to_file(conf->bst, file);
+
+  // Save rooms
+  save_room_list_to_file(conf->rooms, file);
+}
+
+Conference read_conference_from_file(FILE *file) {
+  if (file == NULL) {
+    perror("Invalid file pointer");
+    return NULL_CONFERENCE;
+  }
+
+  // Read event ID counter and room ID counter
+  unsigned int event_id_counter = 0;
+  unsigned int room_id_counter = 0;
+  if (fscanf(file, "%u %u", &event_id_counter, &room_id_counter) != 2) {
+    perror("Error reading event ID counter and room ID counter");
+    return NULL_CONFERENCE;
+  }
+  clean_file(file);
+
+  // Create a new conference
+  Conference conf = new_conference();
+  if (conf == NULL_CONFERENCE) {
+    perror("Error creating new conference");
+    return NULL_CONFERENCE;
+  }
+
+  conf->event_id_counter = event_id_counter;
+  conf->room_id_counter = room_id_counter;
+
+  // Read events
+  conf->bst = read_event_bst_from_file(file);
+  if (conf->bst == NULL_EVENT_BST) {
+    perror("Error reading events");
+    free_conference(conf);
+    return NULL_CONFERENCE;
+  }
+
+  // Read rooms
+  conf->rooms = read_room_list_from_file(file);
+  if (conf->rooms == NULL_ROOM_LIST) {
+    perror("Error reading rooms");
+    free_conference(conf);
+    return NULL_CONFERENCE;
+  }
+
+  return conf;
 }

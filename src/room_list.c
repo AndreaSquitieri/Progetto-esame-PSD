@@ -83,3 +83,63 @@ void free_room_list(RoomList list) {
   free(list->array);
   free(list);
 }
+
+// Function to save a room list to a file
+void save_room_list_to_file(ConstRoomList list, FILE *file) {
+  if (file == NULL) {
+    perror("File pointer is NULL");
+    return;
+  }
+
+  // Write the number of rooms in the list to the file
+  fprintf(file, "%d\n", list->size);
+
+  // Write each room in the list to the file
+  for (int i = 0; i < list->size; i++) {
+    save_room_to_file(list->array[i], file);
+  }
+}
+
+// Function to read a room list from a file
+RoomList read_room_list_from_file(FILE *file) {
+  if (file == NULL) {
+    perror("File pointer is NULL");
+    return NULL;
+  }
+
+  int num_rooms = 0;
+
+  if (fscanf(file, "%d", &num_rooms) != 1) {
+    clean_file(file);
+    return NULL;
+  }
+
+  RoomList list = new_room_list();
+  if (list == NULL) {
+    return NULL;
+  }
+
+  for (int i = 0; i < num_rooms; i++) {
+    Room room = read_room_from_file(file);
+    if (room == NULL_ROOM) {
+      free_room_list(list);
+      return NULL;
+    }
+    cons_room_list(list, room);
+  }
+
+  return list;
+}
+
+Room get_room_by_id(RoomList list, unsigned int room_id) {
+  if (list == NULL_ROOM_LIST) {
+    return NULL_ROOM;
+  }
+  for (int i = 0; i < list->size; i++) {
+    Room current_room = list->array[i];
+    if (get_room_id(current_room) == room_id) {
+      return current_room;
+    }
+  }
+  return NULL_ROOM;
+}

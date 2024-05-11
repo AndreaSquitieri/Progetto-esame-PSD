@@ -8,23 +8,27 @@
 #define MAXSIZE 102
 #define MAXINTSIZE 13
 
-void clean_stdin(void) {
+void clean_file(FILE *file) {
   int temp = 0;
-  while ((temp = getchar()) != '\n' && temp != EOF)
+  while ((temp = getc(file)) != '\n' && temp != EOF)
     ;
 }
 
-int read_line(char *line, int size) {
-  if (fgets(line, size, stdin) == NULL) {
-    clean_stdin();
+int read_line_from_file(char *line, int size, FILE *file) {
+  if (fgets(line, size, file) == NULL) {
+    clean_file(file);
     return -1;
   }
   if (line[strlen(line) - 1] != '\n') {
-    clean_stdin();
+    clean_file(file);
     return -2;
   }
   line[strcspn(line, "\n")] = '\0';
   return 0;
+}
+
+int read_line(char *line, int size) {
+  return read_line_from_file(line, size, stdin);
 }
 
 ResultInt read_int(void) {

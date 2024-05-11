@@ -1,6 +1,7 @@
 #ifndef CONFERENCE_H_
 #define CONFERENCE_H_
 
+#include <stdio.h>
 #include <stdlib.h>
 #define NULL_CONFERENCE NULL
 
@@ -18,5 +19,8 @@ int add_conference_room(Conference conf);
 int conference_assign_event_to_room(Conference conf);
 
 void free_conference(Conference conf);
+
+void save_conference_to_file(ConstConference conf, FILE *file);
+Conference read_conference_from_file(FILE *file);
 
 #endif // CONFERENCE_H_
