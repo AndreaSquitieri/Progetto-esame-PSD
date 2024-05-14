@@ -82,22 +82,35 @@ int main() {
 }
 
 int test_new_date(FILE *input, FILE *oracle, FILE *output) {
-  unsigned char minutes, hour, day, month;
-  unsigned short year;
+  unsigned char minutes = 0;
+  unsigned char hour = 0;
+  unsigned char day = 0;
+  unsigned char month = 0;
+  unsigned short year = 0;
   int all_tests_passed = 1; // Flag to track if all tests passed
+
   while (fscanf(input, "%hhu %hhu %hhu %hhu %hu", &minutes, &hour, &day, &month,
                 &year) == 5) {
+    printf("%hhu %hhu %hhu %hhu %hu\n", minutes, hour, day, month, year);
     Date date = new_date(minutes, hour, day, month, year);
-    save_date_to_file(date, output);
-
-    Date expected_date = read_date_from_file(oracle);
-
-    if (cmp_date(date, expected_date) != 0) {
+    int result = 0;
+    if (date == NULL_DATE) {
+      fprintf(output, "0\n");
+    } else {
+      result = 1;
+      fprintf(output, "1\n");
+    }
+    int expected_result = 0;
+    if (fscanf(oracle, "%d", &expected_result) != 1) {
+      free_date(date);
       all_tests_passed = 0;
+      return all_tests_passed;
     }
 
+    if (expected_result != result) {
+      all_tests_passed = 0;
+    }
     free_date(date);
-    free_date(expected_date);
   }
   return all_tests_passed;
 }
@@ -105,9 +118,17 @@ int test_new_date(FILE *input, FILE *oracle, FILE *output) {
 int test_cmp_date(FILE *input, FILE *oracle, FILE *output) {
   int all_tests_passed = 1; // Flag to track if all tests passed
 
-  unsigned char minutes1, hour1, day1, month1;
-  unsigned char minutes2, hour2, day2, month2;
-  unsigned short year1, year2;
+  unsigned char minutes1 = 0;
+  unsigned char hour1 = 0;
+  unsigned char day1 = 0;
+  unsigned char month1 = 0;
+  unsigned short year1 = 0;
+
+  unsigned char minutes2 = 0;
+  unsigned char hour2 = 0;
+  unsigned char day2 = 0;
+  unsigned char month2 = 0;
+  unsigned short year2 = 0;
   while (fscanf(input, "%hhu %hhu %hhu %hhu %hu %hhu %hhu %hhu %hu", &minutes1,
                 &hour1, &day1, &month1, &year1, &minutes2, &hour2, &day2,
                 &month2, &year2) == 10) {
@@ -115,10 +136,15 @@ int test_cmp_date(FILE *input, FILE *oracle, FILE *output) {
     Date date2 = new_date(minutes2, hour2, day2, month2, year2);
 
     int result = cmp_date(date1, date2);
-    fprintf(output, "Comparison result: %d\n", result);
+    fprintf(output, "%d\n", result);
 
     int expected_result;
-    fscanf(oracle, "%d", &expected_result);
+    if (fscanf(oracle, "%d", &expected_result) != 1) {
+      free_date(date1);
+      free_date(date2);
+      all_tests_passed = 0;
+      return all_tests_passed;
+    }
     if (result != expected_result) {
       all_tests_passed = 0;
     }
@@ -132,8 +158,11 @@ int test_cmp_date(FILE *input, FILE *oracle, FILE *output) {
 int test_copy_date(FILE *input, FILE *oracle, FILE *output) {
   int all_tests_passed = 1; // Flag to track if all tests passed
 
-  unsigned char minutes, hour, day, month;
-  unsigned short year;
+  unsigned char minutes = 0;
+  unsigned char hour = 0;
+  unsigned char day = 0;
+  unsigned char month = 0;
+  unsigned short year = 0;
   while (fscanf(input, "%hhu %hhu %hhu %hhu %hu", &minutes, &hour, &day, &month,
                 &year) == 5) {
     Date date = new_date(minutes, hour, day, month, year);
