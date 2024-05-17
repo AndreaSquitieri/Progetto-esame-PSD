@@ -195,7 +195,7 @@ Event bst_remove_event_by_id(EventBst bst, unsigned int id) {
 }
 
 #define SEPARATOR "\n\n"
-static void print_event_bst_nodes(EventBstNode node, RoomList room_list) {
+static void print_event_bst_nodes(EventBstNode node, ConstRoomList room_list) {
   if (node == NULL) {
     return;
   }
@@ -234,6 +234,7 @@ static bool for_all_nodes(EventBstNode node, EventPredicate predicate,
   va_list args_copy;
   va_copy(args_copy, args);
   bool result = predicate(node->value, args_copy);
+  va_end(args_copy);
 
   if (!result) {
     return false; // If the predicate fails for this node's value, return false

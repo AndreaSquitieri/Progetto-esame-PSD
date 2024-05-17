@@ -47,9 +47,7 @@ int main(int argc, char **argv) {
 
   FILE *conf_file = fopen(filename, "r");
   Conference conf = NULL_CONFERENCE;
-  if (conf_file == NULL) {
-    conf = new_conference();
-  } else {
+  if (conf_file != NULL) {
     conf = read_conference_from_file(conf_file);
     (void)fclose(conf_file);
   }

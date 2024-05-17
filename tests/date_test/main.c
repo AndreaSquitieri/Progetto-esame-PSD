@@ -31,8 +31,6 @@ int main() {
     return EXIT_FAILURE;
   }
 
-  int all_tests_passed = 1; // Flag to track if all tests passed
-
   TestType test_type;
   char test_id[50];
   char temp[100];
@@ -82,8 +80,11 @@ int main() {
 }
 
 int test_new_date(FILE *input, FILE *oracle, FILE *output) {
-  unsigned char minutes, hour, day, month;
-  unsigned short year;
+  unsigned char minutes = 0;
+  unsigned char hour = 0;
+  unsigned char day = 0;
+  unsigned char month = 0;
+  unsigned short year = 0;
   int all_tests_passed = 1; // Flag to track if all tests passed
   while (fscanf(input, "%hhu %hhu %hhu %hhu %hu", &minutes, &hour, &day, &month,
                 &year) == 5) {
@@ -105,9 +106,18 @@ int test_new_date(FILE *input, FILE *oracle, FILE *output) {
 int test_cmp_date(FILE *input, FILE *oracle, FILE *output) {
   int all_tests_passed = 1; // Flag to track if all tests passed
 
-  unsigned char minutes1, hour1, day1, month1;
-  unsigned char minutes2, hour2, day2, month2;
-  unsigned short year1, year2;
+  unsigned char minutes1 = 0;
+  unsigned char hour1 = 0;
+  unsigned char day1 = 0;
+  unsigned char month1 = 0;
+  unsigned short year1 = 0;
+
+  unsigned char minutes2 = 0;
+  unsigned char hour2 = 0;
+  unsigned char day2 = 0;
+  unsigned char month2 = 0;
+  unsigned short year2 = 0;
+
   while (fscanf(input, "%hhu %hhu %hhu %hhu %hu %hhu %hhu %hhu %hu", &minutes1,
                 &hour1, &day1, &month1, &year1, &minutes2, &hour2, &day2,
                 &month2, &year2) == 10) {
