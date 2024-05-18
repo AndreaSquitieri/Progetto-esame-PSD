@@ -58,6 +58,34 @@ int add_conference_room(Conference conf) {
   return 0;
 }
 
+int remove_conference_room(Conference conf) {
+  if (get_size_room_list(conf->rooms) == 0) {
+    puts("Non ci sono sale da rimuovere");
+    return 1;
+  }
+  print_room_list(conf->rooms);
+  int pos = 0;
+  do {
+    printf("Inserire il numero della sala che si desidera rimuovere [Inserire "
+           "un numero negativo per annullare l'operazione]: ");
+    ResultInt res_room = read_int();
+    if (res_room.error_code) {
+      printf("Qualcosa è andato storto\n");
+      return -2;
+    }
+    pos = res_room.value - 1;
+
+  } while ((pos >= get_size_room_list(conf->rooms)) &&
+           printf("Numero sala inseriro non valido\n"));
+  if (pos < 0) {
+    return 2;
+  }
+
+  Room room = remove_at_room_list(conf->rooms, pos);
+  free_room(room);
+  return 0;
+}
+
 static int conference_select_event(Conference conf, const char *to_print) {
   print_event_bst(conf->bst, conf->rooms);
   ResultInt res;
@@ -74,12 +102,17 @@ static int conference_select_event(Conference conf, const char *to_print) {
 }
 
 int remove_conference_event(Conference conf) {
+  if (get_bst_size(conf->bst) == 0) {
+    puts("Non ci sono eventi da rimuovere");
+    return 1;
+  }
+
   int res = conference_select_event(
       conf, "Inserisci l'id dell'evento da rimuovere [inserire un numero "
             "negativo "
             "per annullare l'operazione]: ");
   if (res < 0) {
-    return 1; // Action aborted by the user
+    return 2; // Action aborted by the user
   }
   Event removed = bst_remove_event_by_id(conf->bst, res);
   if (removed == NULL_EVENT) {

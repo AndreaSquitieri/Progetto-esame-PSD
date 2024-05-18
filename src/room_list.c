@@ -65,6 +65,17 @@ Room get_at_room_list(RoomList list, int pos) {
   }
   return list->array[pos];
 }
+Room remove_at_room_list(RoomList list, int pos) {
+  if (pos >= list->size || pos < 0) {
+    return NULL_ROOM;
+  }
+  Room temp = list->array[pos];
+  list->size -= 1;
+  for (int i = pos; i < list->size; i++) {
+    list->array[i] = list->array[i + 1];
+  }
+  return temp;
+}
 
 void print_room_list(RoomList list) {
   for (int i = 0; i < list->size; i++) {

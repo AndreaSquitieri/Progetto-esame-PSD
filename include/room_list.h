@@ -26,6 +26,8 @@ Room get_room_by_id(RoomList list, unsigned int room_id);
 
 Room get_at_room_list(RoomList list, int pos);
 
+Room remove_at_room_list(RoomList list, int pos);
+
 void print_room_list(RoomList list);
 
 void free_room_list(RoomList list);
