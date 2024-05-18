@@ -1,5 +1,6 @@
 #include "conference.h"
 #include "event_bst.h"
+#include "logging.h"
 #include "mevent.h"
 #include "room.h"
 #include "room_list.h"
@@ -295,7 +296,7 @@ void free_conference(Conference conf) {
 
 void save_conference_to_file(ConstConference conf, FILE *file) {
   if (conf == NULL_CONFERENCE || file == NULL) {
-    perror("Invalid conference or file pointer");
+    log_error("Invalid conference or file pointer");
     return;
   }
 
@@ -311,7 +312,7 @@ void save_conference_to_file(ConstConference conf, FILE *file) {
 
 Conference read_conference_from_file(FILE *file) {
   if (file == NULL) {
-    perror("Invalid file pointer");
+    log_error("Invalid file pointer");
     return NULL_CONFERENCE;
   }
 
@@ -319,7 +320,7 @@ Conference read_conference_from_file(FILE *file) {
   unsigned int event_id_counter = 0;
   unsigned int room_id_counter = 0;
   if (fscanf(file, "%u %u", &event_id_counter, &room_id_counter) != 2) {
-    perror("Error reading event ID counter and room ID counter");
+    log_error("Error reading event ID counter and room ID counter");
     return NULL_CONFERENCE;
   }
   clean_file(file);
@@ -327,7 +328,7 @@ Conference read_conference_from_file(FILE *file) {
   // Create a new conference
   Conference conf = new_conference();
   if (conf == NULL_CONFERENCE) {
-    perror("Error creating new conference");
+    log_error("Error creating new conference");
     return NULL_CONFERENCE;
   }
 
@@ -337,7 +338,7 @@ Conference read_conference_from_file(FILE *file) {
   // Read events
   conf->bst = read_event_bst_from_file(file);
   if (conf->bst == NULL_EVENT_BST) {
-    perror("Error reading events");
+    log_error("Error reading events");
     free_conference(conf);
     return NULL_CONFERENCE;
   }
@@ -345,7 +346,7 @@ Conference read_conference_from_file(FILE *file) {
   // Read rooms
   conf->rooms = read_room_list_from_file(file);
   if (conf->rooms == NULL_ROOM_LIST) {
-    perror("Error reading rooms");
+    log_error("Error reading rooms");
     free_conference(conf);
     return NULL_CONFERENCE;
   }

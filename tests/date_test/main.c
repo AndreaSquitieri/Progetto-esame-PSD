@@ -127,10 +127,6 @@ int test_cmp_date(FILE *input, FILE *oracle, FILE *output) {
   unsigned char day2 = 0;
   unsigned char month2 = 0;
   unsigned short year2 = 0;
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
   while (fscanf(input, "%hhu %hhu %hhu %hhu %hu %hhu %hhu %hhu %hu", &minutes1,
                 &hour1, &day1, &month1, &year1, &minutes2, &hour2, &day2,
                 &month2, &year2) == 10) {
