@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "logging.h"
+#include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,7 +44,7 @@ ResultInt read_int(void) {
   errno = 0;
   choice = strtol(temp, &endptr, 10);
   if ((errno == ERANGE) || (errno != 0 && choice == 0)) {
-    perror("strtol");
+    log_error("strtol");
     res.error_code = -2;
     return res;
   }
@@ -80,4 +81,21 @@ char *my_strdup(const char *stringa) {
     exit(EXIT_FAILURE);
   }
   return temp;
+}
+
+void trim_whitespaces(char *dest, char *src, int max_size) {
+  if (max_size == 0) {
+    return;
+  }
+  while (isspace(*src)) {
+    src++;
+  }
+  int i = 0;
+  for (i = 0; i < (max_size - 1) && *src; i++) {
+    dest[i] = *src++;
+  }
+  dest[i] = '\0';
+  for (int j = i - 1; j >= 0 && isspace(dest[j]); j--) {
+    dest[j] = '\0';
+  }
 }

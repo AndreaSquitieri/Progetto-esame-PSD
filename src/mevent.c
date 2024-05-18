@@ -194,10 +194,20 @@ void print_event(ConstEvent event, ConstRoom assigned_room) {
 
 Event read_event(unsigned int event_id) {
   // Read event name
-  printf("Inserisci nome evento [Max 100 caratteri]: ");
   char name[MAXSIZE] = {0};
-  if (read_line(name, MAXSIZE)) {
-    return NULL_EVENT;
+  while (1) {
+    char temp[MAXSIZE] = {0};
+    printf("Inserisci nome evento [Max 100 caratteri]: ");
+    if (read_line(temp, MAXSIZE)) {
+      printf("Nome evento troppo lungo.\n");
+      continue;
+    }
+    // trims leading whitespaces
+    trim_whitespaces(name, temp, MAXSIZE);
+    if (strlen(name) == 0) {
+      continue;
+    }
+    break;
   }
 
   // Read event type
@@ -261,7 +271,7 @@ void free_event(Event event) {
 // Function to save an event to a file
 void save_event_to_file(ConstEvent event, FILE *file) {
   if (file == NULL) {
-    perror("File pointer is NULL");
+    log_error("File pointer is NULL");
     return;
   }
 
@@ -279,7 +289,7 @@ void save_event_to_file(ConstEvent event, FILE *file) {
 // Function to read an event from a file
 Event read_event_from_file(FILE *file) {
   if (file == NULL) {
-    perror("File pointer is NULL");
+    log_error("File pointer is NULL");
     return NULL_EVENT;
   }
 

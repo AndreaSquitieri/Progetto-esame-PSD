@@ -1,2 +1,5 @@
 1 TC1 test_suite
 1 TC2 test_suite
+1 TC3 test_suite
+1 TC4 test_suite
+1 TC5 test_suite

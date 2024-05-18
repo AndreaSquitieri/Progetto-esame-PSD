@@ -292,7 +292,7 @@ static void save_event_bst_nodes(EventBstNode node, FILE *file) {
 // Function to save an event BST to a file
 void save_event_bst_to_file(ConstEventBst bst, FILE *file) {
   if (file == NULL) {
-    perror("File pointer is NULL");
+    log_error("File pointer is NULL");
     return;
   }
 
@@ -304,13 +304,13 @@ void save_event_bst_to_file(ConstEventBst bst, FILE *file) {
 // Function to read an event BST from a file
 EventBst read_event_bst_from_file(FILE *file) {
   if (file == NULL) {
-    perror("File pointer is NULL");
+    log_error("File pointer is NULL");
     return NULL_EVENT_BST;
   }
 
   size_t size = 0;
   if (fscanf(file, "%zu\n", &size) != 1) {
-    perror("Error reading BST size");
+    log_error("Error reading BST size");
     return NULL_EVENT_BST;
   }
 
@@ -320,7 +320,7 @@ EventBst read_event_bst_from_file(FILE *file) {
   for (size_t i = 0; i < size; i++) {
     Event event = read_event_from_file(file);
     if (event == NULL_EVENT) {
-      perror("Error reading event data");
+      log_error("Error reading event data");
       free_event_bst(bst);
       return NULL_EVENT_BST;
     }

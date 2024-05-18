@@ -39,11 +39,24 @@ bool is_room_equal(ConstRoom room_a, ConstRoom room_b) {
 
 Room read_room(unsigned int id) {
 
-  printf("Inserisci nome sala [Max 100 caratteri]: ");
   char name[MAXSIZE] = {0};
-  if (read_line(name, MAXSIZE)) {
-    return NULL_ROOM;
+  while (1) {
+    char temp[MAXSIZE] = {0};
+    printf("Inserisci nome sala [Max 100 caratteri]: ");
+    if (read_line(temp, MAXSIZE)) {
+      printf("Nome sala troppo lungo.\n");
+      continue;
+    }
+    // trims leading whitespaces
+
+    trim_whitespaces(name, temp, MAXSIZE);
+    if (strlen(name) == 0) {
+
+      continue;
+    }
+    break;
   }
+
   printf("Inserisci numero posti sala: ");
   ResultInt res = read_int();
   if (res.error_code || res.value < 0) {

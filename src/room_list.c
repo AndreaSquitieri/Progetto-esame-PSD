@@ -1,4 +1,5 @@
 #include "room_list.h"
+#include "logging.h"
 #include "room.h"
 #include "utils.h"
 #include <stdio.h>
@@ -96,7 +97,7 @@ void free_room_list(RoomList list) {
 // Function to save a room list to a file
 void save_room_list_to_file(ConstRoomList list, FILE *file) {
   if (file == NULL) {
-    perror("File pointer is NULL");
+    log_error("File pointer is NULL");
     return;
   }
 
@@ -112,7 +113,7 @@ void save_room_list_to_file(ConstRoomList list, FILE *file) {
 // Function to read a room list from a file
 RoomList read_room_list_from_file(FILE *file) {
   if (file == NULL) {
-    perror("File pointer is NULL");
+    log_error("File pointer is NULL");
     return NULL;
   }
 

@@ -24,4 +24,6 @@ void *my_alloc(unsigned long nmemb, unsigned long size);
 __attribute_warn_unused_result__ void *my_realloc(void *p, unsigned long nmemb,
                                                   unsigned long size);
 __attribute_warn_unused_result__ char *my_strdup(const char *stringa);
+
+void trim_whitespaces(char *dest, char *src, int max_size);
 #endif

@@ -221,11 +221,11 @@ void free_date(Date date) { free(date); }
 // Function to save a date to a file
 void save_date_to_file(ConstDate date, FILE *file) {
   if (date == NULL_DATE) {
-    perror("Date is NULL");
+    log_error("Date is NULL");
     return;
   }
   if (file == NULL) {
-    perror("File pointer is NULL");
+    log_error("File pointer is NULL");
     return;
   }
 
@@ -237,7 +237,7 @@ void save_date_to_file(ConstDate date, FILE *file) {
 // Function to read a date from a file
 Date read_date_from_file(FILE *file) {
   if (file == NULL) {
-    perror("File pointer is NULL");
+    log_error("File pointer is NULL");
     return NULL_DATE;
   }
 
