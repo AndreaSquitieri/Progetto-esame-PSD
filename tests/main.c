@@ -9,14 +9,17 @@ typedef enum {
   // Add more test types here if needed
 } TestType;
 
-int main(void) {
-  FILE *test_suite = fopen("test_suite.txt", "r");
+int main(int argc, char **argv) {
+  if (argc < 3) {
+    return EXIT_FAILURE;
+  }
+  FILE *test_suite = fopen(argv[1], "r");
   if (test_suite == NULL) {
     perror("Error opening test_suite.txt");
     return EXIT_FAILURE;
   }
 
-  FILE *results_file = fopen("results.txt", "w");
+  FILE *results_file = fopen(argv[2], "w");
   if (results_file == NULL) {
     perror("Error creating results.txt");
     fclose(test_suite);
@@ -31,15 +34,19 @@ int main(void) {
   while (fscanf(test_suite, "%d %s %s", (int *)&test_type, test_id, param) ==
          3) {
     printf("%d %s %s\n", test_type, test_id, param);
-    (void)sprintf(temp, "%s_input.txt", test_id);
-    (void)freopen(temp, "r", stdin);
 
-    (void)sprintf(temp, "%s_conference.txt", test_id);
+    (void)sprintf(temp, "%s/conference.txt", test_id);
     FILE *conference_file = fopen(temp, "r");
-    (void)sprintf(temp, "%s_oracle.txt", test_id);
+    (void)sprintf(temp, "%s/oracle.txt", test_id);
     FILE *oracle = fopen(temp, "r");
-    (void)sprintf(temp, "%s_output.txt", test_id);
+    (void)sprintf(temp, "%s/output.txt", test_id);
     FILE *output = fopen(temp, "w+");
+
+    (void)sprintf(temp, "%s/input.txt", test_id);
+		if (freopen(temp, "r", stdin) == NULL || oracle == NULL || output == NULL) {
+      fprintf(results_file, "Tests skipped!\n");
+			continue;
+		}
 
     int test_result = 1; // Flag to track if all tests for this case passed
     switch (test_type) {
@@ -101,12 +108,8 @@ int main(void) {
     if (conference_file != NULL) {
       fclose(conference_file);
     }
-    if (oracle != NULL) {
-      fclose(oracle);
-    }
-    if (output != NULL) {
-      fclose(output);
-    }
+    fclose(oracle);
+    fclose(output);
 
     if (test_result) {
       fprintf(results_file, "Tests passed!\n");
