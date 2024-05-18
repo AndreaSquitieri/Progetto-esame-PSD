@@ -10,7 +10,7 @@
 typedef struct RoomStruct *Room;
 typedef const struct RoomStruct *ConstRoom;
 
-Room new_room(const char *name, unsigned int id);
+Room new_room(const char *name, unsigned int id, unsigned int capacity);
 
 Room copy_room(ConstRoom room);
 bool is_room_equal(ConstRoom room_a, ConstRoom room_b);
