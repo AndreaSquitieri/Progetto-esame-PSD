@@ -164,6 +164,9 @@ Date read_date(void) {
       5) {
     return NULL_DATE;
   }
+  if (day < 0 || month < 0 || year < 0 || hour < 0 || minutes < 0) {
+    return NULL_DATE;
+  }
   Date date = new_date(minutes, hour, day, month, year);
   return date;
 }

@@ -1,13 +1,126 @@
 #include "conference.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+
+#ifdef _WIN32
+#define NULL_DEVICE "NUL:"
+#define TTY_DEVICE "COM1:"
+#else
+#define NULL_DEVICE "/dev/null"
+#define TTY_DEVICE "/dev/tty"
+#endif
 
 typedef enum {
   TEST_ADD_EVENT = 1,
   TEST_REMOVE_EVENT = 2,
-  TEST_EDIT_EVENT = 3
+  TEST_EDIT_EVENT = 3,
+  TEST_DISPLAY_EVENTS = 4,
   // Add more test types here if needed
 } TestType;
+
+int cmp_file(FILE *oracle, FILE *output) {
+  int temp1 = 0, temp2 = 0;
+  while ((temp1 = fgetc(oracle)) != EOF && (temp2 = fgetc(output)) != EOF) {
+    if (temp1 != temp2) {
+      return 0;
+    }
+  }
+  if (temp1 == EOF && fgetc(output) != EOF) {
+    return 0;
+  } else if (temp1 != EOF) {
+    return 0;
+  }
+  return 1;
+}
+
+int run_test_case(TestType test_type, FILE *oracle, FILE *output,
+                  FILE *conference) {
+  int test_result = 1; // Flag to track if all tests for this case passed
+  switch (test_type) {
+  case TEST_ADD_EVENT: {
+    Conference conf = read_conference_from_file(conference);
+    if (conf == NULL_CONFERENCE) {
+      conf = new_conference();
+    }
+    if (conf == NULL_CONFERENCE) {
+      return 0;
+    }
+
+    freopen(NULL_DEVICE, "w", stdout);
+    freopen(NULL_DEVICE, "w", stderr);
+
+    add_conference_event(conf);
+    save_conference_to_file(conf, output);
+
+    freopen(TTY_DEVICE, "w", stdout);
+    freopen(TTY_DEVICE, "w", stderr);
+
+    fflush(output);
+    rewind(output);
+
+    test_result = cmp_file(oracle, output);
+    break;
+  }
+  case TEST_EDIT_EVENT: {
+    Conference conf = read_conference_from_file(conference);
+    if (conf == NULL_CONFERENCE) {
+      conf = new_conference();
+    }
+    if (conf == NULL_CONFERENCE) {
+      return 0;
+    }
+    freopen(NULL_DEVICE, "w", stdout);
+    freopen(NULL_DEVICE, "w", stderr);
+
+    edit_conference_event(conf);
+    save_conference_to_file(conf, output);
+
+    freopen(TTY_DEVICE, "w", stdout);
+    freopen(TTY_DEVICE, "w", stderr);
+
+    test_result = cmp_file(oracle, output);
+    break;
+  }
+  case TEST_REMOVE_EVENT: {
+    Conference conf = read_conference_from_file(conference);
+    if (conf == NULL_CONFERENCE) {
+      conf = new_conference();
+    }
+    if (conf == NULL_CONFERENCE) {
+      return 0;
+    }
+    freopen(NULL_DEVICE, "w", stdout);
+    freopen(NULL_DEVICE, "w", stderr);
+
+    remove_conference_event(conf);
+    save_conference_to_file(conf, output);
+
+    freopen(TTY_DEVICE, "w", stdout);
+    freopen(TTY_DEVICE, "w", stderr);
+
+    test_result = cmp_file(oracle, output);
+    break;
+  }
+  case TEST_DISPLAY_EVENTS: {
+    Conference conf = read_conference_from_file(conference);
+    if (conf == NULL_CONFERENCE) {
+      return 0;
+    }
+    int fd_output = fileno(output);
+    dup2(fd_output, STDOUT_FILENO);
+
+    display_conference_schedule(conf);
+
+    dup2(STDOUT_FILENO, fd_output);
+
+    test_result = cmp_file(oracle, output);
+
+    break;
+  }
+  }
+  return test_result;
+}
 
 int main(int argc, char **argv) {
   if (argc < 3) {
@@ -42,69 +155,15 @@ int main(int argc, char **argv) {
     FILE *output = fopen(temp, "w+");
 
     (void)sprintf(temp, "%s/input.txt", test_id);
+
     // TODO
     // Smettere di imbrogliare
     if (freopen(temp, "r", stdin) == NULL || output == NULL) {
-      fprintf(results_file, "Tests skipped!\n");
+      fprintf(results_file, "%s skip\n", test_id);
       continue;
     }
 
-    int test_result = 1; // Flag to track if all tests for this case passed
-    switch (test_type) {
-    case TEST_ADD_EVENT: {
-      Conference conf = read_conference_from_file(conference_file);
-      if (conf == NULL_CONFERENCE) {
-        conf = new_conference();
-      }
-      if (conf == NULL_CONFERENCE) {
-        return EXIT_FAILURE;
-      }
-      add_conference_event(conf);
-      save_conference_to_file(conf, output);
-      fflush(output);
-      rewind(output);
-      int temp1 = 0, temp2 = 0;
-      while ((temp1 = fgetc(oracle)) != EOF && (temp2 = fgetc(output)) != EOF) {
-        if (temp1 != temp2) {
-          test_result = 0;
-        }
-      }
-      if (temp1 == EOF && fgetc(output) != EOF) {
-        test_result = 0;
-      } else if (temp1 != EOF) {
-        test_result = 0;
-      }
-      break;
-    }
-    case TEST_EDIT_EVENT: {
-      Conference conf = read_conference_from_file(conference_file);
-      if (conf == NULL_CONFERENCE) {
-        conf = new_conference();
-      }
-      if (conf == NULL_CONFERENCE) {
-        return EXIT_FAILURE;
-      }
-      edit_conference_event(conf);
-      save_conference_to_file(conf, output);
-      break;
-    }
-    case TEST_REMOVE_EVENT: {
-      Conference conf = read_conference_from_file(conference_file);
-      if (conf == NULL_CONFERENCE) {
-        conf = new_conference();
-      }
-      if (conf == NULL_CONFERENCE) {
-        return EXIT_FAILURE;
-      }
-      remove_conference_event(conf);
-      save_conference_to_file(conf, output);
-      break;
-    }
-    // Add more cases for other test types if needed
-    default:
-      printf("Unknown test type: %d\n", test_type);
-      break;
-    }
+    int test_result = run_test_case(test_type, oracle, output, conference_file);
 
     if (conference_file != NULL) {
       fclose(conference_file);
@@ -116,9 +175,9 @@ int main(int argc, char **argv) {
     fclose(output);
 
     if (test_result) {
-      fprintf(results_file, "Tests passed!\n");
+      fprintf(results_file, "%s pass\n", test_id);
     } else {
-      fprintf(results_file, "Tests failed!\n");
+      fprintf(results_file, "%s fail\n", test_id);
     }
     fflush(results_file);
   }
