@@ -20,7 +20,8 @@ typedef enum {
 } TestType;
 
 int cmp_file(FILE *oracle, FILE *output) {
-  int temp1 = 0, temp2 = 0;
+  int temp1 = 0;
+  int temp2 = 0;
   while ((temp1 = fgetc(oracle)) != EOF && (temp2 = fgetc(output)) != EOF) {
     if (temp1 != temp2) {
       return 0;
@@ -34,8 +35,20 @@ int cmp_file(FILE *oracle, FILE *output) {
   return 1;
 }
 
-int run_test_case(TestType test_type, FILE *oracle, FILE *output,
-                  FILE *conference) {
+int run_test_case(TestType test_type, const char *oracle_fname,
+                  const char *output_fname, const char *input_fname,
+                  const char *conference_fname) {
+
+  FILE *conference = fopen(conference_fname, "r");
+  FILE *oracle = fopen(oracle_fname, "r");
+  FILE *output = fopen(output_fname, "w+");
+
+  // TODO
+  // Smettere di imbrogliare
+  if (freopen(input_fname, "r", stdin) == NULL || output == NULL) {
+    return 0;
+  }
+
   int test_result = 1; // Flag to track if all tests for this case passed
   switch (test_type) {
   case TEST_ADD_EVENT: {
@@ -44,7 +57,8 @@ int run_test_case(TestType test_type, FILE *oracle, FILE *output,
       conf = new_conference();
     }
     if (conf == NULL_CONFERENCE) {
-      return 0;
+      test_result = 0;
+      break;
     }
 
     freopen(NULL_DEVICE, "w", stdout);
@@ -68,7 +82,8 @@ int run_test_case(TestType test_type, FILE *oracle, FILE *output,
       conf = new_conference();
     }
     if (conf == NULL_CONFERENCE) {
-      return 0;
+      test_result = 0;
+      break;
     }
     freopen(NULL_DEVICE, "w", stdout);
     freopen(NULL_DEVICE, "w", stderr);
@@ -88,7 +103,8 @@ int run_test_case(TestType test_type, FILE *oracle, FILE *output,
       conf = new_conference();
     }
     if (conf == NULL_CONFERENCE) {
-      return 0;
+      test_result = 0;
+      break;
     }
     freopen(NULL_DEVICE, "w", stdout);
     freopen(NULL_DEVICE, "w", stderr);
@@ -105,20 +121,30 @@ int run_test_case(TestType test_type, FILE *oracle, FILE *output,
   case TEST_DISPLAY_EVENTS: {
     Conference conf = read_conference_from_file(conference);
     if (conf == NULL_CONFERENCE) {
-      return 0;
+      test_result = 0;
+      break;
     }
     int fd_output = fileno(output);
     dup2(fd_output, STDOUT_FILENO);
-
     display_conference_schedule(conf);
+    freopen(TTY_DEVICE, "w", stdout);
 
-    dup2(STDOUT_FILENO, fd_output);
+    fflush(output);
+    rewind(output);
 
     test_result = cmp_file(oracle, output);
 
     break;
   }
   }
+  if (conference != NULL) {
+    fclose(conference);
+  }
+  if (oracle != NULL) {
+
+    fclose(oracle);
+  }
+  fclose(output);
   return test_result;
 }
 
@@ -141,39 +167,20 @@ int main(int argc, char **argv) {
 
   TestType test_type = 0;
   char test_id[50];
-  char temp[100];
+  char conference_fname[100];
+  char oracle_fname[100];
+  char output_fname[100];
+  char input_fname[100];
 
   char param[100];
   while (fscanf(test_suite, "%d %s %s", (int *)&test_type, test_id, param) ==
          3) {
-
-    (void)sprintf(temp, "%s/conference.txt", test_id);
-    FILE *conference_file = fopen(temp, "r");
-    (void)sprintf(temp, "%s/oracle.txt", test_id);
-    FILE *oracle = fopen(temp, "r");
-    (void)sprintf(temp, "%s/output.txt", test_id);
-    FILE *output = fopen(temp, "w+");
-
-    (void)sprintf(temp, "%s/input.txt", test_id);
-
-    // TODO
-    // Smettere di imbrogliare
-    if (freopen(temp, "r", stdin) == NULL || output == NULL) {
-      fprintf(results_file, "%s skip\n", test_id);
-      continue;
-    }
-
-    int test_result = run_test_case(test_type, oracle, output, conference_file);
-
-    if (conference_file != NULL) {
-      fclose(conference_file);
-    }
-    if (oracle != NULL) {
-
-      fclose(oracle);
-    }
-    fclose(output);
-
+    (void)sprintf(conference_fname, "%s/conference.txt", test_id);
+    (void)sprintf(oracle_fname, "%s/oracle.txt", test_id);
+    (void)sprintf(output_fname, "%s/output.txt", test_id);
+    (void)sprintf(input_fname, "%s/input.txt", test_id);
+    int test_result = run_test_case(test_type, oracle_fname, output_fname,
+                                    input_fname, conference_fname);
     if (test_result) {
       fprintf(results_file, "%s pass\n", test_id);
     } else {

@@ -19,7 +19,7 @@
 1 TC19 test_suite
 1 TC20 test_suite
 1 TC21 test_suite
-1 TC22 test_suite
+4 TC22 test_suite
 1 TC23 test_suite
 1 TC24 test_suite
 1 TC25 test_suite
