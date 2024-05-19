@@ -16,14 +16,17 @@ void clean_file(FILE *file) {
 }
 
 int read_line_from_file(char *line, int size, FILE *file) {
+
   if (fgets(line, size, file) == NULL) {
     clean_file(file);
     return -1;
   }
+
   if (line[strlen(line) - 1] != '\n') {
     clean_file(file);
     return -2;
   }
+
   line[strcspn(line, "\n")] = '\0';
   return 0;
 }

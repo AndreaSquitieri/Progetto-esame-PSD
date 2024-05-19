@@ -1,20 +1,22 @@
 #include "date.h"
 #include "logging.h"
 #include "utils.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MINUTES_IN_HOUR 60
 #define HOURS_IN_DAY 24
-#define MONTHS 12
-#define MONTH_DAYS_INITIALIZER                                                 \
+#define MONTHS_IN_YEAR 12
+#define DAYS_IN_MONTHS_INITIALIZER                                             \
   { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
-
 #define MONTH_NAMES_INITIALIZER                                                \
   {                                                                            \
     "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",    \
         "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"               \
   }
+#define FORMAT_DATE "%d %s %d, %02d:%02d"
+#define DATE_BUFFER_SIZE 32
 
 typedef enum {
   JANUARY = 1,
@@ -29,7 +31,7 @@ typedef enum {
   OCTOBER,
   NOVEMBER,
   DECEMBER
-} MonthNames;
+} Month;
 
 struct DateStruct {
   unsigned char minutes;
@@ -39,49 +41,38 @@ struct DateStruct {
   unsigned short year;
 };
 
-static int const months[] = MONTH_DAYS_INITIALIZER;
+static const unsigned char days_in_months[] = DAYS_IN_MONTHS_INITIALIZER;
 static const char *const month_names[] = MONTH_NAMES_INITIALIZER;
 
 static const char *get_month_name(ConstDate date) {
   return month_names[date->month - 1];
 }
 
-static int is_leap(ConstDate date) {
-  if (date == NULL_DATE) {
-    log_error("L'oggetto 'date' passato come parametro alla funzione 'is_leap' "
-              "non risulta allocato");
-    return -1;
-  }
-
-  return ((date->year % 4) == 0 && (date->year % 100) != 0) ||
-         (date->year % 400) == 0;
+static bool is_leap_year(unsigned short year) {
+  return year % 400 == 0 || (year % 100 != 0 && year % 4 == 0);
 }
 
-static int is_valid_date(ConstDate date) {
+static bool is_valid_date(ConstDate date) {
   if (date == NULL_DATE) {
-    log_error(
-        "L'oggetto 'date' passato come parametro alla funzione 'is_valid_date' "
-        "non risulta allocato");
-    return -1;
+    return false;
   }
-  if (date->minutes >= MINUTES_IN_HOUR) {
-    return 0;
+  if (date->minutes >= MINUTES_IN_HOUR || date->hour >= HOURS_IN_DAY) {
+    return false;
   }
-  if (date->hour >= HOURS_IN_DAY) {
-    return 0;
+  if (date->day == 0 || date->month == 0 || date->month > MONTHS_IN_YEAR) {
+    return false;
   }
-  if (date->day == 0 || date->month == 0) {
-    return 0;
+  if (date->month == FEBRUARY && is_leap_year(date->year)) {
+    return date->day <= (days_in_months[FEBRUARY - 1] + 1);
   }
-  if (is_leap(date) && date->month == FEBRUARY) {
-    return date->day <= (months[date->month - 1] + 1);
-  }
-  return date->month <= MONTHS && date->day <= months[date->month - 1];
+  return date->day <= days_in_months[date->month - 1];
 }
 
 Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
               unsigned char month, unsigned short year) {
+
   Date date = my_alloc(1, sizeof(*date));
+
   date->minutes = minutes;
   date->hour = hour;
   date->day = day;
@@ -89,7 +80,7 @@ Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
   date->year = year;
 
   if (!is_valid_date(date)) {
-    log_error("Tentativo di creazione date non valida");
+    log_error("Attempt to create an invalid date.");
     free(date);
     return NULL_DATE;
   }
@@ -97,13 +88,7 @@ Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
 }
 
 static inline int cmp_date_component(unsigned int a, unsigned int b) {
-  if (a < b) {
-    return -1;
-  }
-  if (a == b) {
-    return 0;
-  }
-  return 1;
+  return (a > b) - (a < b);
 }
 
 int cmp_date(ConstDate date_a, ConstDate date_b) {
@@ -143,16 +128,14 @@ int cmp_date(ConstDate date_a, ConstDate date_b) {
   return cmp_date_component(date_a->minutes, date_b->minutes);
 }
 
-#define FORMAT_DATE "%d %s %d, %02d:%02d"
 void print_date(ConstDate date) {
   printf(FORMAT_DATE, date->day, get_month_name(date), date->year, date->hour,
          date->minutes);
 }
 
-#define MAXSIZE 102
 Date read_date(void) {
-  char temp[MAXSIZE] = {0};
-  if (read_line(temp, MAXSIZE)) {
+  char temp[DATE_BUFFER_SIZE] = {0};
+  if (read_line(temp, DATE_BUFFER_SIZE)) {
     return NULL_DATE;
   }
   int day = 0;
@@ -179,46 +162,6 @@ Date copy_date(ConstDate date) {
                   date->year);
 }
 
-int get_hour(ConstDate date) {
-  if (date == NULL_DATE) {
-    log_error("Passato puntatore NULL alla funzione 'get_hour'.");
-    return -1;
-  }
-  return date->hour;
-}
-
-int get_minutes(ConstDate date) {
-  if (date == NULL_DATE) {
-    log_error("Passato puntatore NULL alla funzione 'get_minutes'.");
-    return -1;
-  }
-  return date->minutes;
-}
-
-int get_day(ConstDate date) {
-  if (date == NULL_DATE) {
-    log_error("Passato puntatore NULL alla funzione 'get_day'.");
-    return -1;
-  }
-  return date->day;
-}
-
-int get_month(ConstDate date) {
-  if (date == NULL_DATE) {
-    log_error("Passato puntatore NULL alla funzione 'get_month'.");
-    return -1;
-  }
-  return date->month;
-}
-
-int get_year(ConstDate date) {
-  if (date == NULL_DATE) {
-    log_error("Passato puntatore NULL alla funzione 'get_year'.");
-    return -1;
-  }
-  return date->year;
-}
-
 void free_date(Date date) { free(date); }
 
 // Function to save a date to a file
@@ -233,8 +176,10 @@ void save_date_to_file(ConstDate date, FILE *file) {
   }
 
   // Write date components to the file
-  fprintf(file, "%d %d %d %d %d\n", date->minutes, date->hour, date->day,
-          date->month, date->year);
+  if (fprintf(file, "%d %d %d %d %d\n", date->minutes, date->hour, date->day,
+              date->month, date->year) < 0) {
+    log_error("Failed to write date components to file.");
+  }
 }
 
 // Function to read a date from a file
@@ -253,15 +198,11 @@ Date read_date_from_file(FILE *file) {
   // Read date components from the file
   if (fscanf(file, "%d %d %d %d %d", &minutes, &hour, &day, &month, &year) !=
       5) {
-    clean_file(file);
     return NULL_DATE;
   }
-  clean_file(file);
 
   // Create a new date object with the read components
-  Date date =
-      new_date((unsigned char)minutes, (unsigned char)hour, (unsigned char)day,
-               (unsigned char)month, (unsigned short)year);
+  Date date = new_date(minutes, hour, day, month, year);
 
   return date;
 }

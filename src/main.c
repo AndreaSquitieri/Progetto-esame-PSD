@@ -42,6 +42,9 @@ int read_menu_choice(void) {
 }
 
 int main(int argc, char **argv) {
+
+  set_log_file(stderr);
+
   char *filename = "conf.txt";
   if (argc > 1) {
     filename = argv[1];

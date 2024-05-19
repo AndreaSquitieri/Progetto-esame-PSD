@@ -4,6 +4,7 @@ LDFLAGS =
 SRC_DIR = src
 BUILD_DIR = build
 BIN_DIR = bin
+TEST_DIR = tests
 
 # List of source files
 SRCS = $(wildcard $(SRC_DIR)/*.c)
@@ -26,8 +27,11 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 $(MAIN_EXEC): $(OBJS)
 	$(CC) $(LDFLAGS) $^ -o $@
 
-date_test:	$(OBJS)
-	$(CC) $(CFLAGS) $(BUILD_DIR)/utils.o $(BUILD_DIR)/logging.o $(BUILD_DIR)/date.o tests/date_test/main.c -o tests/date_test/date_test
+test: $(OBJS) $(TEST_DIR)/test.o
+	$(CC) $(LDFLAGS) $(filter-out $(BUILD_DIR)/main.o, $(OBJS)) $(TEST_DIR)/test.o -o $(TEST_DIR)/test
+
+$(TEST_DIR)/test.o:
+	$(CC) $(CFLAGS) -c $(TEST_DIR)/test.c -o $@
 
 clean:
-	rm -rf $(BUILD_DIR)/*.o $(MAIN_EXEC)
+	rm -rf $(BUILD_DIR)/*.o $(MAIN_EXEC) $(TEST_DIR)/test.o $(TEST_DIR)/test

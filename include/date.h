@@ -10,16 +10,16 @@ typedef const struct DateStruct *ConstDate;
 
 Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
               unsigned char month, unsigned short year);
-
-int cmp_date(ConstDate date_a, ConstDate date_b);
 Date copy_date(ConstDate date);
 
-void free_date(Date date);
+int cmp_date(ConstDate date_a, ConstDate date_b);
 
 // IO functions
 void save_date_to_file(ConstDate date, FILE *file);
 Date read_date_from_file(FILE *file);
 void print_date(ConstDate date);
 Date read_date(void);
+
+void free_date(Date date);
 
 #endif // DATE_H_

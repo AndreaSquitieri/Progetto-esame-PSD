@@ -318,6 +318,7 @@ Event read_event_from_file(FILE *file) {
     free_date(start_date); // Free allocated memory before returning NULL_EVENT
     return NULL_EVENT;
   }
+  clean_file(file);
 
   // Create a new event object with the read data
   Event event = new_event(type, name, start_date, end_date, id);
