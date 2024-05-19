@@ -53,7 +53,7 @@ int get_size_room_list(RoomList list) { return list->size; }
 
 int get_pos_room_list(RoomList list, Room to_search) {
   for (int i = 0; i < list->size; i++) {
-    if (is_room_equal(list->array[i], to_search)) {
+    if (are_rooms_equal(list->array[i], to_search)) {
       return i;
     }
   }

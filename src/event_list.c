@@ -55,7 +55,7 @@ int get_size_event_list(EventList list) { return list->size; }
 
 int get_pos_event_list(EventList list, Event to_search) {
   for (int i = 0; i < list->size; i++) {
-    if (is_event_equal(list->array[i], to_search)) {
+    if (are_events_equal(list->array[i], to_search)) {
       return i;
     }
   }

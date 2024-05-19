@@ -60,7 +60,7 @@ int bst_insert_event(EventBst bst, Event event) {
 
 static EventBstNode bst_search_event(EventBst bst, ConstEvent event) {
   EventBstNode res = bst->root;
-  while (res != NULL && !is_same_instance_event(event, res->value)) {
+  while (res != NULL && !are_events_equal(event, res->value)) {
     if (cmp_event(event, res->value) < 0) {
       res = res->left;
     } else {

@@ -39,10 +39,6 @@ Event new_event(EventType type, const char *name, Date start_date,
 
 int is_valid_event_type(int type) { return type >= 0 && type <= 2; }
 
-int is_same_instance_event(ConstEvent event_a, ConstEvent event_b) {
-  return event_a->id == event_b->id;
-}
-
 int cmp_event(ConstEvent event_a, ConstEvent event_b) {
   int date_comparison =
       cmp_date(get_event_start_date(event_a), get_event_start_date(event_b));
@@ -53,21 +49,6 @@ int cmp_event(ConstEvent event_a, ConstEvent event_b) {
     return 1;
   }
   return strcmp(event_a->name, event_b->name);
-}
-
-Event copy_event(ConstEvent event) {
-  if (event == NULL_EVENT) {
-    return NULL_EVENT;
-  }
-  Event new_event = my_alloc(1, sizeof(*new_event));
-  new_event->start_date = copy_date(event->start_date);
-  new_event->end_date = copy_date(event->end_date);
-  new_event->name = my_strdup(event->name);
-  new_event->type = event->type;
-  new_event->assigned_room_id = event->assigned_room_id;
-
-  new_event->id = event->id;
-  return new_event;
 }
 
 unsigned int get_event_id(ConstEvent event) { return event->id; }
@@ -92,7 +73,7 @@ const char *get_event_name(ConstEvent event) {
   }
   return event->name;
 }
-EventType get_type_event(ConstEvent event) {
+EventType get_event_type(ConstEvent event) {
   if (event == NULL_EVENT) {
     return -1;
   }
@@ -180,8 +161,7 @@ void print_event(ConstEvent event, ConstRoom assigned_room) {
   puts("");
   if (assigned_room != NULL_ROOM) {
     printf("Sala: ");
-    print_room(assigned_room);
-    puts("");
+    puts(get_room_name(assigned_room));
   }
   printf("Data inizio: ");
   print_date(event->start_date);
@@ -241,7 +221,7 @@ Event read_event(unsigned int event_id) {
   return event;
 }
 
-int is_event_equal(ConstEvent event_a, ConstEvent event_b) {
+int are_events_equal(ConstEvent event_a, ConstEvent event_b) {
   return event_a != NULL_EVENT && event_b != NULL_EVENT &&
          event_a->id == event_b->id;
 }

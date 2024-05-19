@@ -265,11 +265,11 @@ static bool are_events_compatible(Event event, va_list args) {
   Event second_event = va_arg(args, Event);
   Room room = va_arg(args, Room);
   RoomList room_list = va_arg(args, RoomList);
-  if (is_event_equal(event, second_event)) {
+  if (are_events_equal(event, second_event)) {
     return true;
   }
-  if (!is_room_equal(room,
-                     get_room_by_id(room_list, get_event_room_id(event)))) {
+  if (!are_rooms_equal(room,
+                       get_room_by_id(room_list, get_event_room_id(event)))) {
     return true;
   }
   return !do_events_overlap(event, second_event);
