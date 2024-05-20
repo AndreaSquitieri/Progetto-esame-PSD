@@ -8,6 +8,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAXSIZE 102
 
@@ -125,13 +126,23 @@ int remove_conference_event(Conference conf) {
 }
 
 static int edit_conference_event_title(Conference conf, Event to_edit) {
-  char temp[MAXSIZE];
-  printf("Inserisci nome evento [Max 100 caratteri]: ");
-  if (read_line(temp, sizeof(temp))) {
-    puts("Nome inserito non valido");
-    return -1;
+  char name[MAXSIZE] = {0};
+  while (1) {
+    char temp[MAXSIZE] = {0};
+    printf("Inserisci nome evento [Max 100 caratteri]: ");
+    if (read_line(temp, MAXSIZE)) {
+      printf("Nome evento troppo lungo.\n");
+      continue;
+    }
+    // trims leading whitespaces
+    trim_whitespaces(name, temp, MAXSIZE);
+    if (strlen(name) == 0) {
+      continue;
+    }
+    break;
   }
-  if (set_event_name(to_edit, temp)) {
+
+  if (set_event_name(to_edit, name)) {
     puts("Qualcosa è andato storto durante l'inserimento del nome dell'evento");
     return -1;
   }

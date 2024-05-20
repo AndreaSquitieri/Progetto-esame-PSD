@@ -1,4 +1,5 @@
 #include "conference.h"
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -61,14 +62,27 @@ int run_test_case(TestType test_type, const char *oracle_fname,
       break;
     }
 
-    freopen(NULL_DEVICE, "w", stdout);
-    freopen(NULL_DEVICE, "w", stderr);
-
     add_conference_event(conf);
     save_conference_to_file(conf, output);
 
-    freopen(TTY_DEVICE, "w", stdout);
-    freopen(TTY_DEVICE, "w", stderr);
+    fflush(output);
+    rewind(output);
+
+    test_result = cmp_file(oracle, output);
+    break;
+  }
+  case TEST_REMOVE_EVENT: {
+    Conference conf = read_conference_from_file(conference);
+    if (conf == NULL_CONFERENCE) {
+      conf = new_conference();
+    }
+    if (conf == NULL_CONFERENCE) {
+      test_result = 0;
+      break;
+    }
+
+    remove_conference_event(conf);
+    save_conference_to_file(conf, output);
 
     fflush(output);
     rewind(output);
@@ -85,35 +99,9 @@ int run_test_case(TestType test_type, const char *oracle_fname,
       test_result = 0;
       break;
     }
-    freopen(NULL_DEVICE, "w", stdout);
-    freopen(NULL_DEVICE, "w", stderr);
 
     edit_conference_event(conf);
     save_conference_to_file(conf, output);
-
-    freopen(TTY_DEVICE, "w", stdout);
-    freopen(TTY_DEVICE, "w", stderr);
-
-    test_result = cmp_file(oracle, output);
-    break;
-  }
-  case TEST_REMOVE_EVENT: {
-    Conference conf = read_conference_from_file(conference);
-    if (conf == NULL_CONFERENCE) {
-      conf = new_conference();
-    }
-    if (conf == NULL_CONFERENCE) {
-      test_result = 0;
-      break;
-    }
-    freopen(NULL_DEVICE, "w", stdout);
-    freopen(NULL_DEVICE, "w", stderr);
-
-    remove_conference_event(conf);
-    save_conference_to_file(conf, output);
-
-    freopen(TTY_DEVICE, "w", stdout);
-    freopen(TTY_DEVICE, "w", stderr);
 
     test_result = cmp_file(oracle, output);
     break;
@@ -124,10 +112,14 @@ int run_test_case(TestType test_type, const char *oracle_fname,
       test_result = 0;
       break;
     }
+
     int fd_output = fileno(output);
+    int stdout_fd = dup(STDOUT_FILENO);
+
     dup2(fd_output, STDOUT_FILENO);
     display_conference_schedule(conf);
-    freopen(TTY_DEVICE, "w", stdout);
+    dup2(stdout_fd, STDOUT_FILENO);
+    close(stdout_fd);
 
     fflush(output);
     rewind(output);
