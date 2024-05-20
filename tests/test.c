@@ -173,8 +173,8 @@ int main(int argc, char **argv) {
   char input_fname[100];
 
   char param[100];
-  while (fscanf(test_suite, "%d %s %s", (int *)&test_type, test_id, param) ==
-         3) {
+  while (fscanf(test_suite, "%d %s %[^\n]", (int *)&test_type, test_id,
+                param) == 3) {
     (void)sprintf(conference_fname, "%s/conference.txt", test_id);
     (void)sprintf(oracle_fname, "%s/oracle.txt", test_id);
     (void)sprintf(output_fname, "%s/output.txt", test_id);

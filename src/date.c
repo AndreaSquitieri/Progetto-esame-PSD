@@ -54,7 +54,7 @@ struct DateStruct {
 
 // Funzione per verificare se un anno è bisestile
 static bool is_leap_year(unsigned short year) {
-  return year % 400 == 0 || (year % 100 != 0 && year % 4 == 0);
+  return (year % 400 == 0) || (year % 100 != 0 && year % 4 == 0);
 }
 
 // Funzione per verificare se una data è valida
