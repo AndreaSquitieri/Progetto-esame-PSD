@@ -354,6 +354,22 @@ void save_conference_to_file(ConstConference conf, FILE *file) {
   save_room_list_to_file(conf->rooms, file);
 }
 
+void save_conference_to_file_sorted(ConstConference conf, FILE *file) {
+  if (conf == NULL_CONFERENCE || file == NULL) {
+    log_error("Invalid conference or file pointer");
+    return;
+  }
+
+  // Save event ID counter and room ID counter
+  fprintf(file, "%u %u\n", conf->event_id_counter, conf->room_id_counter);
+
+  // Save events
+  save_event_bst_to_file_sorted(conf->bst, file);
+
+  // Save rooms
+  save_room_list_to_file(conf->rooms, file);
+}
+
 Conference read_conference_from_file(FILE *file) {
   if (file == NULL) {
     log_error("Invalid file pointer");

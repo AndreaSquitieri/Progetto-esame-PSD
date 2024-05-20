@@ -22,6 +22,7 @@ int conference_assign_event_to_room(Conference conf);
 void free_conference(Conference conf);
 
 void save_conference_to_file(ConstConference conf, FILE *file);
+void save_conference_to_file_sorted(ConstConference conf, FILE *file);
 Conference read_conference_from_file(FILE *file);
 
 #endif // CONFERENCE_H_

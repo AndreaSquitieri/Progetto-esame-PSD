@@ -27,5 +27,6 @@ void free_event_bst(EventBst bst);
 EventBst read_event_bst_from_file(FILE *file);
 
 void save_event_bst_to_file(ConstEventBst bst, FILE *file);
+void save_event_bst_to_file_sorted(ConstEventBst bst, FILE *file);
 
 #endif // EVENT_BST_H_

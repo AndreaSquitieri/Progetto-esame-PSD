@@ -35,6 +35,74 @@ int cmp_file(FILE *oracle, FILE *output) {
   }
   return 1;
 }
+void silence_stdout() {
+  // Flush any existing stdout output
+  fflush(stdout);
+
+  // Save the current stdout file descriptor
+  int stdout_fd = dup(STDOUT_FILENO);
+  if (stdout_fd == -1) {
+    perror("dup");
+    exit(1);
+  }
+
+  // Open /dev/null for writing
+  int devnull_fd = open("/dev/null", O_WRONLY);
+  if (devnull_fd == -1) {
+    perror("open");
+    close(stdout_fd);
+    exit(1);
+  }
+
+  // Redirect stdout to /dev/null
+  if (dup2(devnull_fd, STDOUT_FILENO) == -1) {
+    perror("dup2");
+    close(stdout_fd);
+    close(devnull_fd);
+    exit(1);
+  }
+
+  // Close /dev/null file descriptor as it is no longer needed
+  close(devnull_fd);
+
+  // Save the stdout file descriptor into the environment
+  // This uses snprintf to convert the file descriptor to a string
+  char fd_str[16];
+  snprintf(fd_str, sizeof(fd_str), "%d", stdout_fd);
+  setenv("SAVED_STDOUT_FD", fd_str, 1);
+}
+
+void restore_stdout() {
+  // Flush any output that might be in the buffer
+  fflush(stdout);
+
+  // Get the saved stdout file descriptor from the environment
+  const char *fd_str = getenv("SAVED_STDOUT_FD");
+  if (!fd_str) {
+    fprintf(stderr, "No saved stdout file descriptor found.\n");
+    exit(1);
+  }
+
+  // Convert the string back to an integer file descriptor
+  int stdout_fd = atoi(fd_str);
+  if (stdout_fd == 0 && fd_str[0] != '0') {
+    fprintf(stderr, "Invalid saved stdout file descriptor: %s\n", fd_str);
+    exit(1);
+  }
+
+  // Restore stdout using the saved file descriptor
+  if (dup2(stdout_fd, STDOUT_FILENO) == -1) {
+    perror("dup2");
+    close(stdout_fd);
+    exit(1);
+  }
+
+  // Close the saved stdout file descriptor as it is no longer needed
+  close(stdout_fd);
+
+  // Unset the environment variable
+  unsetenv("SAVED_STDOUT_FD");
+}
 
 int run_test_case(TestType test_type, const char *oracle_fname,
                   const char *output_fname, const char *input_fname,
@@ -62,8 +130,10 @@ int run_test_case(TestType test_type, const char *oracle_fname,
       break;
     }
 
+    silence_stdout();
     add_conference_event(conf);
-    save_conference_to_file(conf, output);
+    save_conference_to_file_sorted(conf, output);
+    restore_stdout();
 
     fflush(output);
     rewind(output);
@@ -81,8 +151,10 @@ int run_test_case(TestType test_type, const char *oracle_fname,
       break;
     }
 
+    silence_stdout();
     remove_conference_event(conf);
-    save_conference_to_file(conf, output);
+    save_conference_to_file_sorted(conf, output);
+    restore_stdout();
 
     fflush(output);
     rewind(output);
@@ -100,9 +172,13 @@ int run_test_case(TestType test_type, const char *oracle_fname,
       break;
     }
 
+    silence_stdout();
     edit_conference_event(conf);
-    save_conference_to_file(conf, output);
+    save_conference_to_file_sorted(conf, output);
+    restore_stdout();
 
+    fflush(output);
+    rewind(output);
     test_result = cmp_file(oracle, output);
     break;
   }
@@ -113,11 +189,14 @@ int run_test_case(TestType test_type, const char *oracle_fname,
       break;
     }
 
+    fflush(stdout);
     int fd_output = fileno(output);
     int stdout_fd = dup(STDOUT_FILENO);
-
     dup2(fd_output, STDOUT_FILENO);
+
     display_conference_schedule(conf);
+
+    fflush(stdout);
     dup2(stdout_fd, STDOUT_FILENO);
     close(stdout_fd);
 

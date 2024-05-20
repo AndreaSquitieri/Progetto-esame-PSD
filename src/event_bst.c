@@ -301,6 +301,39 @@ void save_event_bst_to_file(ConstEventBst bst, FILE *file) {
   save_event_bst_nodes(bst->root, file);
 }
 
+// Helper function to recursively save event BST nodes to a file in a sorted
+// manner
+static void save_event_bst_nodes_sorted(EventBstNode node, FILE *file) {
+  if (node == NULL) {
+    return;
+  }
+
+  // TODO
+  // Add spacing between events
+  // fprintf(file, "\n"); // Add a newline between events
+
+  // Recursively save left subtree
+  save_event_bst_nodes_sorted(node->left, file);
+
+  // Save current node's event to the file
+  save_event_to_file(node->value, file);
+
+  // Recursively save right subtree
+  save_event_bst_nodes_sorted(node->right, file);
+}
+
+// Function to save an event BST to a file, saving them in a sorted way
+void save_event_bst_to_file_sorted(ConstEventBst bst, FILE *file) {
+  if (file == NULL) {
+    log_error("File pointer is NULL");
+    return;
+  }
+
+  fprintf(file, "%zu\n", bst->size);
+  // Traverse the BST and save each event to the file
+  save_event_bst_nodes_sorted(bst->root, file);
+}
+
 // Function to read an event BST from a file
 EventBst read_event_bst_from_file(FILE *file) {
   if (file == NULL) {
