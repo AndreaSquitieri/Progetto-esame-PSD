@@ -233,11 +233,9 @@ bool do_events_overlap(ConstEvent event_a, ConstEvent event_b) {
   ConstDate start_b = get_event_start_date(event_b);
   ConstDate end_b = get_event_end_date(event_b);
 
-  bool part_a =
-      cmp_date(start_b, start_a) <= 0 && cmp_date(start_a, end_b) <= 0;
+  bool part_a = cmp_date(start_b, start_a) <= 0 && cmp_date(start_a, end_b) < 0;
 
-  bool part_b =
-      cmp_date(start_a, start_b) <= 0 && cmp_date(start_b, end_a) <= 0;
+  bool part_b = cmp_date(start_a, start_b) <= 0 && cmp_date(start_b, end_a) < 0;
   return part_a || part_b;
 }
 

@@ -1,4 +1,5 @@
 #include "conference.h"
+#include "date.h"
 #include "event_bst.h"
 #include "logging.h"
 #include "mevent.h"
@@ -125,6 +126,27 @@ int remove_conference_event(Conference conf) {
   return 0;
 }
 
+int conference_free_event_room(Conference conf) {
+  if (get_bst_size(conf->bst) == 0) {
+    puts("Non ci sono sale assegnate");
+    return 1;
+  }
+
+  int res =
+      conference_select_event(conf, "Inserisci l'id dell'evento la cui sala si "
+                                    "desidera liberare [inserire un numero "
+                                    "negativo "
+                                    "per annullare l'operazione]: ");
+  if (res < 0) {
+    return 2; // Action aborted by the user
+  }
+  Event event = bst_get_event_by_id(conf->bst, res);
+  if (set_event_room_id(event, NULL_ROOM_ID)) {
+    return -1;
+  }
+  return 0;
+}
+
 static int edit_conference_event_title(Conference conf, Event to_edit) {
   char name[MAXSIZE] = {0};
   while (1) {
@@ -168,13 +190,55 @@ static int edit_conference_event_type(Conference conf, Event to_edit) {
   return 0;
 }
 
+static bool are_events_compatible(Event event, va_list args) {
+  Event second_event = va_arg(args, Event);
+  Room room = va_arg(args, Room);
+  RoomList room_list = va_arg(args, RoomList);
+  if (are_events_equal(event, second_event)) {
+    return true;
+  }
+  if (are_rooms_equal(NULL_ROOM, room)) {
+    return true;
+  }
+  if (!are_rooms_equal(room,
+                       get_room_by_id(room_list, get_event_room_id(event)))) {
+    return true;
+  }
+  return !do_events_overlap(event, second_event);
+}
+
 static int edit_conference_event_start_date(Conference conf, Event to_edit) {
   Date date = NULL_DATE;
   do {
     printf("Inserisci data inizio evento (DD/MM/AAAA hh:mm): ");
     date = read_date();
+    if (date == NULL_DATE) {
+      continue;
+    }
+    if (cmp_date(date, get_event_end_date(to_edit)) > 0) {
+      free_date(date);
+      date = NULL_DATE;
+      continue;
+    }
+
+    Date old_date = copy_date(get_event_start_date(to_edit));
+    if (set_event_start_date(to_edit, date)) {
+      free_date(date);
+      free_date(old_date);
+      return -1;
+    }
+    Room room = get_room_by_id(conf->rooms, get_event_room_id(to_edit));
+    if (!bst_every(conf->bst, are_events_compatible, to_edit, room,
+                   conf->rooms)) {
+      if (set_event_start_date(to_edit, old_date)) {
+        free_date(old_date);
+        return -2;
+      }
+      date = NULL_DATE;
+      continue;
+    }
   } while (date == NULL_DATE && printf("Data inserita non valida\n"));
-  return set_event_start_date(to_edit, date);
+  return 0;
 }
 
 static int edit_conference_event_end_date(Conference conf, Event to_edit) {
@@ -182,8 +246,34 @@ static int edit_conference_event_end_date(Conference conf, Event to_edit) {
   do {
     printf("Inserisci data fine evento (DD/MM/AAAA hh:mm): ");
     date = read_date();
+    if (date == NULL_DATE) {
+      continue;
+    }
+    if (cmp_date(date, get_event_start_date(to_edit)) < 0) {
+      free_date(date);
+      date = NULL_DATE;
+      continue;
+    }
+
+    Date old_date = copy_date(get_event_end_date(to_edit));
+    if (set_event_end_date(to_edit, date)) {
+      free_date(date);
+      free_date(old_date);
+      return -1;
+    }
+    Room room = get_room_by_id(conf->rooms, get_event_room_id(to_edit));
+    if (!bst_every(conf->bst, are_events_compatible, to_edit, room,
+                   conf->rooms)) {
+      if (set_event_end_date(to_edit, old_date)) {
+
+        free_date(old_date);
+        return -2;
+      }
+      date = NULL_DATE;
+      continue;
+    }
   } while (date == NULL_DATE && printf("Data inserita non valida\n"));
-  return set_event_end_date(to_edit, date);
+  return 0;
 }
 
 #define EDIT_MENU                                                              \
@@ -272,20 +362,6 @@ int display_conference_rooms(ConstConference conf) {
   return 0;
 }
 
-static bool are_events_compatible(Event event, va_list args) {
-  Event second_event = va_arg(args, Event);
-  Room room = va_arg(args, Room);
-  RoomList room_list = va_arg(args, RoomList);
-  if (are_events_equal(event, second_event)) {
-    return true;
-  }
-  if (!are_rooms_equal(room,
-                       get_room_by_id(room_list, get_event_room_id(event)))) {
-    return true;
-  }
-  return !do_events_overlap(event, second_event);
-}
-
 int conference_assign_event_to_room(Conference conf) {
   int res = 0;
   Event to_assign = NULL_EVENT;
@@ -320,8 +396,8 @@ int conference_assign_event_to_room(Conference conf) {
     printf("Qualcosa è andato storto durante la ricerca della sala\n");
     return -3;
   }
-  if (!bst_for_all(conf->bst, are_events_compatible, to_assign, room,
-                   conf->rooms)) {
+  if (!bst_every(conf->bst, are_events_compatible, to_assign, room,
+                 conf->rooms)) {
     printf("Non è possible assegnare la sala all'evento\n");
     return 2;
   }

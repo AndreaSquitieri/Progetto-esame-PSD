@@ -140,8 +140,6 @@ Event get_at_sorted_event_list(SortedEventList sorted_list, int pos);
 int get_size_sorted_event_list(ConstSortedEventList sorted_list);
 
 /**
- * TODO
- * Cambiare specifica
  * @brief Stampa la lista di eventi ordinata.
  *
  * @param sorted_list La lista di eventi ordinata da stampare.

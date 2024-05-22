@@ -105,8 +105,6 @@ Event get_event_at(EventQueue queue, size_t index) {
   if (index >= queue->size) {
     return NULL_EVENT;
   }
-  // TODO -- Consideration
-  // Should I return a copy or the original one?
   return AT(queue, index);
 }
 

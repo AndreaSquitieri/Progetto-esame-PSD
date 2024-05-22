@@ -1,6 +1,20 @@
-1 1
-1
-0 0 0 Evento test 1
-0 12 1 1 1970
-0 13 1 1 1970
-0
+Id: 0
+Evento: "Evento test 1"
+Tipo: Workshop
+Sala: Sala A
+Data inizio: 1 Gennaio 1970, 12:00
+Data fine: 1 Gennaio 1970, 13:00
+
+Id: 1
+Evento: "Evento test 2"
+Tipo: Sessione di keynote
+Data inizio: 1 Gennaio 1970, 12:00
+Data fine: 1 Gennaio 1970, 13:00
+
+Id: 2
+Evento: "Evento test 3"
+Tipo: Panel di discussione
+Sala: Sala C
+Data inizio: 1 Gennaio 1970, 12:00
+Data fine: 1 Gennaio 1970, 13:00
+

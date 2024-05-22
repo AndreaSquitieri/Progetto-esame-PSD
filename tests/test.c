@@ -14,9 +14,11 @@
 
 typedef enum {
   TEST_ADD_EVENT = 1,
-  TEST_REMOVE_EVENT = 2,
-  TEST_EDIT_EVENT = 3,
-  TEST_DISPLAY_EVENTS = 4,
+  TEST_REMOVE_EVENT,
+  TEST_EDIT_EVENT,
+  TEST_ASSIGN_ROOM_EVENT,
+  TEST_FREE_ROOM_EVENT,
+  TEST_DISPLAY_EVENTS,
   // Add more test types here if needed
 } TestType;
 
@@ -35,7 +37,7 @@ int cmp_file(FILE *oracle, FILE *output) {
   }
   return 1;
 }
-void silence_stdout() {
+void silence_stdout(void) {
   // Flush any existing stdout output
   fflush(stdout);
 
@@ -175,6 +177,50 @@ int run_test_case(TestType test_type, const char *oracle_fname,
     silence_stdout();
     edit_conference_event(conf);
     save_conference_to_file_sorted(conf, output);
+    restore_stdout();
+
+    fflush(output);
+    rewind(output);
+    test_result = cmp_file(oracle, output);
+    break;
+  }
+  case TEST_ASSIGN_ROOM_EVENT: {
+    Conference conf = read_conference_from_file(conference);
+    if (conf == NULL_CONFERENCE) {
+      conf = new_conference();
+    }
+    if (conf == NULL_CONFERENCE) {
+      test_result = 0;
+      break;
+    }
+
+    silence_stdout();
+
+    conference_assign_event_to_room(conf);
+    save_conference_to_file_sorted(conf, output);
+
+    restore_stdout();
+
+    fflush(output);
+    rewind(output);
+    test_result = cmp_file(oracle, output);
+    break;
+  }
+  case TEST_FREE_ROOM_EVENT: {
+    Conference conf = read_conference_from_file(conference);
+    if (conf == NULL_CONFERENCE) {
+      conf = new_conference();
+    }
+    if (conf == NULL_CONFERENCE) {
+      test_result = 0;
+      break;
+    }
+
+    silence_stdout();
+
+    conference_free_event_room(conf);
+    save_conference_to_file_sorted(conf, output);
+
     restore_stdout();
 
     fflush(output);

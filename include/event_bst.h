@@ -21,7 +21,7 @@ size_t get_bst_size(ConstEventBst bst);
 
 void print_event_bst(ConstEventBst bst, ConstRoomList room_list);
 
-bool bst_for_all(EventBst bst, EventPredicate predicate, ...);
+bool bst_every(EventBst bst, EventPredicate predicate, ...);
 void free_event_bst(EventBst bst);
 
 EventBst read_event_bst_from_file(FILE *file);

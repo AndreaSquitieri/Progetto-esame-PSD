@@ -64,8 +64,6 @@ int get_size_sorted_event_list(ConstSortedEventList sorted_list) {
 
 void print_sorted_event_list(ConstSortedEventList sorted_list,
                              RoomList room_list) {
-  // TODO
-  // Improve this function
   for (int i = 0; i < get_size_event_list(sorted_list->events); i++) {
     Event event = get_at_event_list(sorted_list->events, i);
     print_event(event, get_room_by_id(room_list, get_event_room_id(event)));

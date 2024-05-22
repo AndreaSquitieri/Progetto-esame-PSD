@@ -224,8 +224,8 @@ static void free_event_bst_nodes(EventBstNode node) {
   free(node);
 }
 
-static bool for_all_nodes(EventBstNode node, EventPredicate predicate,
-                          va_list args) {
+static bool every_node(EventBstNode node, EventPredicate predicate,
+                       va_list args) {
   if (node == NULL) {
     return true; // Base case: an empty subtree satisfies the condition
   }
@@ -241,11 +241,11 @@ static bool for_all_nodes(EventBstNode node, EventPredicate predicate,
   }
 
   // Recursively check left and right subtrees
-  return for_all_nodes(node->left, predicate, args) &&
-         for_all_nodes(node->right, predicate, args);
+  return every_node(node->left, predicate, args) &&
+         every_node(node->right, predicate, args);
 }
 
-bool bst_for_all(EventBst bst, EventPredicate predicate, ...) {
+bool bst_every(EventBst bst, EventPredicate predicate, ...) {
   if (bst == NULL_EVENT_BST || bst->root == NULL) {
     return false; // Handle edge cases where the tree is empty
   }
@@ -255,7 +255,7 @@ bool bst_for_all(EventBst bst, EventPredicate predicate, ...) {
   va_start(args, predicate);
 
   // Call the recursive function starting from the root node
-  bool result = for_all_nodes(bst->root, predicate, args);
+  bool result = every_node(bst->root, predicate, args);
 
   // Clean up variable arguments
   va_end(args);
@@ -280,10 +280,6 @@ static void save_event_bst_nodes(EventBstNode node, FILE *file) {
   // Save current node's event to the file
   save_event_to_file(node->value, file);
 
-  // TODO
-  // Add spacing between events
-  // fprintf(file, "\n"); // Add a newline between events
-
   // Recursively save left and right subtrees
   save_event_bst_nodes(node->left, file);
   save_event_bst_nodes(node->right, file);
@@ -307,10 +303,6 @@ static void save_event_bst_nodes_sorted(EventBstNode node, FILE *file) {
   if (node == NULL) {
     return;
   }
-
-  // TODO
-  // Add spacing between events
-  // fprintf(file, "\n"); // Add a newline between events
 
   // Recursively save left subtree
   save_event_bst_nodes_sorted(node->left, file);

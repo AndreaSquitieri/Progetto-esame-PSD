@@ -14,6 +14,7 @@ typedef enum {
   REMOVE_ROOM,
   DISPLAY_ROOMS,
   ASSIGN_ROOM,
+  FREE_EVENT_ROOM,
   EXIT
 } MenuChoice;
 
@@ -27,7 +28,8 @@ typedef enum {
   "[6]: Rimuovi sala\n"                                                        \
   "[7]: Mostra sale\n"                                                         \
   "[8]: Assegna sala ad evento\n"                                              \
-  "[9]: Esci\n"                                                                \
+  "[9]: Libera sala\n"                                                         \
+  "[10]: Esci\n"                                                               \
   "Indicare l'operazione che si desidera effetuare: "
 
 int read_menu_choice(void) {
@@ -99,6 +101,10 @@ int main(int argc, char **argv) {
     }
     case ASSIGN_ROOM: {
       conference_assign_event_to_room(conf);
+      break;
+    }
+    case FREE_EVENT_ROOM: {
+      conference_free_event_room(conf);
       break;
     }
     case EXIT:

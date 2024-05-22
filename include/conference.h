@@ -18,6 +18,7 @@ int display_conference_rooms(ConstConference conf);
 int add_conference_room(Conference conf);
 int remove_conference_room(Conference conf);
 int conference_assign_event_to_room(Conference conf);
+int conference_free_event_room(Conference conf);
 
 void free_conference(Conference conf);
 
