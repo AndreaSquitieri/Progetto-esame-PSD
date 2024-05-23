@@ -293,6 +293,10 @@ typedef enum {
 } EditMenuChoice;
 
 int edit_conference_event(Conference conf) {
+  if (get_bst_size(conf->bst) == 0) {
+    printf("Non ci sono eventi da modificare\n");
+    return 0;
+  }
   int res = conference_select_event(
       conf, "Inserisci l'id dell'evento da modificare [inserire un numero "
             "negativo "
@@ -353,16 +357,30 @@ int edit_conference_event(Conference conf) {
   return 0;
 }
 
-int display_conference_schedule(ConstConference conf) {
+void display_conference_schedule(ConstConference conf) {
+  if (get_bst_size(conf->bst) == 0) {
+    puts("Non ci sono eventi da visualizzare");
+    return;
+  }
   print_event_bst(conf->bst, conf->rooms);
-  return 0;
 }
-int display_conference_rooms(ConstConference conf) {
+void display_conference_rooms(ConstConference conf) {
+  if (get_size_room_list(conf->rooms) == 0) {
+    puts("Non ci sono sale da visualizzare");
+    return;
+  }
   print_room_list(conf->rooms);
-  return 0;
 }
 
 int conference_assign_event_to_room(Conference conf) {
+  if (get_size_room_list(conf->rooms) == 0) {
+    puts("Non ci sono sale da assegnare");
+    return 0;
+  }
+  if (get_bst_size(conf->bst) == 0) {
+    puts("Non ci sono eventi a cui assegnare una sala");
+    return 0;
+  }
   int res = 0;
   Event to_assign = NULL_EVENT;
   do {
