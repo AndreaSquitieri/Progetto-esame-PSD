@@ -11,24 +11,31 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAXSIZE 102
+#define MAXSIZE 102 // Define a maximum size constant
 
+// Define the structure of a conference
 struct ConferenceStruct {
-  unsigned int event_id_counter;
-  unsigned int room_id_counter;
-  EventBst bst;
-  RoomList rooms;
+  unsigned int event_id_counter; // Counter for event IDs
+  unsigned int room_id_counter;  // Counter for room IDs
+  EventBst bst;                  // Event binary search tree
+  RoomList rooms;                // List of rooms
 };
 
+// Function to create a new conference
 Conference new_conference(void) {
+  // Create a new event binary search tree
   EventBst bst = new_event_bst();
   if (bst == NULL_EVENT_BST) {
     return NULL_CONFERENCE;
   }
+
+  // Create a new list of rooms
   RoomList room_list = new_room_list();
   if (room_list == NULL_ROOM_LIST) {
     return NULL_CONFERENCE;
   }
+
+  // Allocate memory for the conference structure
   Conference conf = my_alloc(1, sizeof(*conf));
   conf->bst = bst;
   conf->rooms = room_list;
@@ -37,35 +44,53 @@ Conference new_conference(void) {
   return conf;
 }
 
+// Function to add an event to the conference
 int add_conference_event(Conference conf) {
+  // Read an event with the current event ID counter
   Event event = read_event(conf->event_id_counter);
   if (event == NULL_EVENT) {
     return -1;
   }
+
+  // Insert the event into the event binary search tree
   if (bst_insert_event(conf->bst, event)) {
     free_event(event);
     return -2;
   }
+
+  // Increment the event ID counter
   conf->event_id_counter += 1;
   return 0;
 }
 
+// Function to add a room to the conference
 int add_conference_room(Conference conf) {
+  // Read a room with the current room ID counter
   Room room = read_room(conf->room_id_counter);
   if (room == NULL_ROOM) {
     return -1;
   }
+
+  // Add the room to the list of rooms
   cons_room_list(conf->rooms, room);
+
+  // Increment the room ID counter
   conf->room_id_counter += 1;
   return 0;
 }
 
+// Function to remove a room from the conference
 int remove_conference_room(Conference conf) {
+  // Check if there are rooms to remove
   if (get_size_room_list(conf->rooms) == 0) {
     puts("Non ci sono sale da rimuovere");
     return 1;
   }
+
+  // Display the list of rooms
   print_room_list(conf->rooms);
+
+  // Prompt the user to select a room to remove
   int pos = 0;
   do {
     printf("Inserire il numero della sala che si desidera rimuovere [Inserire "
@@ -83,13 +108,17 @@ int remove_conference_room(Conference conf) {
     return 2;
   }
 
+  // Remove the selected room from the list of rooms
   Room room = remove_at_room_list(conf->rooms, pos);
   free_room(room);
   return 0;
 }
 
+// Function to select an event from the conference
 static int conference_select_event(Conference conf, const char *to_print) {
+  // Print the list of events
   print_event_bst(conf->bst, conf->rooms);
+
   ResultInt res;
   while (1) {
     printf("%s", to_print);
@@ -103,12 +132,15 @@ static int conference_select_event(Conference conf, const char *to_print) {
   return res.value;
 }
 
+// Function to remove an event from the conference
 int remove_conference_event(Conference conf) {
+  // Check if there are events to remove
   if (get_bst_size(conf->bst) == 0) {
     puts("Non ci sono eventi da rimuovere");
     return 1;
   }
 
+  // Prompt the user to select an event to remove
   int res = conference_select_event(
       conf, "Inserisci l'id dell'evento da rimuovere [inserire un numero "
             "negativo "
@@ -116,6 +148,8 @@ int remove_conference_event(Conference conf) {
   if (res < 0) {
     return 2; // Action aborted by the user
   }
+
+  // Remove the selected event from the event binary search tree
   Event removed = bst_remove_event_by_id(conf->bst, res);
   if (removed == NULL_EVENT) {
     puts("Qualcosa è andato storto durante la rimozione dell'evento");
@@ -126,12 +160,15 @@ int remove_conference_event(Conference conf) {
   return 0;
 }
 
+// Function to free a room assigned to an event in the conference
 int conference_free_event_room(Conference conf) {
+  // Check if there are events with assigned rooms
   if (get_bst_size(conf->bst) == 0) {
     puts("Non ci sono sale assegnate");
     return 1;
   }
 
+  // Prompt the user to select an event to free its room assignment
   int res =
       conference_select_event(conf, "Inserisci l'id dell'evento la cui sala si "
                                     "desidera liberare [inserire un numero "
@@ -140,13 +177,18 @@ int conference_free_event_room(Conference conf) {
   if (res < 0) {
     return 2; // Action aborted by the user
   }
+
+  // Retrieve the selected event
   Event event = bst_get_event_by_id(conf->bst, res);
+
+  // Unassign the room from the event
   if (set_event_room_id(event, NULL_ROOM_ID)) {
     return -1;
   }
   return 0;
 }
 
+// Function to edit the title of an event in the conference
 static int edit_conference_event_title(Conference conf, Event to_edit) {
   char name[MAXSIZE] = {0};
   while (1) {
@@ -156,7 +198,7 @@ static int edit_conference_event_title(Conference conf, Event to_edit) {
       printf("Nome evento troppo lungo.\n");
       continue;
     }
-    // trims leading whitespaces
+    // Trims leading whitespaces
     trim_whitespaces(name, temp, MAXSIZE);
     if (strlen(name) == 0) {
       continue;
@@ -164,13 +206,14 @@ static int edit_conference_event_title(Conference conf, Event to_edit) {
     break;
   }
 
+  // Set the event's name
   if (set_event_name(to_edit, name)) {
     puts("Qualcosa è andato storto durante l'inserimento del nome dell'evento");
     return -1;
   }
   return 0;
 }
-
+// Function to edit the type of an event in the conference
 static int edit_conference_event_type(Conference conf, Event to_edit) {
   int type = -1;
   while (!is_valid_event_type(type)) {
@@ -190,6 +233,7 @@ static int edit_conference_event_type(Conference conf, Event to_edit) {
   return 0;
 }
 
+// Function to check if two events are compatible
 static bool are_events_compatible(Event event, va_list args) {
   Event second_event = va_arg(args, Event);
   Room room = va_arg(args, Room);
@@ -207,6 +251,7 @@ static bool are_events_compatible(Event event, va_list args) {
   return !do_events_overlap(event, second_event);
 }
 
+// Function to edit the start date of an event in the conference
 static int edit_conference_event_start_date(Conference conf, Event to_edit) {
   Date date = NULL_DATE;
   do {
@@ -220,7 +265,6 @@ static int edit_conference_event_start_date(Conference conf, Event to_edit) {
       date = NULL_DATE;
       continue;
     }
-
     Date old_date = copy_date(get_event_start_date(to_edit));
     if (set_event_start_date(to_edit, date)) {
       free_date(date);
@@ -228,8 +272,8 @@ static int edit_conference_event_start_date(Conference conf, Event to_edit) {
       return -1;
     }
     Room room = get_room_by_id(conf->rooms, get_event_room_id(to_edit));
-    if (!bst_every(conf->bst, are_events_compatible, to_edit, room,
-                   conf->rooms)) {
+    if (!event_bst_every(conf->bst, are_events_compatible, to_edit, room,
+                         conf->rooms)) {
       if (set_event_start_date(to_edit, old_date)) {
         free_date(old_date);
         return -2;
@@ -240,7 +284,7 @@ static int edit_conference_event_start_date(Conference conf, Event to_edit) {
   } while (date == NULL_DATE && printf("Data inserita non valida\n"));
   return 0;
 }
-
+// Function to edit the end date of an event in the conference
 static int edit_conference_event_end_date(Conference conf, Event to_edit) {
   Date date = NULL_DATE;
   do {
@@ -254,7 +298,6 @@ static int edit_conference_event_end_date(Conference conf, Event to_edit) {
       date = NULL_DATE;
       continue;
     }
-
     Date old_date = copy_date(get_event_end_date(to_edit));
     if (set_event_end_date(to_edit, date)) {
       free_date(date);
@@ -262,8 +305,8 @@ static int edit_conference_event_end_date(Conference conf, Event to_edit) {
       return -1;
     }
     Room room = get_room_by_id(conf->rooms, get_event_room_id(to_edit));
-    if (!bst_every(conf->bst, are_events_compatible, to_edit, room,
-                   conf->rooms)) {
+    if (!event_bst_every(conf->bst, are_events_compatible, to_edit, room,
+                         conf->rooms)) {
       if (set_event_end_date(to_edit, old_date)) {
 
         free_date(old_date);
@@ -275,7 +318,7 @@ static int edit_conference_event_end_date(Conference conf, Event to_edit) {
   } while (date == NULL_DATE && printf("Data inserita non valida\n"));
   return 0;
 }
-
+// Define the edit menu options
 #define EDIT_MENU                                                              \
   "[1] Nome\n"                                                                 \
   "[2] Tipo\n"                                                                 \
@@ -284,6 +327,7 @@ static int edit_conference_event_end_date(Conference conf, Event to_edit) {
   "[5] Esci\n"                                                                 \
   "Selezionare cosa si desidera modificare: "
 
+// Enumeration for edit menu choices
 typedef enum {
   EDIT_EVENT_TITLE = 1,
   EDIT_EVENT_TYPE,
@@ -292,11 +336,15 @@ typedef enum {
   EDIT_EVENT_EXIT
 } EditMenuChoice;
 
+// Function to edit an event in the conference
 int edit_conference_event(Conference conf) {
+  // Check if there are events to edit
   if (get_bst_size(conf->bst) == 0) {
     printf("Non ci sono eventi da modificare\n");
     return 0;
   }
+
+  // Prompt the user to select an event to edit
   int res = conference_select_event(
       conf, "Inserisci l'id dell'evento da modificare [inserire un numero "
             "negativo "
@@ -304,11 +352,14 @@ int edit_conference_event(Conference conf) {
   if (res < 0) {
     return 1; // Action aborted by the user
   }
+
+  // Remove the selected event from the event binary search tree
   Event to_edit = bst_remove_event_by_id(conf->bst, res);
   if (to_edit == NULL_EVENT) {
     printf("Qualcosa è andato storto durante la ricerca dell'evento\n");
     return -1;
   }
+
   int flag = 1;
   while (flag) {
     printf(EDIT_MENU);
@@ -348,6 +399,8 @@ int edit_conference_event(Conference conf) {
       printf("\n\n");
     }
   }
+
+  // Insert the modified event back into the event binary search tree
   if (bst_insert_event(conf->bst, to_edit)) {
     free_event(to_edit);
     puts("Qualcosa è andato storto durante la modifica dell'evento");
@@ -357,6 +410,7 @@ int edit_conference_event(Conference conf) {
   return 0;
 }
 
+// Function to display the conference schedule
 void display_conference_schedule(ConstConference conf) {
   if (get_bst_size(conf->bst) == 0) {
     puts("Non ci sono eventi da visualizzare");
@@ -364,6 +418,8 @@ void display_conference_schedule(ConstConference conf) {
   }
   print_event_bst(conf->bst, conf->rooms);
 }
+
+// Function to display the conference rooms
 void display_conference_rooms(ConstConference conf) {
   if (get_size_room_list(conf->rooms) == 0) {
     puts("Non ci sono sale da visualizzare");
@@ -372,6 +428,7 @@ void display_conference_rooms(ConstConference conf) {
   print_room_list(conf->rooms);
 }
 
+// Function to assign an event to a room in the conference
 int conference_assign_event_to_room(Conference conf) {
   if (get_size_room_list(conf->rooms) == 0) {
     puts("Non ci sono sale da assegnare");
@@ -384,7 +441,6 @@ int conference_assign_event_to_room(Conference conf) {
   int res = 0;
   Event to_assign = NULL_EVENT;
   do {
-
     res = conference_select_event(
         conf, "Inserisci l'id dell'evento da assegnare [inserire un numero "
               "negativo "
@@ -393,6 +449,7 @@ int conference_assign_event_to_room(Conference conf) {
       return 1; // Action aborted by the user
     }
     to_assign = bst_get_event_by_id(conf->bst, res);
+
   } while (to_assign == NULL_EVENT &&
            printf("Qualcosa è andato storto durante la ricerca dell'evento\n"));
   print_room_list(conf->rooms);
@@ -414,8 +471,8 @@ int conference_assign_event_to_room(Conference conf) {
     printf("Qualcosa è andato storto durante la ricerca della sala\n");
     return -3;
   }
-  if (!bst_every(conf->bst, are_events_compatible, to_assign, room,
-                 conf->rooms)) {
+  if (!event_bst_every(conf->bst, are_events_compatible, to_assign, room,
+                       conf->rooms)) {
     printf("Non è possible assegnare la sala all'evento\n");
     return 2;
   }
@@ -426,12 +483,14 @@ int conference_assign_event_to_room(Conference conf) {
   return 0;
 }
 
+// Function to free the memory allocated for a conference
 void free_conference(Conference conf) {
   free_event_bst(conf->bst);
   free_room_list(conf->rooms);
   free(conf);
 }
 
+// Function to save conference data to a file
 void save_conference_to_file(ConstConference conf, FILE *file) {
   if (conf == NULL_CONFERENCE || file == NULL) {
     log_error("Invalid conference or file pointer");
@@ -448,6 +507,7 @@ void save_conference_to_file(ConstConference conf, FILE *file) {
   save_room_list_to_file(conf->rooms, file);
 }
 
+// Function to save conference data to a file in a sorted manner
 void save_conference_to_file_sorted(ConstConference conf, FILE *file) {
   if (conf == NULL_CONFERENCE || file == NULL) {
     log_error("Invalid conference or file pointer");
@@ -464,6 +524,7 @@ void save_conference_to_file_sorted(ConstConference conf, FILE *file) {
   save_room_list_to_file(conf->rooms, file);
 }
 
+// Function to read conference data from a file
 Conference read_conference_from_file(FILE *file) {
   if (file == NULL) {
     log_error("Invalid file pointer");

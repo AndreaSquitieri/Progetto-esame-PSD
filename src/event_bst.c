@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SEPARATOR "\n\n"
+
+// Define the structure of a node in the event binary search tree
 typedef struct EventBstNodeStruct *EventBstNode;
 
 struct EventBstNodeStruct {
@@ -17,11 +20,13 @@ struct EventBstNodeStruct {
   EventBstNode right;
 };
 
+// Define the structure of the event binary search tree
 struct EventBstStruct {
   EventBstNode root;
   size_t size;
 };
 
+// Function to create a new empty event binary search tree
 EventBst new_event_bst(void) {
   EventBst bst = my_alloc(1, sizeof(*bst));
   bst->root = NULL;
@@ -29,13 +34,19 @@ EventBst new_event_bst(void) {
   return bst;
 }
 
+// Function to insert an event into the event binary search tree
 int bst_insert_event(EventBst bst, Event event) {
+  // Error handling for NULL BST pointer
   if (bst == NULL_EVENT_BST) {
     log_error("Bst is NULL in 'bst_insert_event'");
     return -1;
   }
+
+  // Create a new node for the event to insert
   EventBstNode to_insert = my_alloc(1, sizeof(*to_insert));
   to_insert->value = event;
+
+  // Traverse the tree to find the correct position to insert the new event
   EventBstNode parent = NULL;
   EventBstNode temp = bst->root;
   while (temp != NULL) {
@@ -46,6 +57,8 @@ int bst_insert_event(EventBst bst, Event event) {
       temp = temp->right;
     }
   }
+
+  // Insert the new node into the tree
   to_insert->parent = parent;
   if (parent == NULL) {
     bst->root = to_insert;
@@ -54,10 +67,13 @@ int bst_insert_event(EventBst bst, Event event) {
   } else {
     parent->right = to_insert;
   }
+
+  // Update the size of the BST
   bst->size += 1;
   return 0;
 }
 
+// Helper function to search for an event in the event binary search tree
 static EventBstNode bst_search_event(EventBst bst, ConstEvent event) {
   EventBstNode res = bst->root;
   while (res != NULL && !are_events_equal(event, res->value)) {
@@ -70,6 +86,8 @@ static EventBstNode bst_search_event(EventBst bst, ConstEvent event) {
   return res;
 }
 
+// Helper function to recursively search for an event by ID in the event binary
+// search tree
 static EventBstNode bst_nodes_search_event_by_id(EventBstNode node,
                                                  unsigned int id) {
   if (node == NULL) {
@@ -86,10 +104,13 @@ static EventBstNode bst_nodes_search_event_by_id(EventBstNode node,
   return bst_nodes_search_event_by_id(node->right, id);
 }
 
+// Helper function to search for an event by ID in the event binary search tree
 static EventBstNode bst_search_event_by_id(EventBst bst, unsigned int id) {
   return bst_nodes_search_event_by_id(bst->root, id);
 }
 
+// Helper function to shift nodes during node removal in the event binary search
+// tree
 static void bst_shift_nodes(EventBst bst, EventBstNode node_a,
                             EventBstNode node_b) {
   if (node_a->parent == NULL) {
@@ -103,6 +124,8 @@ static void bst_shift_nodes(EventBst bst, EventBstNode node_a,
     node_b->parent = node_a->parent;
   }
 }
+
+// Helper function to find the maximum node in the event binary search tree
 static EventBstNode bst_maximum(EventBstNode node) {
   if (node == NULL) {
     return NULL;
@@ -112,6 +135,8 @@ static EventBstNode bst_maximum(EventBstNode node) {
   }
   return node;
 }
+
+// Helper function to find the minimum node in the event binary search tree
 static EventBstNode bst_minimum(EventBstNode node) {
   if (node == NULL) {
     return NULL;
@@ -121,6 +146,9 @@ static EventBstNode bst_minimum(EventBstNode node) {
   }
   return node;
 }
+
+// Helper function to find the predecessor node of a given node in the event
+// binary search tree
 static EventBstNode bst_predeccessor(EventBstNode node) {
   if (node == NULL) {
     return NULL;
@@ -136,6 +164,8 @@ static EventBstNode bst_predeccessor(EventBstNode node) {
   return res;
 }
 
+// Helper function to find the successor node of a given node in the event
+// binary search tree
 static EventBstNode bst_successor(EventBstNode node) {
   if (node == NULL) {
     return NULL;
@@ -151,8 +181,8 @@ static EventBstNode bst_successor(EventBstNode node) {
   return res;
 }
 
+// Helper function to remove a node from the event binary search tree
 static Event bst_remove_node(EventBst bst, EventBstNode to_delete) {
-
   if (to_delete == NULL) {
     return NULL_EVENT;
   }
@@ -177,10 +207,14 @@ static Event bst_remove_node(EventBst bst, EventBstNode to_delete) {
   return value;
 }
 
+// Function to remove an event from the event binary search tree
 Event bst_remove_event(EventBst bst, ConstEvent event) {
+
   EventBstNode to_delete = bst_search_event(bst, event);
   return bst_remove_node(bst, to_delete);
 }
+
+// Function to get an event by ID from the event binary search tree
 Event bst_get_event_by_id(EventBst bst, unsigned int id) {
   EventBstNode to_delete = bst_search_event_by_id(bst, id);
   if (to_delete == NULL) {
@@ -189,12 +223,13 @@ Event bst_get_event_by_id(EventBst bst, unsigned int id) {
   return to_delete->value;
 }
 
+// Function to remove an event by ID from the event binary search tree
 Event bst_remove_event_by_id(EventBst bst, unsigned int id) {
   EventBstNode to_delete = bst_search_event_by_id(bst, id);
   return bst_remove_node(bst, to_delete);
 }
 
-#define SEPARATOR "\n\n"
+// Function to print all events in the event binary search tree
 static void print_event_bst_nodes(EventBstNode node, ConstRoomList room_list) {
   if (node == NULL) {
     return;
@@ -206,12 +241,16 @@ static void print_event_bst_nodes(EventBstNode node, ConstRoomList room_list) {
   print_event_bst_nodes(node->right, room_list);
 }
 
+// Function to print all events in the event binary search tree
 void print_event_bst(ConstEventBst bst, ConstRoomList room_list) {
   print_event_bst_nodes(bst->root, room_list);
 }
 
+// Function to get the size of the event binary search tree
 size_t get_bst_size(ConstEventBst bst) { return bst->size; }
 
+// Helper function to recursively free memory allocated for nodes in the event
+// binary search tree
 static void free_event_bst_nodes(EventBstNode node) {
   if (node == NULL) {
     return;
@@ -224,6 +263,8 @@ static void free_event_bst_nodes(EventBstNode node) {
   free(node);
 }
 
+// Helper function to recursively apply a predicate function to each node in the
+// event binary search tree
 static bool every_node(EventBstNode node, EventPredicate predicate,
                        va_list args) {
   if (node == NULL) {
@@ -245,7 +286,9 @@ static bool every_node(EventBstNode node, EventPredicate predicate,
          every_node(node->right, predicate, args);
 }
 
-bool bst_every(EventBst bst, EventPredicate predicate, ...) {
+// Function to apply a predicate function to every node in the event binary
+// search tree
+bool event_bst_every(EventBst bst, EventPredicate predicate, ...) {
   if (bst == NULL_EVENT_BST || bst->root == NULL) {
     return false; // Handle edge cases where the tree is empty
   }
@@ -263,6 +306,7 @@ bool bst_every(EventBst bst, EventPredicate predicate, ...) {
   return result;
 }
 
+// Function to free memory allocated for the event binary search tree
 void free_event_bst(EventBst bst) {
   if (bst == NULL_EVENT_BST) {
     return;

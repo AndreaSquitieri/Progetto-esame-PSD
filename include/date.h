@@ -5,6 +5,9 @@
 
 #define NULL_DATE NULL
 
+/*
+  Structure representing a date .
+*/
 typedef struct DateStruct *Date;
 typedef const struct DateStruct *ConstDate;
 

@@ -8,49 +8,54 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define FORMAT_EVENT                                                           \
+  "Id: %u\n"                                                                   \
+  "Evento: \"%s\"\n"                                                           \
+  "Tipo: %s"
+
+#define MAX_NAME_SIZE 100
+
+// Event structure definition
 typedef struct EventStruct {
-  unsigned int id;
-  EventType type;
-  char *name;
-  unsigned int assigned_room_id;
-  Date start_date;
-  Date end_date;
+  unsigned int id; // Unique identifier for the event
+  EventType type;  // Type of the event (e.g., workshop, keynote session)
+  char *name;      // Name of the event
+  unsigned int assigned_room_id; // ID of the room assigned to the event
+  Date start_date;               // Start date and time of the event
+  Date end_date;                 // End date and time of the event
 } Event_t;
 
+// Function to create a new event
 Event new_event(EventType type, const char *name, Date start_date,
                 Date end_date, unsigned int id) {
-  if (name == NULL) {
+  if (name == NULL || start_date == NULL_DATE) {
     return NULL_EVENT;
   }
-  if (start_date == NULL_DATE) {
-    return NULL_EVENT;
-  }
+  // Allocate memory for the new event
   Event new_event = my_alloc(1, sizeof(*new_event));
+  // Set the event properties
   new_event->start_date = start_date;
   new_event->end_date = end_date;
   new_event->name = my_strdup(name);
   new_event->type = type;
   new_event->assigned_room_id = NULL_ROOM_ID;
-
   new_event->id = id;
-
   return new_event;
 }
 
 int is_valid_event_type(int type) { return type >= 0 && type <= 2; }
 
+// Function to compare two events based on their start dates and names
 int cmp_event(ConstEvent event_a, ConstEvent event_b) {
   int date_comparison =
       cmp_date(get_event_start_date(event_a), get_event_start_date(event_b));
-  if (date_comparison < 0) {
-    return -1;
+  if (date_comparison != 0) {
+    return date_comparison; // Return the comparison result if start dates are
+                            // different
   }
-  if (date_comparison > 0) {
-    return 1;
-  }
+  // If start dates are equal, compare the names
   return strcmp(event_a->name, event_b->name);
 }
-
 unsigned int get_event_id(ConstEvent event) { return event->id; }
 
 ConstDate get_event_start_date(ConstEvent event) {
@@ -73,6 +78,7 @@ const char *get_event_name(ConstEvent event) {
   }
   return event->name;
 }
+
 EventType get_event_type(ConstEvent event) {
   if (event == NULL_EVENT) {
     return -1;
@@ -151,10 +157,7 @@ int set_event_type(Event event, EventType type) {
 static const char *const stringhe_type_event[] = {
     "Workshop", "Sessione di keynote", "Panel di discussione"};
 
-#define FORMAT_EVENT                                                           \
-  "Id: %u\n"                                                                   \
-  "Evento: \"%s\"\n"                                                           \
-  "Tipo: %s"
+// Function to print the details of an event
 void print_event(ConstEvent event, ConstRoom assigned_room) {
   printf(FORMAT_EVENT, event->id, event->name,
          stringhe_type_event[event->type]);
@@ -170,20 +173,19 @@ void print_event(ConstEvent event, ConstRoom assigned_room) {
   print_date(event->end_date);
 }
 
-#define MAXSIZE 102
-
+// Function to read an event from input
 Event read_event(unsigned int event_id) {
   // Read event name
-  char name[MAXSIZE] = {0};
+  char name[MAX_NAME_SIZE + 2] = {0};
   while (1) {
-    char temp[MAXSIZE] = {0};
+    char temp[MAX_NAME_SIZE + 2] = {0};
     printf("Inserisci nome evento [Max 100 caratteri]: ");
-    if (read_line(temp, MAXSIZE)) {
+    if (read_line(temp, MAX_NAME_SIZE + 2)) {
       printf("Nome evento troppo lungo.\n");
       continue;
     }
-    // trims leading whitespaces
-    trim_whitespaces(name, temp, MAXSIZE);
+    // trims leading and trailing whitespaces
+    trim_whitespaces(name, temp, MAX_NAME_SIZE + 2);
     if (strlen(name) == 0) {
       continue;
     }
@@ -202,13 +204,14 @@ Event read_event(unsigned int event_id) {
   } while (!is_valid_event_type(type) &&
            printf("Valore inserito non valido\n"));
 
-  // Read event date
+  // Read event start date
   Date start_date = NULL_DATE;
   do {
     printf("Inserisci data inizio evento (DD/MM/AAAA hh:mm): ");
     start_date = read_date();
   } while (start_date == NULL_DATE && printf("Data inserita non valida\n"));
 
+  // Read event end date
   Date end_date = NULL_DATE;
   do {
     printf("Inserisci data fine evento (DD/MM/AAAA hh:mm): ");
@@ -221,24 +224,35 @@ Event read_event(unsigned int event_id) {
   return event;
 }
 
+// Function to check if two events overlap in time
+bool do_events_overlap(ConstEvent event_a, ConstEvent event_b) {
+  // Get the start and end dates of both events
+  ConstDate start_a = get_event_start_date(event_a);
+  ConstDate end_a = get_event_end_date(event_a);
+  ConstDate start_b = get_event_start_date(event_b);
+  ConstDate end_b = get_event_end_date(event_b);
+
+  // Check if event_a overlaps with event_b
+  bool part_a = cmp_date(start_b, start_a) <= 0 && cmp_date(start_a, end_b) < 0;
+
+  // Check if event_b overlaps with event_a
+  bool part_b = cmp_date(start_a, start_b) <= 0 && cmp_date(start_b, end_a) < 0;
+
+  // Return true if there is any overlap, otherwise false
+  return part_a || part_b;
+}
+
+// Function to check if two events are equal
 int are_events_equal(ConstEvent event_a, ConstEvent event_b) {
+  if (event_a == event_b) {
+    return true;
+  }
+  // Check if both event pointers are not NULL and have the same ID
   return event_a != NULL_EVENT && event_b != NULL_EVENT &&
          event_a->id == event_b->id;
 }
 
-bool do_events_overlap(ConstEvent event_a, ConstEvent event_b) {
-  ConstDate start_a = get_event_start_date(event_a);
-  ConstDate end_a = get_event_end_date(event_a);
-
-  ConstDate start_b = get_event_start_date(event_b);
-  ConstDate end_b = get_event_end_date(event_b);
-
-  bool part_a = cmp_date(start_b, start_a) <= 0 && cmp_date(start_a, end_b) < 0;
-
-  bool part_b = cmp_date(start_a, start_b) <= 0 && cmp_date(start_b, end_a) < 0;
-  return part_a || part_b;
-}
-
+// Function to free the memory allocated for an event
 void free_event(Event event) {
   free_date(event->start_date);
   free_date(event->end_date);
@@ -274,7 +288,7 @@ Event read_event_from_file(FILE *file) {
   unsigned int id = 0;
   unsigned int type = 0;
   unsigned int assigned_room_id = 0;
-  char name[MAXSIZE];
+  char name[MAX_NAME_SIZE + 2];
 
   // Read event data from the file
   if (fscanf(file, "%u %u %u", &id, &type, &assigned_room_id) != 3) {
@@ -282,7 +296,7 @@ Event read_event_from_file(FILE *file) {
     return NULL_EVENT;
   }
   (void)fgetc(file);
-  read_line_from_file(name, MAXSIZE, file);
+  read_line_from_file(name, MAX_NAME_SIZE + 2, file);
 
   // Read start date from file
   Date start_date = read_date_from_file(file);

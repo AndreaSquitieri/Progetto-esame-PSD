@@ -1,135 +1,133 @@
 #include "room.h"
-#include "logging.h" // Includi la libreria per il logging
-#include "utils.h"   // Includi la libreria per le utility
+#include "logging.h"
+#include "utils.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_ROOM_NAME_SIZE                                                     \
-  100 // Definisci la dimensione massima del nome della stanza
+#define MAX_ROOM_NAME_SIZE 100 // Define the maximum size of the room name
 #define FORMAT_ROOM                                                            \
   "Nome: %s\n"                                                                 \
   "Posti: %u"
 
-// Definizione della struttura per rappresentare una stanza
+// Definition of the structure to represent a room
 struct RoomStruct {
-  unsigned int id;       // ID della stanza
-  char *name;            // Nome della stanza
-  unsigned int capacity; // Capacità della stanza (numero di posti)
+  unsigned int id;       // ID of the room
+  char *name;            // Name of the room
+  unsigned int capacity; // Capacity of the room (number of seats)
 };
 
-// Funzione per creare una nuova stanza
+// Function to create a new room
 Room new_room(const char *name, unsigned int id, unsigned int capacity) {
-  // Verifica se il nome della stanza è valido
+  // Check if the room name is valid
   if (name == NULL || strlen(name) == 0) {
     log_error("Attempt to create a room with invalid name.");
     return NULL_ROOM;
   }
-  // Alloca memoria per la nuova stanza
+  // Allocate memory for the new room
   Room room = my_alloc(1, sizeof(*room));
-  // Copia il nome della stanza nella struttura della stanza
+  // Copy the room name into the room structure
   room->name = my_strdup(name);
-  // Imposta l'ID e la capacità della stanza
+  // Set the ID and capacity of the room
   room->id = id;
   room->capacity = capacity;
 
   return room;
 }
 
-// Funzione per copiare una stanza
+// Function to copy a room
 Room copy_room(ConstRoom room) {
-  // Verifica se la stanza è valida
-  if (room == NULL_ROOM) {
+  // Check if the room is valid
+  if (are_rooms_equal(room, NULL_ROOM)) {
     log_error("Attempt to copy a NULL room.");
     return NULL_ROOM;
   }
-  // Alloca memoria per la copia della stanza
+  // Allocate memory for the room copy
   Room room_copy = my_alloc(1, sizeof(*room));
-  // Copia il nome, l'ID e la capacità della stanza nella nuova struttura della
-  // stanza
+  // Copy the name, ID, and capacity of the room into the new room structure
   room_copy->name = my_strdup(room->name);
   room_copy->id = room->id;
   room_copy->capacity = room->capacity;
   return room_copy;
 }
 
-// Funzione per verificare l'uguaglianza tra due stanze
+// Function to check equality between two rooms
 bool are_rooms_equal(ConstRoom room_a, ConstRoom room_b) {
-  // Verifica se le due stanze sono identiche o se hanno lo stesso ID
+  // Check if the two rooms are identical or have the same ID
   if (room_a == room_b) {
     return true;
   }
   return room_a != NULL_ROOM && room_b != NULL_ROOM && room_a->id == room_b->id;
 }
 
-// Funzione per ottenere l'ID di una stanza
+// Function to get the ID of a room
 unsigned int get_room_id(ConstRoom room) {
-  // Verifica se la stanza è valida e restituisce il suo ID
-  if (room == NULL_ROOM) {
+  // Check if the room is valid and return its ID
+  if (are_rooms_equal(room, NULL_ROOM)) {
     log_error("Attempt to get ID of a NULL room.");
-    return NULL;
+    return NULL_ROOM_ID;
   }
   return room->id;
 }
 
-// Funzione per ottenere il nome di una stanza
+// Function to get the name of a room
 const char *get_room_name(ConstRoom room) {
-  // Verifica se la stanza è valida e restituisce il suo nome
-  if (room == NULL_ROOM) {
+  // Check if the room is valid and return its name
+  if (are_rooms_equal(room, NULL_ROOM)) {
     log_error("Attempt to get name of a NULL room.");
     return NULL;
   }
   return room->name;
 }
 
-// Funzione per stampare i dettagli di una stanza
+// Function to print the details of a room
 void print_room(ConstRoom room) {
-  // Verifica se la stanza è valida e stampa il suo nome e la sua capacità
-  if (room == NULL_ROOM) {
+  // Check if the room is valid and print its name and capacity
+  if (are_rooms_equal(room, NULL_ROOM)) {
     log_error("Attempt to print a NULL room.");
     return;
   }
   printf(FORMAT_ROOM, room->name, room->capacity);
 }
 
-// Funzione per leggere una nuova stanza da input
+// Function to read a new room from input
 Room read_room(unsigned int id) {
-  // Variabile per memorizzare il nome della stanza letto da input
+  // Variable to store the room name read from input
   char name[MAX_ROOM_NAME_SIZE + 2] = {0};
-  // Loop fino a quando non viene letto un nome valido per la stanza
+  // Loop until a valid name for the room is read
   while (1) {
     char temp[MAX_ROOM_NAME_SIZE + 2] = {0};
     printf("Inserisci nome sala [Max %d caratteri]: ", MAX_ROOM_NAME_SIZE);
-    // Leggi il nome della stanza da input
+    // Read the room name from input
     if (read_line(temp, MAX_ROOM_NAME_SIZE + 2)) {
       printf("Errore durante la lettura del nome.\n");
       continue;
     }
-    // Rimuovi gli spazi vuoti dal nome letto
+    // Remove leading and trailing whitespaces from the name read
     trim_whitespaces(name, temp, MAX_ROOM_NAME_SIZE + 2);
-    // Se il nome è vuoto, richiedi un nuovo input
+    // If the name is empty, request new input
     if (strlen(name) == 0) {
       continue;
     }
     break;
   }
-  // Leggi la capacità della stanza da input
+  // Read the capacity of the room from input
   ResultInt res = {0};
   do {
     printf("Inserisci numero posti sala: ");
     res = read_int();
 
   } while (res.error_code || res.value < 0);
-  // Crea una nuova stanza con il nome e la capacità letti da input
+  // Create a new room with the name and capacity read from input
   Room room = new_room(name, id, res.value);
   return room;
 }
 
-// Funzione per salvare i dettagli di una stanza su file
+// Function to save the details of a room to a file
 void save_room_to_file(ConstRoom room, FILE *file) {
-  // Verifica se la stanza e il file sono validi
-  if (room == NULL_ROOM) {
+  // Check if the room and file are valid
+  if (are_rooms_equal(room, NULL_ROOM)) {
     log_error("Attempt to save NULL room to file.");
     return;
   }
@@ -139,22 +137,22 @@ void save_room_to_file(ConstRoom room, FILE *file) {
     return;
   }
 
-  // Scrivi l'ID, il nome e la capacità della stanza sul file
+  // Write the ID, name, and capacity of the room to the file
   fprintf(file, "%u\n", room->id);
   fprintf(file, "%s\n", room->name);
   fprintf(file, "%u\n", room->capacity);
 }
 
-// Funzione per leggere i dettagli di una stanza da file
+// Function to read the details of a room from a file
 Room read_room_from_file(FILE *file) {
-  // Verifica se il file è valido
+  // Check if the file is valid
   if (file == NULL) {
     log_error("Attempt to read room from NULL file.");
     return NULL_ROOM;
   }
 
-  // Dichiara e inizializza variabili per memorizzare l'ID, il nome e la
-  // capacità della stanza letti da file
+  // Declare and initialize variables to store the ID, name, and capacity of
+  // the room read from the file
   unsigned int id = 0;
   if (fscanf(file, "%u", &id) != 1) {
     log_error("Failed to read room ID from file.");
@@ -177,18 +175,17 @@ Room read_room_from_file(FILE *file) {
     return NULL_ROOM;
   }
 
-  // Crea una nuova stanza con l'ID, il nome e la capacità letti da file
+  // Create a new room with the ID, name, and capacity read from the file
   return new_room(name, id, capacity);
 }
 
-// Funzione per liberare la memoria allocata per una stanza
+// Function to free the memory allocated for a room
 void free_room(Room room) {
-  if (room == NULL_ROOM) {
+  if (are_rooms_equal(room, NULL_ROOM)) {
     log_error("Attempt to free a NULL room.");
     return;
   }
-  // Libera la memoria allocata per il nome della stanza e poi per la stanza
-  // stessa
+  // Free the memory allocated for the room name and then for the room itself
   free(room->name);
   free(room);
 }
