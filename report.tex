@@ -1,0 +1,278 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+
+\begin{document}
+
+\section{Specifiche delle Funzioni di Logging}
+
+\subsection{\texttt{set\_log\_file}}
+\textbf{Prototipo:} \texttt{void set\_log\_file(FILE *file);}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item \textbf{Tipi:} \texttt{FILE*}
+    \item \textbf{Tipi Interni:} Nessuno
+\end{itemize}
+
+
+\flushleft
+\textbf{Specifica Semantica:}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item Imposta il file di log al file specificato.
+    \item \textbf{Precondizioni:} \texttt{file} è un puntatore \texttt{FILE} valido aperto in scrittura.
+    \item \textbf{Postcondizioni:} Le funzioni di logging scriveranno nel file specificato. Se \texttt{file} è \texttt{NULL}, le funzioni di logging non scriveranno su nessun file.
+\end{itemize}
+
+\subsection{\texttt{log\_message}}
+\textbf{Prototipo:} \texttt{void log\_message(LogLevel level, const char *message);}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item \textbf{Tipi:} \texttt{LogLevel, const char*}
+    \item \textbf{Tipi Interni:} \texttt{time\_t}, \texttt{struct tm}, \texttt{char[26]}, \texttt{FILE*}
+\end{itemize}
+
+\flushleft
+\textbf{Specifica Semantica:}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item Registra un messaggio con il livello di log specificato.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}[label=--,leftmargin=*]
+        \item \texttt{level} è uno tra \texttt{LOG\_INFO}, \texttt{LOG\_WARN}, \texttt{LOG\_ERROR}.
+        \item \texttt{message} è un puntatore non nullo a una stringa terminata da un carattere nullo.
+        \item Il file di log è stato impostato utilizzando \texttt{set\_log\_file}.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}[label=--,leftmargin=*]
+        \item Il messaggio viene scritto nel file di log con un timestamp e un prefisso del livello di log.
+        \item Se il file di log non è impostato, nessun output viene generato.
+    \end{itemize}
+\end{itemize}
+
+
+\section{Specifiche delle Funzioni di utilità}
+ \subsection{\texttt{clean\_file}}
+\textbf{Prototipo:} \texttt{void clean\_file(FILE *file);}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item \textbf{Tipi:} \texttt{FILE*}
+    \item \textbf{Tipi Interni:} Nessuno
+\end{itemize}
+
+\flushleft
+\textbf{Specifica Semantica:}
+\begin{itemize}[label=--,leftmargin=*]
+    \item Scarta caratteri dallo stream finchè una nuova linea o EOF non viene raggiunto
+    \item \textbf{Precondizioni:} \texttt{file} è un puntatore \texttt{FILE} valido aperto in lettura.
+    \item \textbf{Postcondizioni:} Il puntatore al file viene avanzato oltre i caratteri scartati.
+\end{itemize}
+
+\subsection{\texttt{read\_line\_from\_file}}
+\textbf{Prototipo:} \texttt{int read\_line\_from\_file(char *line, int size, FILE *file);}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item \textbf{Tipi:} \texttt{char*, int, FILE*}
+    \item \textbf{Tipi Interni:} \texttt{size\_t}
+\end{itemize}
+
+\flushleft
+\textbf{Specifica Semantica:}
+\begin{itemize}[label=--,leftmargin=*]
+    \item Legge una riga dal file specificato nel buffer, garantendo che ci sia spazio e gestendo gli errori.
+    \item \textbf{Precondizioni:}
+    \begin{itemize}[label=--,leftmargin=*]
+        \item \texttt{line} è un buffer valido di dimensione \texttt{size}. \texttt{file} è un puntatore \texttt{FILE} valido aperto in lettura.
+    \end{itemize}
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}[label=--,leftmargin=*]
+        \item In caso di successo, la riga viene memorizzata in \texttt{line} senza il carattere di nuova riga. In caso di fallimento, restituisce -1 se si raggiunge la fine del file, -2 se la riga è troppo lunga e -3 se si verifica un errore durante la lettura.
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{\texttt{read\_line}}
+\textbf{Prototipo:} \texttt{int read\_line(char *line, int size);}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item \textbf{Tipi:} \texttt{char*, int}
+    \item \textbf{Tipi Interni:} Nessuno
+\end{itemize}
+
+\flushleft
+\textbf{Specifica Semantica:}
+\begin{itemize}[label=--,leftmargin=*]
+    \item Legge una riga dall'input standard nel buffer.
+    \item \textbf{Precondizioni:} \texttt{line} è un buffer valido di dimensione \texttt{size}.
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}[label=--,leftmargin=*]
+        \item In caso di successo, la riga viene memorizzata in \texttt{line} senza il carattere di nuova riga. In caso di fallimento, restituisce -1 se si raggiunge la fine del file, -2 se la riga è troppo lunga e -3 se si verifica un errore durante la lettura.
+    \end{itemize}
+\end{itemize}
+
+\subsection{\texttt{read\_int}}
+\textbf{Prototipo:} \texttt{ResultInt read\_int(void);}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item \textbf{Tipi:} \texttt{ResultInt}
+    \item \textbf{Tipi Interni:} \texttt{int}, \texttt{char[]}, \texttt{char*}, \texttt{long}, \texttt{errno\_t}
+\end{itemize}
+
+\flushleft
+\textbf{Specifica Semantica:}
+\begin{itemize}[label=--,leftmargin=*]
+    \item Legge un intero dall'input standard e gestisce gli errori.
+    \item \textbf{Precondizioni:} Nessuna.
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}[label=--,leftmargin=*]
+        \item In caso di successo, restituisce un \texttt{ResultInt} con il valore intero e \texttt{error\_code} pari a 0.
+        \item In caso di fallimento:
+        \begin{itemize}[label=--,leftmargin=*]
+            \item \texttt{error\_code} è -1 se si verifica un errore durante la lettura dall'input.
+            \item \texttt{error\_code} è -2 se si verifica un errore di intervallo durante la conversione.
+            \item \texttt{error\_code} è -3 se l'input non contiene alcun numero valido.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection{\texttt{my\_alloc}}
+\textbf{Prototipo:} \texttt{void *my\_alloc(unsigned long nmemb, unsigned long size);}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item \textbf{Tipi:} \texttt{unsigned long, void*}
+    \item \textbf{Tipi Interni:} Nessuno
+\end{itemize}
+
+\flushleft
+\textbf{Specifica Semantica:}
+\begin{itemize}[label=--,leftmargin=*]
+    \item Alloca memoria per un array di \texttt{nmemb} elementi di \texttt{size} byte ciascuno.
+    \item \textbf{Precondizioni:} \texttt{nmemb} e \texttt{size} non sono zero.
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}[label=--,leftmargin=*]
+        \item In caso di successo, restituisce un puntatore alla memoria allocata. In caso di fallimento, registra un errore e termina il programma.
+    \end{itemize}
+\end{itemize}
+
+\subsection{\texttt{my\_realloc}}
+\textbf{Prototipo:} \texttt{void *my\_realloc(void *p, unsigned long nmemb, unsigned long size);}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item \textbf{Tipi:} \texttt{void*, unsigned long, void*}
+    \item \textbf{Tipi Interni:} Nessuno
+\end{itemize}
+
+\flushleft
+\textbf{Specifica Semantica:}
+\begin{itemize}[label=--,leftmargin=*]
+    \item Rialloca memoria per un array di \texttt{nmemb} elementi di \texttt{size} byte ciascuno.
+    \item \textbf{Precondizioni:} \texttt{p} è un puntatore a un blocco di memoria precedentemente allocato, o \texttt{NULL}. \texttt{nmemb} e \texttt{size} non sono zero.
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}[label=--,leftmargin=*]
+        \item In caso di successo, restituisce un puntatore alla memoria riallocata. In caso di fallimento, registra un errore e termina il programma.
+    \end{itemize}
+\end{itemize}
+
+\subsection{\texttt{my\_strdup}}
+\textbf{Prototipo:} \texttt{char *my\_strdup(const char *stringa);}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item \textbf{Tipi:} \texttt{const char*, char*}
+    \item \textbf{Tipi Interni:} Nessuno
+\end{itemize}
+
+\flushleft
+\textbf{Specifica Semantica:}
+\begin{itemize}[label=--,leftmargin=*]
+    \item Duplica la stringa fornita.
+    \item \textbf{Precondizioni:} \texttt{stringa} è una stringa valida terminata da un carattere nullo.
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}[label=--,leftmargin=*]
+        \item In caso di successo, restituisce un puntatore alla stringa duplicata. In caso di fallimento, registra un errore e termina il programma.
+    \end{itemize}
+\end{itemize}
+
+\subsection{\texttt{trim\_whitespaces}}
+\textbf{Prototipo:} \texttt{void trim\_whitespaces(char *dest, char *src, int max\_size);}
+
+\begin{itemize}[label=--,leftmargin=*]
+    \item \textbf{Tipi:} \texttt{char*, char*, int}
+    \item \textbf{Tipi Interni:} int
+\end{itemize}
+
+\flushleft
+\textbf{Specifica Semantica:}
+\begin{itemize}[label=--,leftmargin=*]
+    \item Taglia gli spazi vuoti iniziali e finali dalla stringa di origine e la copia nel buffer di destinazione.
+    \item \textbf{Precondizioni:} \texttt{dest} e \texttt{src} sono puntatori validi, \texttt{max\_size} è la dimensione di \texttt{dest}.
+    \item \textbf{Postcondizioni:}
+    \begin{itemize}[label=--,leftmargin=*]
+        \item \texttt{dest} contiene la stringa tagliata. Se \texttt{max\_size} è 0, la funzione non fa nulla.
+    \end{itemize}
+\end{itemize}
+
+\section{Specifiche delle Funzioni di Date}
+
+\subsection{\texttt{new\_date}}
+
+\textbf{Specifica Sintattica:}
+\begin{itemize}
+    \item \texttt{new\_date(unsigned char, unsigned char, unsigned char, unsigned char, unsigned short) -> Date}
+\end{itemize}
+
+\textbf{Specifica Semantica:}
+\begin{itemize}
+    \item \textbf{Funzione:} \texttt{new\_date(minutes, hour, day, month, year) -> return\_date}
+    \item \textbf{Descrizione:} Crea un nuovo oggetto Date con i componenti specificati.
+    \item \textbf{Precondizioni:} Nessuna.
+    \item \textbf{Postcondizioni:} Restituisce un puntatore al nuovo oggetto Date creato, o NULL se la data è invalida. Il chiamante è responsabile della liberazione della memoria allocata utilizzando \texttt{free\_date()}.
+\end{itemize}
+
+\subsection{\texttt{copy\_date}}
+
+\textbf{Specifica Sintattica:}
+\begin{itemize}
+    \item \texttt{copy\_date(ConstDate) -> Date}
+\end{itemize}
+
+\textbf{Specifica Semantica:}
+\begin{itemize}
+    \item \textbf{Funzione:} \texttt{copy\_date(date) -> return\_date}
+    \item \textbf{Descrizione:} Crea una copia dell'oggetto Date fornito.
+    \item \textbf{Precondizioni:} \texttt{date} è un oggetto Date valido.
+    \item \textbf{Postcondizioni:} Restituisce un puntatore al nuovo oggetto Date creato, che è una copia di \texttt{date}. Il chiamante è responsabile della liberazione della memoria allocata utilizzando \texttt{free\_date()}.
+\end{itemize}
+
+% Add specifications for other functions...
+
+\subsection{\texttt{cmp\_date}}
+
+\textbf{Specifica Sintattica:}
+\begin{itemize}
+    \item \texttt{cmp\_date(ConstDate, ConstDate) -> int}
+\end{itemize}
+
+\textbf{Specifica Semantica:}
+\begin{itemize}
+    \item \textbf{Funzione:} \texttt{cmp\_date(date\_a, date\_b) -> res}
+    \item \textbf{Descrizione:} Confronta due oggetti Date.
+    \item \textbf{Precondizioni:} \texttt{date\_a} e \texttt{date\_b} sono oggetti Date validi.
+    \item \textbf{Postcondizioni:} Restituisce un intero minore di zero, uguale a zero o maggiore di zero se \texttt{date\_a} è trovata essere minore di, uguale a o maggiore di \texttt{date\_b}, rispettivamente.
+\end{itemize}
+
+\subsection{\texttt{save\_date\_to\_file}}
+
+\textbf{Specifica Sintattica:}
+\begin{itemize}
+    \item \texttt{save\_date\_to\_file(ConstDate, FILE*) -> void}
+\end{itemize}
+
+\textbf{Specifica Semantica:}
+\begin{itemize}
+    \item \textbf{Funzione:} \texttt{save\_date\_to\_file(date, file)}
+    \item \textbf{Descrizione:} Salva l'oggetto Date fornito su un flusso di file.
+    \item \textbf{Precondizioni:} \texttt{date} è un oggetto Date valido. \texttt{file} è un flusso di file valido.
+    \item \textbf{Postcondizioni:} I componenti di \texttt{date} vengono scritti sul flusso di file \texttt{file}.
+\end{itemize}
+
+\end{document}

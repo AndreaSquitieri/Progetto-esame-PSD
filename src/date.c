@@ -5,16 +5,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Costanti per il tempo
+// Constants for time
 #define MINUTES_IN_HOUR 60
 #define HOURS_IN_DAY 24
 #define MONTHS_IN_YEAR 12
 
-// Formato di stampa della data
+// Date print format
 #define FORMAT_DATE "%d %s %d, %02d:%02d"
 #define DATE_BUFFER_SIZE 32
 
-// Numero di giorni in ogni mese
+// Number of days in each month
 #define DAYS_IN_MONTHS_INITIALIZER                                             \
   { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
 #define MONTH_NAMES_INITIALIZER                                                \
@@ -23,11 +23,11 @@
         "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"               \
   }
 
-// Array dei giorni in ogni mese e nomi dei mesi
+// Array of days in each month and month names
 static const unsigned char days_in_months[] = DAYS_IN_MONTHS_INITIALIZER;
 static const char *const month_names[] = MONTH_NAMES_INITIALIZER;
 
-// Enumerazione dei mesi
+// Enumeration of months
 typedef enum {
   JANUARY = 1,
   FEBRUARY,
@@ -43,7 +43,7 @@ typedef enum {
   DECEMBER
 } Month;
 
-// Struttura della data
+// Date structure
 struct DateStruct {
   unsigned char minutes;
   unsigned char hour;
@@ -52,12 +52,12 @@ struct DateStruct {
   unsigned short year;
 };
 
-// Funzione per verificare se un anno è bisestile
+// Function to check if a year is a leap year
 static bool is_leap_year(unsigned short year) {
   return (year % 400 == 0) || (year % 100 != 0 && year % 4 == 0);
 }
 
-// Funzione per verificare se una data è valida
+// Function to check if a date is valid
 static bool is_valid_date(ConstDate date) {
   if (date == NULL_DATE) {
     return false;
@@ -74,21 +74,22 @@ static bool is_valid_date(ConstDate date) {
   return date->day <= days_in_months[date->month - 1];
 }
 
-// Funzione per creare una nuova data
+// Function to create a new date
+// Allocates memory for the date and initializes its fields
 Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
               unsigned char month, unsigned short year) {
 
-  // Allocazione della memoria per la data
+  // Memory allocation for the date
   Date date = my_alloc(1, sizeof(*date));
 
-  // Inizializzazione dei campi della data
+  // Initialization of the date fields
   date->minutes = minutes;
   date->hour = hour;
   date->day = day;
   date->month = month;
   date->year = year;
 
-  // Verifica se la data è valida, altrimenti logga un errore e restituisce NULL
+  // Check if the date is valid, otherwise log an error and return NULL
   if (!is_valid_date(date)) {
     log_error("Attempt to create an invalid date.");
     free(date);
@@ -97,7 +98,8 @@ Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
   return date;
 }
 
-// Funzione per creare una copia della data
+// Function to create a copy of the date
+// Returns a new date with the same values as the input date
 Date copy_date(ConstDate date) {
   if (date == NULL_DATE) {
     log_error("Attempt to copy a NULL date.");
@@ -107,12 +109,15 @@ Date copy_date(ConstDate date) {
                   date->year);
 }
 
-// Funzione per comparare i componenti di una data
+// Function to compare date components
+// Returns -1 if a < b, 0 if a == b, and 1 if a > b
 static inline int cmp_date_component(unsigned int a, unsigned int b) {
   return (a > b) - (a < b);
 }
 
-// Funzione per comparare le date
+// Function to compare dates
+// Returns -1 if date_a < date_b, 0 if date_a == date_b, and 1 if date_a >
+// date_b
 int cmp_date(ConstDate date_a, ConstDate date_b) {
   if (date_a == NULL_DATE && date_b == NULL_DATE) {
     return 0;
@@ -124,7 +129,7 @@ int cmp_date(ConstDate date_a, ConstDate date_b) {
     return 1;
   }
 
-  // Comparazione dei componenti delle date in ordine
+  // Comparison of date components in order
   int result = cmp_date_component(date_a->year, date_b->year);
   if (result != 0) {
     return result;
@@ -147,12 +152,12 @@ int cmp_date(ConstDate date_a, ConstDate date_b) {
   return cmp_date_component(date_a->minutes, date_b->minutes);
 }
 
-// Funzione per ottenere il nome del mese
+// Function to get the month name
 static const char *get_month_name(ConstDate date) {
   return month_names[date->month - 1];
 }
 
-// Funzione per stampare la data su stdout
+// Function to print the date to stdout
 void print_date(ConstDate date) {
   if (date == NULL_DATE) {
     log_error("Attempt to print a NULL date.");
@@ -162,7 +167,7 @@ void print_date(ConstDate date) {
          date->minutes);
 }
 
-// Funzione per leggere una data da stdin
+// Function to read a date from stdin
 Date read_date(void) {
   char temp[DATE_BUFFER_SIZE] = {0};
   if (read_line(temp, DATE_BUFFER_SIZE)) {
@@ -173,21 +178,21 @@ Date read_date(void) {
   int year = 0;
   int hour = 0;
   int minutes = 0;
-  // Parsing della stringa per ottenere i componenti della data
+  // Parsing the string to obtain the date components
   if (sscanf(temp, "%d/%d/%d %d:%d", &day, &month, &year, &hour, &minutes) !=
       5) {
     return NULL_DATE;
   }
-  // Verifica che I valori passati non siano negativi
+  // Check that the passed values are not negative
   if (day < 0 || month < 0 || year < 0 || hour < 0 || minutes < 0) {
     return NULL_DATE;
   }
-  // Creazione della data
+  // Create the date
   Date date = new_date(minutes, hour, day, month, year);
   return date;
 }
 
-// Funzione per salvare la data su file
+// Function to save the date to a file
 void save_date_to_file(ConstDate date, FILE *file) {
   if (date == NULL_DATE) {
     log_error("Attempt to save NULL date to file");
@@ -198,14 +203,14 @@ void save_date_to_file(ConstDate date, FILE *file) {
     return;
   }
 
-  // Scrittura dei componenti della data sul file
+  // Write the date components to the file
   if (fprintf(file, "%d %d %d %d %d\n", date->minutes, date->hour, date->day,
               date->month, date->year) < 0) {
     log_error("Failed to write date components to file.");
   }
 }
 
-// Funzione per leggere una data da file
+// Function to read a date from a file
 Date read_date_from_file(FILE *file) {
   if (file == NULL) {
     log_error("Attempt to read date from NULL file");
@@ -218,20 +223,20 @@ Date read_date_from_file(FILE *file) {
   int hour = 0;
   int minutes = 0;
 
-  // Lettura dei componenti della data dal file
+  // Read the date components from the file
   if (fscanf(file, "%d %d %d %d %d", &minutes, &hour, &day, &month, &year) !=
       5) {
     log_error("Failed to read date components from file.");
     return NULL_DATE;
   }
 
-  // Creazione della data
+  // Create the date
   Date date = new_date(minutes, hour, day, month, year);
 
   return date;
 }
 
-// Funzione per liberare la memoria allocata per la data
+// Function to free the memory allocated for the date
 void free_date(Date date) {
   if (date == NULL_DATE) {
     log_error("Attempt to free a NULL date.");
