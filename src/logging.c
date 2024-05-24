@@ -64,9 +64,3 @@ void log_message(LogLevel level, const char *message) {
 
 // Convenience function to log an error message
 void log_error(const char *message) { log_message(LOG_ERROR, message); }
-
-// Convenience function to log an info message
-void log_info(const char *message) { log_message(LOG_INFO, message); }
-
-// Convenience function to log a warning message
-void log_warn(const char *message) { log_message(LOG_WARN, message); }

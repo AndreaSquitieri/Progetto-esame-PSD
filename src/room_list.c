@@ -145,7 +145,7 @@ void print_room_list(ConstRoomList list) {
     return;
   }
   for (int i = 0; i < list->size; i++) { // Iterate over the rooms in the list
-    printf("[Room %d]\n", i + 1);        // Print the index of the room
+    printf("[Sala %d]\n", i + 1);        // Print the index of the room
     print_room(list->array[i]);          // Print the room
     puts("");                            // Add a blank line
   }
