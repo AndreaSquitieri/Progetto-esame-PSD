@@ -65,7 +65,7 @@ int cmp_date(ConstDate date_a, ConstDate date_b);
 
 /*
   Syntax Specification:
-  - save_date_to_file(ConstDate, FILE*) -> void
+  - save_date_to_file(ConstDate, FILE*)
   - types: ConstDate, FILE*
   - internal types: none
 
@@ -97,7 +97,7 @@ Date read_date_from_file(FILE *file);
 
 /*
   Syntax Specification:
-  - print_date(ConstDate) -> void
+  - print_date(ConstDate)
   - types: ConstDate
   - internal types: none
 
@@ -129,7 +129,7 @@ Date read_date(void);
 
 /*
   Syntax Specification:
-  - free_date(Date) -> void
+  - free_date(Date)
   - types: Date
   - internal types: none
 

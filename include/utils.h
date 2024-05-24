@@ -37,7 +37,7 @@ void clean_file(FILE *file);
   Syntax Specification:
   - read_line_from_file(char*, int, FILE*) -> int
   - types: char*, int, FILE*
-  - internal types: size_t
+  - internal types: none
 
   Semantic Specification:
   - Function: read_line_from_file(line, size, file) -> res
@@ -87,12 +87,12 @@ ResultInt read_int(void);
   Syntax Specification:
   - my_alloc(unsigned long, unsigned long)
   - types: unsigned long, void*
-  - internal types: none
+  - internal types: void*
 
   Semantic Specification:
   - Function: my_alloc(nmemb, size)
   - Description: Allocates memory for an array of nmemb elements of size bytes
-  each.
+  each and initializes all bytes in the allocated storage to zero.
   - Preconditions: nmemb and size are non-zero.
   - Postconditions: On success, returns a pointer to the allocated memory. On
   failure, logs an error and exits the program.
@@ -103,7 +103,7 @@ void *my_alloc(unsigned long nmemb, unsigned long size);
   Syntax Specification:
   - my_realloc(void*, unsigned long, unsigned long)
   - types: void*, unsigned long, void*
-  - internal types: none
+  - internal types: void*
 
   Semantic Specification:
   - Function: my_realloc(p, nmemb, size)
@@ -119,8 +119,8 @@ void *my_realloc(void *p, unsigned long nmemb, unsigned long size);
 /*
   Syntax Specification:
   - my_strdup(const char*) -> char*
-  - types: const char*, char*
-  - internal types: none
+  - types: char*
+  - internal types: char*
 
   Semantic Specification:
   - Function: my_strdup(string) -> res_string
