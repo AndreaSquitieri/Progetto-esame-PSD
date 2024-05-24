@@ -28,7 +28,7 @@ void set_log_file(FILE *file);
 Syntactic Specification
 - log_message(LogLevel, const char*)
   - types: LogLevel, const char*
-  - internal types: time_t, struct tm, char[26], FILE*
+  - internal types: time_t, struct tm, char[], FILE*
 
 Semantic Specification
 - log_message(level, message)
