@@ -35,12 +35,12 @@ void clean_file(FILE *file);
 
 /*
   Syntax Specification:
-  - read_line_from_file(char*, int, FILE*)
+  - read_line_from_file(char*, int, FILE*) -> int
   - types: char*, int, FILE*
   - internal types: size_t
 
   Semantic Specification:
-  - Function: read_line_from_file(line, size, file)
+  - Function: read_line_from_file(line, size, file) -> res
   - Description: Reads a line from the specified file into the buffer, ensuring
   it fits and handles errors.
   - Preconditions: 'line' is a valid buffer of size 'size'. 'file' is a valid
@@ -53,12 +53,12 @@ int read_line_from_file(char *line, int size, FILE *file);
 
 /*
   Syntax Specification:
-  - read_line(char*, int)
+  - read_line(char*, int) -> int
   - types: char*, int
   - internal types: none
 
   Semantic Specification:
-  - Function: read_line(line, size)
+  - Function: read_line(line, size) -> res
   - Description: Reads a line from standard input into the buffer.
   - Preconditions: 'line' is a valid buffer of size 'size'.
   - Postconditions: On success, the line is stored in 'line' without the newline
@@ -69,12 +69,12 @@ int read_line(char *line, int size);
 
 /*
   Syntax Specification:
-  - read_int(void)
+  - read_int(void) -> ResultInt
   - types: ResultInt
   - internal types: int, char[], char*, long, errno_t
 
   Semantic Specification:
-  - Function: read_int()
+  - Function: read_int() -> res
   - Description: Reads an integer from standard input and handles errors.
   - Preconditions: None.
   - Postconditions: On success, returns a ResultInt with the integer value and
@@ -118,18 +118,18 @@ void *my_realloc(void *p, unsigned long nmemb, unsigned long size);
 
 /*
   Syntax Specification:
-  - my_strdup(const char*)
+  - my_strdup(const char*) -> char*
   - types: const char*, char*
   - internal types: none
 
   Semantic Specification:
-  - Function: my_strdup(stringa)
+  - Function: my_strdup(string) -> res_string
   - Description: Duplicates the given string.
-  - Preconditions: 'stringa' is a valid null-terminated string.
+  - Preconditions: 'string' is a valid null-terminated string.
   - Postconditions: On success, returns a pointer to the duplicated string. On
   failure, logs an error and exits the program.
 */
-char *my_strdup(const char *stringa);
+char *my_strdup(const char *string);
 
 /*
   Syntax Specification:

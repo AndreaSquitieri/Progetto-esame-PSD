@@ -85,8 +85,8 @@ void *my_realloc(void *p, unsigned long nmemb, unsigned long size) {
   return temp;
 }
 
-char *my_strdup(const char *stringa) {
-  char *temp = strdup(stringa); // Duplicate the string
+char *my_strdup(const char *string) {
+  char *temp = strdup(string); // Duplicate the string
   if (temp == NULL) {
     log_error("Allocation failed");
     exit(EXIT_FAILURE); // Exit the program on failure
