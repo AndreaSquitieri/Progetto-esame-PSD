@@ -72,7 +72,8 @@ int cmp_date(ConstDate date_a, ConstDate date_b);
   Semantic Specification:
   - Function: save_date_to_file(date, file)
   - Description: Saves the given Date object to a file stream.
-  - Preconditions: 'date' is a valid Date object. 'file' is a valid FILE stream.
+  - Preconditions: 'date' is a valid Date object. 'file' is a valid FILE stream
+  opened in write mode.
   - Postconditions: The components of 'date' are written to the file stream
   'file'.
 */
@@ -82,7 +83,7 @@ void save_date_to_file(ConstDate date, FILE *file);
   Syntax Specification:
   - read_date_from_file(FILE*) -> Date
   - types: FILE*
-  - internal types: Date
+  - internal types: Date, int
 
   Semantic Specification:
   - Function: read_date_from_file(file) -> return_date
@@ -114,7 +115,7 @@ void print_date(ConstDate date);
   Syntax Specification:
   - read_date(void) -> Date
   - types: none
-  - internal types: Date
+  - internal types: Date, int
 
   Semantic Specification:
   - Function: read_date() -> return_date

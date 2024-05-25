@@ -12,7 +12,7 @@
 %
 % License:
 % CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %----------------------------------------------------------------------------------------
@@ -27,7 +27,7 @@
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
 
-\title{	
+\title{
 	\normalfont\normalsize
 	\textsc{Università degli studi di Salerno}\\ % Your university, school and/or department name(s)
 	\vspace{25pt} % Whitespace
@@ -55,6 +55,7 @@
 
 \maketitle % Print the title
 
+
 %----------------------------------------------------------------------------------------
 %	FIGURE EXAMPLE
 %----------------------------------------------------------------------------------------
@@ -71,10 +72,10 @@ Il progetto si concentra sulla creazione di un sistema di gestione delle confere
 Gli obiettivi principali del progetto includono:
 
 \begin{itemize}
-				\item  Gestione di Conferenze: Possibilità di aggiungere, modificare e rimuovere eventi e stanze di una conferenza.
-				\item Assegnazione delle Stanze: Funzionalità per assegnare stanze a specifici eventi.
-				\item Visualizzazione delle Informazioni: Strumenti per visualizzare gli eventi ordinati per data d'inizio.
-				\item Persistenza dei Dati: Capacità di salvare e caricare i dati delle conferenze da file per garantire la persistenza delle informazioni.
+	\item  Gestione di Conferenze: Possibilità di aggiungere, modificare e rimuovere eventi e stanze di una conferenza.
+	\item Assegnazione delle Stanze: Funzionalità per assegnare stanze a specifici eventi.
+	\item Visualizzazione delle Informazioni: Strumenti per visualizzare gli eventi ordinati per data d'inizio.
+	\item Persistenza dei Dati: Capacità di salvare e caricare i dati delle conferenze da file per garantire la persistenza delle informazioni.
 \end{itemize}
 
 %----------------------------------------------------------------------------------------
@@ -88,8 +89,8 @@ Gli obiettivi principali del progetto includono:
 
 Nel progetto di gestione delle conferenze, una delle componenti fondamentali è la gestione delle date. Gli eventi della conferenza devono essere pianificati in specifici giorni e orari, e per garantire una gestione precisa e coerente di queste informazioni, è stato sviluppato e utilizzato un ADT chiamato Date. Utilizzando questo ADT possiamo garantire:
 \begin{itemize}
-				\item  \textbf{La validità delle date}:  Le date inserite nel sistema saranno sempre valide (es. nessuna data con un mese o giorno non esistente).
-				\item \textbf{Il corretto confronto fra date}: Il confronto fra due date avvenga in maniera corretta e semplice.
+	\item  \textbf{La validità delle date}:  Le date inserite nel sistema saranno sempre valide (es. nessuna data con un mese o giorno non esistente).
+	\item \textbf{Il corretto confronto fra date}: Il confronto fra due date avvenga in maniera corretta e semplice.
 \end{itemize}
 Nello specifico, l'ADT Date viene usato all'interno del progetto per rappresentare le date d'inizio e fine di ogni evento, offrendo una precisione al minuto.
 
@@ -121,9 +122,801 @@ Grazie a questa astrazione, ci assicuriamo che ciascun evento e sala siano ident
 
 
 \section{Progettazione}
-\section{Specifiche sintattiche e semantiche}
-\section{Razionale dei casi di test}
-%------------------------------------------------
 
+\section{Specifiche sintattiche e semantiche}
+
+\subsection{Funzioni e tipi di logging}
+
+\subsubsection{Specificazione del tipo \texttt{LogLevel}}
+
+Definisce un tipo enumerato chiamato \texttt{LogLevel} con i seguenti valori:
+\begin{itemize}
+	\item \texttt{LOG\_INFO}: Messaggi informativi.
+	\item \texttt{LOG\_WARN}: Messaggi di avviso.
+	\item \texttt{LOG\_ERROR}: Messaggi di errore.
+\end{itemize}
+
+\subsubsection{Specificazione di \texttt{set\_log\_file(FILE*)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{set\_log\_file(FILE*)}
+	\item tipi: \texttt{FILE*}
+	\item tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{set\_log\_file(file)}
+	\item Imposta il file di log al file specificato.
+	\item Precondizioni: \texttt{file} è un puntatore \texttt{FILE} valido aperto in modalità scrittura.
+	\item Postcondizioni: Le funzioni di log scriveranno nel file specificato. Se \texttt{file} è \texttt{NULL}, le funzioni di log non scriveranno in nessun file.
+\end{itemize}
+
+
+
+\subsubsection{Specificazione di \texttt{log\_message(LogLevel, const char*)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{log\_message(LogLevel, const char*)}
+	\item tipi: \texttt{LogLevel}, \texttt{const char*}
+	\item tipi interni: \texttt{time\_t}, \texttt{struct tm}, \texttt{char[]}, \texttt{FILE*}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{log\_message(level, message)}
+	\item Registra un messaggio con il livello di log specificato.
+	\item Precondizioni:
+	      \begin{itemize}
+		      \item \texttt{level} è uno tra \texttt{LOG\_INFO}, \texttt{LOG\_WARN}, \texttt{LOG\_ERROR}.
+		      \item \texttt{message} è un puntatore non nullo a una stringa terminata da null.
+		      \item Il file di log è stato impostato usando \texttt{set\_log\_file}.
+	      \end{itemize}
+	\item Postcondizioni:
+	      \begin{itemize}
+		      \item Il messaggio è scritto nel file di log con un prefisso che include timestamp e livello di log.
+		      \item Se il file di log non è impostato, non sarà generato alcun output.
+	      \end{itemize}
+\end{itemize}
+
+\subsubsection{Specificazione di \texttt{log\_error(const char*)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{log\_error(const char*)}
+	\item tipi: \texttt{const char*}
+	\item tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{log\_error(message)}
+	\item Registra un messaggio di errore.
+	\item Precondizioni:
+	      \begin{itemize}
+		      \item \texttt{message} è un puntatore non nullo a una stringa.
+		      \item Il file di log è stato impostato usando \texttt{set\_log\_file}.
+	      \end{itemize}
+	\item Postcondizioni:
+	      \begin{itemize}
+		      \item Il messaggio di errore è scritto nel file di log con un prefisso che include timestamp e la dicitura "ERROR".
+		      \item Se il file di log non è impostato, non sarà generato alcun output.
+	      \end{itemize}
+\end{itemize}
+
+\subsection{Funzioni e tipi di utilità}
+
+\subsubsection{Specificazione del tipo \texttt{ResultInt}}
+
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item Tipo di riferimento: ResultInt
+	\item Tipi utilizzati: int
+	\item Campi:
+	      \begin{itemize}
+		      \item error\_code: Codice di errore: 0 per successo, valori negativi per gli errori.
+		      \item value: Valore intero risultante.
+	      \end{itemize}
+\end{itemize}
+
+
+
+\textbf{Specificazione Semantica:} \\
+Rappresenta il valore intero di ritorno di un'operazione che potrebbe fallire.
+
+\subsubsection{Funzione \texttt{clean\_file(FILE*)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{clean\_file(FILE*)}
+	\item Tipi: \texttt{FILE*}
+	\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{clean\_file(file)}
+	\item Scarta i caratteri dal flusso del file fino a raggiungere una nuova riga o la fine del file.
+	\item Precondizioni: 'file' è un puntatore FILE valido aperto in modalità lettura.
+	\item Postcondizioni: Il puntatore del file viene avanzato oltre i caratteri scartati.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{int read\_line\_from\_file(char*, int, FILE*)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{read\_line\_from\_file(char*, int, FILE*) -> int}
+	\item Tipi: \texttt{char*, int, FILE*}
+	\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{read\_line\_from\_file(line, size, file) -> res}
+	\item  Legge una riga dal file specificato nel buffer, assicurandosi che ci sia spazio per essa e  gestendo eventuali errori.
+	\item Precondizioni: 'line' è un buffer valido di dimensione 'size'. 'file' è un puntatore FILE valido aperto in modalità lettura.
+	\item Postcondizioni: In caso di successo, la riga viene memorizzata in 'line' senza il carattere di nuova riga. In caso di fallimento, restituisce -1 se viene raggiunta la fine del file, -2 se la riga è troppo lunga e -3 se si verifica un errore di lettura.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{int read\_line(char*, int)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{read\_line(char*, int) -> int}
+	\item Tipi: \texttt{char*, int}
+	\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{read\_line(line, size) -> res}
+	\item Legge una riga dallo standard input nel buffer.
+	\item Precondizioni: 'line' è un buffer valido di dimensione 'size'.
+	\item Postcondizioni: In caso di successo, la riga viene memorizzata in 'line' senza il carattere di nuova riga. In caso di errore, restituisce -1 se si raggiunge la fine del file, -2 se la riga è troppo lunga e -3 se si verifica un errore di lettura.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{ResultInt read\_int(void)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{read\_int(void) -> ResultInt}
+	\item Tipi: \texttt{ResultInt}
+	\item Tipi interni: \texttt{int}, \texttt{char[]}, \texttt{char*}, \texttt{long}, \texttt{errno\_t}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{read\_int() -> res}
+	\item Legge un intero dallo standard input e gestisce gli errori.
+	\item Precondizioni: Nessuna.
+	\item Postcondizioni: In caso di successo, restituisce un \texttt{ResultInt} con il valore dell'intero e \texttt{error\_code} pari a 0. In caso di errore, \texttt{error\_code} viene impostato a -1 per errori di lettura, -2 per errori di intervallo e -3 per input non valido.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{my\_alloc(unsigned long, unsigned long)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{my\_alloc(unsigned long, unsigned long)}
+	\item Tipi: \texttt{unsigned long}
+	\item Tipi interni: \texttt{void*}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{my\_alloc(nmemb, size)}
+	\item Alloca memoria per un array di 'nmemb' elementi, ciascuno di dimensione 'size' byte e inizializza tutti i byte a zero.
+	\item Precondizioni: 'nmemb' e 'size' devono essere diversi da zero.
+	\item Postcondizioni: In caso di successo, restituisce un puntatore alla memoria allocata. In caso di errore, registra un errore e termina il programma.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{my\_realloc(void*, unsigned long, unsigned long)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{my\_realloc(void*, unsigned long, unsigned long)}
+	\item Tipi: \texttt{void*}, \texttt{unsigned long}
+	\item Tipi interni: \texttt{void*}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{my\_realloc(p, nmemb, size)}
+	\item Rialloca la memoria per un array di 'nmemb' elementi, ciascuno di dimensione 'size' byte.
+	\item Precondizioni: 'p' è un puntatore a un blocco di memoria precedentemente allocato dinamicamente o NULL. 'nmemb' e 'size' devono essere diversi da zero.
+	\item Postcondizioni: In caso di successo, restituisce un puntatore alla memoria riallocata. In caso di errore, registra un errore e termina il programma.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{char* my\_strdup(const char*)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{my\_strdup(const char*) -> char*}
+	\item Tipi: \texttt{char*}
+	\item Tipi interni: \texttt{char*}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{my\_strdup(string) -> res\_string}
+	\item Duplica la stringa data.
+	\item Precondizioni: 'string' è una stringa valida terminata da '\textbackslash0'.
+	\item Postcondizioni: In caso di successo, restituisce un puntatore alla stringa duplicata. In caso di errore, registra un errore e termina il programma.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{trim\_whitespaces(char*, char*, int)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{trim\_whitespaces(char*, char*, int)}
+	\item Tipi: \texttt{char*}, \texttt{char*}, \texttt{int}
+	\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{trim\_whitespaces(dest, src, max\_size)}
+	\item Rimuove gli spazi vuoti iniziali e finali dalla stringa di origine 'src' e la copia nel buffer di destinazione 'dest'.
+	\item Precondizioni: 'dest' e 'src' sono puntatori validi, 'max\_size' è la dimensione di 'dest'.
+	\item Postcondizioni: 'dest' contiene la stringa senza spazi vuoti. Se 'max\_size' è 0, la funzione non fa nulla.
+\end{itemize}
+
+\subsection{Specifica dell'ADT Date}
+
+\subsubsection{Specificazione del tipo \texttt{Date}}
+
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item Tipo di riferimento: Date
+	\item Tipi utilizzati: unsigned char, unsigned short
+	\item Campi:
+	      \begin{itemize}
+		      \item minutes: Campo rappresentante i minuti.
+		      \item hour: Campo rappresentante le ore.
+		      \item day: Campo rappresentante i giorni.
+		      \item months: Campo rappresentante i mesi.
+		      \item year: Campo rappresentante gli anni.
+	      \end{itemize}
+\end{itemize}
+
+\textbf{Specificazione Semantica:} \\
+Rappresenta una data valida con precisione al minuto.
+
+\subsubsection{Funzione \texttt{Date new\_date(unsigned char, unsigned char, unsigned char, unsigned char, unsigned short) }}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{new\_date(unsigned char, unsigned char, unsigned char, unsigned char, unsigned short) -> Date}
+	\item Tipi: \texttt{unsigned char}, \texttt{unsigned short}
+	\item Tipi interni: \texttt{Date}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{new\_date(minutes, hour, day, month, year) -> return\_date}
+	\item Crea un nuovo oggetto \texttt{Date} con i componenti specificati.
+	\item Precondizioni: Nessuna.
+	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Date} creato o NULL se la data non è valida. Il chiamante è responsabile di liberare la memoria allocata utilizzando \texttt{free\_date()}.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{Date copy\_date(ConstDate)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{copy\_date(ConstDate) -> Date}
+	\item Tipi: \texttt{Date}
+	\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{copy\_date(date) -> return\_date}
+	\item Crea una copia dell'oggetto \texttt{Date} fornito.
+	\item Precondizioni: 'date' è un oggetto \texttt{Date} valido.
+	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Date} creato, che è una copia di 'date'. Il chiamante è responsabile di liberare la memoria allocata utilizzando \texttt{free\_date()}.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{int cmp\_date(ConstDate, ConstDate) }}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{cmp\_date(ConstDate, ConstDate) -> int}
+	\item Tipi: \texttt{ConstDate}
+	\item Tipi interni: \texttt{int}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item Confronta due oggetti \texttt{Date}.
+	\item Precondizioni: 'date\_a' e 'date\_b' sono oggetti \texttt{Date} validi.
+	\item Postcondizioni: Restituisce un intero minore di zero, uguale a zero o maggiore di zero se 'date\_a' è rispettivamente inferiore, uguale o superiore a 'date\_b'.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{save\_date\_to\_file(ConstDate, FILE*)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{save\_date\_to\_file(ConstDate, FILE*)}
+	\item Tipi: \texttt{ConstDate}, \texttt{FILE*}
+	\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{save\_date\_to\_file(date, file)}
+	\item Salva l'oggetto \texttt{Date} fornito in 'file'.
+	\item Precondizioni: 'date' è un oggetto \texttt{Date} valido. 'file' è un file valido aperto in scrittura.
+	\item Postcondizioni: I componenti di 'date' vengono scritti nel file 'file'.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{Date read\_date\_from\_file(FILE*)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{read\_date\_from\_file(FILE*) -> Date}
+	\item Tipi: \texttt{FILE*}
+	\item Tipi interni: \texttt{Date}, \texttt{int}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{read\_date\_from\_file(file) -> return\_date}
+	\item Legge un oggetto \texttt{Date} da un file.
+	\item Precondizioni: 'file' è un file valido.
+	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Date} letto dal file 'file', o NULL se la lettura fallisce. Il chiamante è responsabile di liberare la memoria allocata utilizzando \texttt{free\_date()}.
+\end{itemize}
+
+\subsubsection{Funzione \texttt{print\_date(ConstDate)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{print\_date(ConstDate)}
+	\item Tipi: \texttt{ConstDate}
+	\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{print\_date(date)}
+	\item Stampa i componenti dell'oggetto \texttt{Date} su stdout in un formato leggibile dall'utente.
+	\item Precondizioni: 'date' è un oggetto \texttt{Date} valido.
+	\item Postcondizioni: I componenti di 'date' vengono stampati su stdout in un formato comprensibile.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Date read\_date(void)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{read\_date(void) -> Date}
+	\item Tipi: Nessuno
+	\item Tipi interni: \texttt{Date}, \texttt{int}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{read\_date() -> return\_date}
+	\item Legge un oggetto \texttt{Date} dall'input standard.
+	\item Precondizioni: Nessuna.
+	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Date} letto dall'input standard (stdin), o NULL se la lettura fallisce. Il chiamante è responsabile di liberare la memoria allocata utilizzando \texttt{free\_date()}.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{free\_date(Date)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{free\_date(Date)}
+	\item Tipi: \texttt{Date}
+	\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{free\_date(date)}
+	\item Libera la memoria allocata per un oggetto \texttt{Date}.
+	\item Precondizioni: 'date' è un oggetto \texttt{Date} valido.
+	\item Postcondizioni: La memoria allocata per 'date' viene deallocata.
+\end{itemize}
+
+\subsection{Specifica dell'ADT Room}
+
+\subsubsection{Specificazione del tipo \texttt{Room}}
+
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item Tipo di riferimento: Room
+	\item Tipi utilizzati: unsigned int, char*
+	\item Campi:
+	      \begin{itemize}
+		      \item id: Campo rappresentante l'ID dell'oggetto Room.
+		      \item name: Campo rappresentante il nome della sala.
+		      \item capacity: Campo rappresentante i posti all'interno della sala.
+
+	      \end{itemize}
+\end{itemize}
+\textbf{Specificazione Semantica:} \\
+Rappresenta una sala della conferenza.
+
+\subsubsection{Funzione: \texttt{Room new\_room(const char*, unsigned int, unsigned int)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{new\_room(const char* name, unsigned int id, unsigned int capacity) -> Room}
+	\item Tipi: \texttt{const char *}, \texttt{unsigned int}
+	\item Tipi interni: \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{new\_room(name, id, capacity) -> return\_room}
+	\item Crea un nuovo oggetto \texttt{Room} con il nome, l'ID e la capacità specificati.
+	\item Precondizioni: 'name' è una stringa valida che rappresenta il nome della stanza. 'id' è un intero non negativo che rappresenta l'ID della stanza. 'capacity' è un intero non negativo che rappresenta la capacità della stanza.
+	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Room} creato, o NULL se si verifica un errore. Il chiamante è responsabile di liberare la memoria allocata utilizzando la funzione \texttt{free\_room()}.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Room copy\_room(ConstRoom)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{copy\_room(ConstRoom room) -> Room}
+	\item Tipi: \texttt{ConstRoom}
+	\item Tipi interni: \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{copy\_room(room) -> return\_room}
+	\item Crea una copia dell'oggetto \texttt{Room} fornito.
+	\item Precondizioni: Il parametro di input \texttt{room} è un oggetto \texttt{Room} valido.
+	\item Postcondizioni: Restituisce un puntatore alla copia appena creata di \texttt{room}. Il chiamante è responsabile di liberare la memoria allocata utilizzando la funzione \texttt{free\_room()}.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{bool are\_rooms\_equal(ConstRoom, ConstRoom)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{are\_rooms\_equal(ConstRoom room\_a, ConstRoom room\_b) -> bool}
+	\item Tipi: \texttt{ConstRoom}, \texttt{bool}
+	\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{are\_rooms\_equal(room\_a, room\_b) -> result}
+	\item Verifica se due oggetti \texttt{Room} sono uguali in base ai loro ID.
+	\item Precondizioni: I parametri di input \texttt{room\_a} e \texttt{room\_b} sono oggetti \texttt{Room} validi.
+	\item Postcondizioni: Restituisce true se \texttt{room\_a} e \texttt{room\_b} hanno lo stesso ID, altrimenti false.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{const char* get\_room\_name(ConstRoom)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{get\_room\_name(ConstRoom room) -> const char*}
+	\item Tipi: \texttt{ConstRoom}, \texttt{const char *}
+	\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{get\_room\_name(room) -> name}
+	\item Ottiene il nome dell'oggetto \texttt{Room} fornito.
+	\item Precondizioni: Il parametro di input \texttt{room} è un oggetto \texttt{Room} valido.
+	\item Postcondizioni: Restituisce un puntatore al nome di \texttt{room}.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{unsigned int get\_room\_id(ConstRoom)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{get\_room\_id(ConstRoom room) -> unsigned int}
+	\item Tipi: \texttt{ConstRoom}, \texttt{unsigned int}
+	\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{get\_room\_id(room) -> id}
+	\item Ottiene l'ID dell'oggetto \texttt{Room} fornito.
+	\item Precondizioni: Il parametro di input \texttt{room} è un oggetto \texttt{Room} valido.
+	\item Postcondizioni: Restituisce l'ID di \texttt{room}.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{print\_room(ConstRoom)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{print\_room(ConstRoom room) -> void}
+	\item Tipi: \texttt{ConstRoom}
+	\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{print\_room(room)}
+	\item Stampa i dettagli dell'oggetto \texttt{Room} fornito su stdout.
+	\item Precondizioni: Il parametro di input \texttt{room} è un oggetto \texttt{Room} valido.
+	\item Postcondizioni: I dettagli di \texttt{room} sono stampati su stdout.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Room read\_room(unsigned int)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{read\_room(unsigned int id) -> Room}
+	\item Tipi: \texttt{unsigned int}, \texttt{Room}
+	\item Tipo interno: \texttt{char[]}, \texttt{ResultInt}, \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{read\_room(id) -> room}
+	\item Legge i dettagli di un oggetto \texttt{Room} da stdin e crea un nuovo oggetto \texttt{Room} con id 'id'.
+	\item Precondizioni: Nessuna.
+	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Room} creato, o NULL se si verifica un errore. Il chiamante è responsabile di liberare la memoria allocata utilizzando la funzione \texttt{free\_room()}.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{save\_room\_to\_file(ConstRoom, FILE*)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{save\_room\_to\_file(ConstRoom room, FILE* file)}
+	\item Tipi: \texttt{ConstRoom} , \texttt{FILE*}
+	\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{save\_room\_to\_file(room, file)}
+	\item Salva i dettagli dell'oggetto \texttt{Room} fornito su un file.
+	\item Precondizioni: 'room' è un oggetto \texttt{Room} valido. 'file' è un file valido aperto in scrittura.
+	\item Postcondizioni: I dettagli di \texttt{room} sono scritti sul file 'file'.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Room read\_room\_from\_file(FILE*)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{read\_room\_from\_file(FILE* file) -> Room}
+	\item Tipi: \texttt{FILE*}, \texttt{Room}
+	\item Tipo interno: \texttt{char[]}, \texttt{unsigned int}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{read\_room\_from\_file(file) -> room}
+	\item Legge i dettagli di un oggetto \texttt{Room} da un file e crea un nuovo oggetto \texttt{Room}.
+	\item Precondizioni: 'file' è un file valido aperto in lettura.
+	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Room} creato, o NULL se si verifica un errore. Il chiamante è responsabile di liberare la memoria allocata utilizzando la funzione \texttt{free\_room()}.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{free\_room(Room)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item \texttt{free\_room(Room room)}
+	\item Tipi: \texttt{Room}
+	\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+	\item \texttt{free\_room(room)}
+	\item Libera la memoria allocata per un oggetto \texttt{Room}.
+	\item Precondizioni: 'room' è un oggetto \texttt{Room} valido.
+	\item Postcondizioni: La memoria allocata per 'room' viene deallocata.
+\end{itemize}
+
+
+\section{Razionale dei casi di test}
+
+\subsection{Casi di test relativi al nome dell'evento}
+
+\begin{itemize}
+	\item \textbf{TC001} : testiamo il caso in cui vengano inseriti regolarmente il nome dell’evento, la tipologia dell’evento, data di inizio e di fine.
+
+	\item \textbf{TC002} : testiamo il caso in cui vengano inseriti 101 caratteri nel nome dell’evento. Il programma chiederà nuovamente di inserire il nome perchè il limite (100) è stato superato.
+
+	\item \textbf{TC003} : testiamo il caso in cui vengano inseriti 100 caratteri nel nome dell’evento. Il programma accetterà il nome perchè il 100esimo carattere è compreso nel limite.
+
+	\item \textbf{TC004} : testiamo il caso in cui venga dato un’invio all’inserimento del nome dell’evento. Il programma chiederà nuovamente di inserire il nome dell’evento.
+
+	\item \textbf{TC005} : testiamo il caso in cui vengano dati degli spazi all’inserimento del nome dell’evento. Il programma non considererà gli spazi.
+
+	\item \textbf{TC006} : testiamo il caso in cui vengano dati invii e spazi all’inserimento del nome dell’evento. Il programma continuerà a chiedere il nome dopo ogni invio e ignorerà gli spazi.
+
+\end{itemize}
+
+
+\subsection{Casi di test relativi alla tipologia dell'evento}
+
+\begin{itemize}
+
+
+	\item \textbf{TC007} : testiamo il caso in cui venga inserita la tipologia “2” dell’evento.
+
+	\item \textbf{TC008} : testiamo il caso in cui venga inserita la tipologia “3” dell’evento.
+
+	\item \textbf{TC009} : testiamo il caso in cui venga inserito 0 alla richiesta della tipologia dell’evento. Il programma chiederà nuovamente la tipologia.
+
+	\item \textbf{TC010} : testiamo il caso in cui venga inserito 4 alla richiesta della tipologia dell’evento. Il programma chiederà nuovamente la tipologia.
+
+	\item \textbf{TC011}: testiamo il caso in cui venga inserito -1 alla richiesta della tipologia dell’evento. Il programma chiederà nuovamente la tipologia.
+
+	\item \textbf{TC012}: testiamo il caso in cui venga inserita una stringa alla richiesta della tipologia dell’evento. Il programma chiederà nuovamente la tipologia.
+
+	\item \textbf{TC066} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
+
+	\item \textbf{TC067} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
+
+	\item \textbf{TC068} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
+
+	\item \textbf{TC069} : testiamo il caso in cui venga inserito "0"  come tipologia di evento. Il programma ciederà nuovamente la tipologia.
+
+	\item \textbf{TC070} : testiamo il caso in cui venga inserito "-1" come tipologia di evento. Il programma ciederà nuovamente la tipologia.
+
+	\item \textbf{TC071} : testiamo il caso in cui venga inserito "4"  come tipologia di evento. Il programma ciederà nuovamente la tipologia.
+
+\end{itemize}
+
+
+\subsection{Casi di test relativi alle date dell'evento}
+
+\begin{itemize}
+
+
+	\item \textbf{TC013} : testiamo il caso in cui venga inserita una data con il giorno 0. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC014} : testiamo il caso in cui venga inserita una data con il giorno -1. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC015} : testiamo il caso in cui venga inserito 31 come giorno a gennaio.
+
+	\item \textbf{TC016} : testiamo il caso  in cui venga inserito 32 come giorno. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC017} : testiamo il caso  in cui venga inserito 28 come giorno a febbraio in un anno non bisestile.
+
+	\item \textbf{TC018} : testiamo il caso  in cui venga inserito 29 come giorno a febbraio in un anno non bisestile. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC019} : testiamo il caso in cui venga inserito 29 come giorno a febbraio in un anno bisestile.
+
+	\item \textbf{TC020} : testiamo il caso in cui venga inserito 30 come giorno a febbraio in un anno bisestile. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC021} : testiamo il caso in cui venga inserito 28 come giorno a febbraio in un anno non bisestile.
+
+	\item \textbf{TC022} : testiamo il caso in cui venga inserito 29 come giorno a febbraio in un anno non bisestile. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC023} : testiamo il caso in cui venga inserito 29 come giorno a febbraio in un anno  bisestile.
+
+	\item \textbf{TC024} : testiamo il caso  in cui venga inserito 30 come giorno a febbraio in un anno bisestile. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC025} fino al \textbf{TC044} : testiamo tutti i casi in cui il giorno superi il limite di giorni in quel determinato mese. Il programma chiederà nuovamente di inserire la data.
+
+	\item \textbf{TC045} : testiamo il caso in cui venga inserito “13” come mese. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC046} : testiamo il caso in cui venga inserito “00” come mese. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC047} : testiamo il caso in cui venga inserito “-01” come mese. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC048} : testiamo il caso in cui venga inserito “-01” come anno. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC049} : testiamo il caso in cui venga inserito “24:00” come orario. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC050} : testiamo il caso in cui venga inserito “-1:00” come orario. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC051} : testiamo il caso in cui venga inserito “60” come minuti all’interno dell’orario. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC052} : testiamo il caso in cui venga inserito “-1” come minuti all’interno dell’orario. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC053} : testiamo il caso in cui venga inserita come seconda data una data minore rispetto alla prima. Il programma chiederà nuovamente la data.
+
+	\item \textbf{TC054} : testiamo il caso in cui venga inserita una data di inizio e di fine uguale. Andrea vaffanculo (spiegherai tu questa cosa).
+
+	\item \textbf{TC054} : testiamo il caso in cui vengano inserite una data di inizio e una di fine uguale, abbiamo deciso di considerare corretto questo caso.
+
+\end{itemize}
+
+
+\subsection{Casi di test relativi alla rimozione dell'evento}
+
+\begin{itemize}
+
+	\item \textbf{TC055} : testiamo il caso in cui venga rimosso l'evento con id 0.
+
+	\item \textbf{TC056} : testiamo il caso in cui venga rimosso l'evento con id 1.
+
+	\item \textbf{TC057} : testiamo il caso in cui venga rimosso l'evento con id 2.
+
+	\item \textbf{TC058} : testiamo il caso in cui venga rimosso l'evento con id 3. Il programma non considererà la rimozione perché non è presente un evento con id 3.
+
+	\item \textbf{TC059} : testiamo il caso in cui venga rimosso l'evento con id -1. Il programma non considererà la rimozione perché non è presente un evento con id -1.
+
+\end{itemize}
+
+\subsection{Casi di test relativi alla modifica dell'evento}
+
+\begin{itemize}
+
+	\item \textbf{TC060} : testiamo il caso in cui venga modificato un evento già presente con id 0.
+
+	\item \textbf{TC061} : testiamo il caso in cui nella modifica di un evento già presente, nell'inserimento del nome, diamo un invio. Il programma chiederà di reinserire il nome dell'evento.
+
+	\item \textbf{TC062} : testiamo il caso in cui nella modifica di un evento già presente, nell'inserimento del nome, diamo degli spazi. Il programma non considererà gli spazi.
+
+	\item \textbf{TC063} : testiamo il caso in cui nella modifica di un evento già presente, nell'inserimento del nome, diamo un invio e degli spazi. Il programma ignorerà gli spazi e l'invio chiedendo di reinserire il nome dell'evento.
+
+	\item \textbf{TC064} : testiamo il caso in cui nella modifica di un evento già presente, nell'inserimento del nome, venga inserito un nome che superi il limite di 100 caratteri. Il programma chiederà di inserire nuovamente il nome dell'evento.
+
+	\item \textbf{TC065} : testiamo il caso in cui nella modifica di un evento già presente, nell'inserimento del nome, venga inserito un nome di esattamente 100 caratteri.
+
+	\item \textbf{TC072} : testiamo il caso in cui venga modificata correttamente la data di inizio.
+
+	\item \textbf{TC073} : testiamo il caso in cui si tenti di inserire una data di inizio successiva rispetto a quella di fine. Il programma chiederà nuovamente di inserire la data.
+
+	\item \textbf{TC074} : testiamo il caso in cui si tenti di inserire una data di inizio che si sovrapponga alla data di un altro evento nella stessa sala. Il programma chiederà nuovamente di inserire la data.
+
+	\item \textbf{TC075} : testiamo il caso in cui venga modificata correttamente la data di fine.
+
+	\item \textbf{TC076} : testiamo il caso in cui si tenti di inserire una data di fine precedente rispetto a quella di inizio. Il programma chiederà nuovamente di inserire la data.
+
+	\item \textbf{TC077} : testiamo il caso in cui si tenti di inserire una data di fine che si sovrapponga alla data di un altro evento nella stessa sala. Il programma chiederà nuovamente di inserire la data.
+
+
+\end{itemize}
+
+\subsection{Casi di test relativi all'assegnazione di una sala ad un evento}
+
+\begin{itemize}
+
+
+	\item \textbf{TC078} : testiamo il caso in cui venga assegnata una sala ad un evento.
+
+	\item \textbf{TC079} : testiamo il caso in cui venga assegnato ad un evento una sala già occupata nel periodo di tempo in cui si verifica.
+
+	\item \textbf{TC080} : testiamo il caso in cui venga assegnata una sala ad un evento che ha la data di fine uguale alla data di inizio dell'evento successivo.
+
+	\item \textbf{TC081} : testiamo il caso in cui venga assegnata una sala ad un evento che ha la data di inizio uguale alla data di fine dell'evento precedente.
+
+	\item \textbf{TC082} : testiamo il caso in cui due eventi abbiano la stessa data di inizio e di fine, ma siano assegnati a sale differenti.
+
+
+\end{itemize}
+
+\subsection{Casi di test relativi alla rimozione di una sala da un evento}
+
+\begin{itemize}
+
+	\item \textbf{TC083} : testiamo la rimozione di una sala da un evento.
+
+	\item \textbf{TC084} : testiamo la rimozione di una sala inesistente.
+
+\end{itemize}
+
+
+\subsection{Casi di test relativi alla visualizzazione di eventi}
+
+\begin{itemize}
+
+
+	\item \textbf{TC085} : testiamo che un numero negativo annulli la selezione di una sala.
+
+	\item \textbf{TC086} : testiamo la corretta visualizzazione degli eventi in ordine alfabetico, perché le date sono tutte uguali.
+
+	\item \textbf{TC087} : testiamo la corretta visualizzazione degli eventi con id non ordinati.
+
+	\item \textbf{TC088} : testiamo la corretta visualizzazione degli eventi con tutte le sale assegnate.
+
+	\item \textbf{TC089} : testiamo la corretta visualizzazione degli eventi, con solo due sale assegnate a due eventi.
+
+	\item \textbf{TC090} : testiamo la corretta visualizzazione degli eventi seguendo l'ordine delle date.
+
+	\item \textbf{TC091} : visualizzazione di eventi multipli che combinano i precedenti test case.
+
+	\item \textbf{TC092} : visualizzazione di lista di eventi vuota.
+\end{itemize}
+
+%-----------------------------------------------%
 
 \end{document}

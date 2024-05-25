@@ -45,7 +45,10 @@ int read_menu_choice(void) {
 
 int main(int argc, char **argv) {
 
-  set_log_file(stderr);
+  FILE *log_file = fopen("log.txt", "w");
+  if (log_file != NULL) {
+    set_log_file(log_file);
+  }
 
   char *filename = "conf.txt";
   if (argc > 1) {
@@ -62,7 +65,8 @@ int main(int argc, char **argv) {
     conf = new_conference();
   }
   if (conf == NULL_CONFERENCE) {
-    log_error("Creazione della conferenza fallita");
+    log_error("Conference creation failed");
+    puts("Impossibile creare una nuova conferenza");
     return -1;
   }
   puts(WELCOME_MESSAGE);
@@ -114,12 +118,16 @@ int main(int argc, char **argv) {
 
   conf_file = fopen(filename, "w");
   if (conf_file == NULL) {
-    log_error("Impossibile aprire il file in scrittura");
+    printf("Impossibile aprire il file %s in scrittura\n", filename);
     return -2;
   }
   save_conference_to_file(conf, conf_file);
   (void)fclose(conf_file);
+  if (log_file != NULL) {
+    (void)fclose(log_file);
+  }
 
   free_conference(conf);
+
   return 0;
 }

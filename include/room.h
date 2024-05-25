@@ -53,8 +53,8 @@ Room copy_room(ConstRoom room);
 /*
   Syntax Specification:
   - are_rooms_equal(ConstRoom, ConstRoom) -> bool
-  - types: ConstRoom, ConstRoom
-  - internal types: bool
+  - types: ConstRoom, bool
+  - internal types: none
 
   Semantic Specification:
   - Function: are_rooms_equal(room_a, room_b) -> result
@@ -68,8 +68,8 @@ bool are_rooms_equal(ConstRoom room_a, ConstRoom room_b);
 /*
   Syntax Specification:
   - get_room_name(ConstRoom) -> const char*
-  - types: ConstRoom
-  - internal types: const char*
+  - types: ConstRoom, const char*
+  - internal types: none
 
   Semantic Specification:
   - Function: get_room_name(room) -> name
@@ -82,8 +82,8 @@ const char *get_room_name(ConstRoom room);
 /*
   Syntax Specification:
   - get_room_id(ConstRoom) -> unsigned int
-  - types: ConstRoom
-  - internal types: unsigned int
+  - types: ConstRoom, unsigned int
+  - internal types: none
 
   Semantic Specification:
   - Function: get_room_id(room) -> id
@@ -110,13 +110,13 @@ void print_room(ConstRoom room);
 /*
   Syntax Specification:
   - read_room(unsigned int) -> Room
-  - types: unsigned int
-  - internal types: Room
+  - types: unsigned int, Room
+  - internal types: char[], ResultInt, Room
 
   Semantic Specification:
   - Function: read_room(id) -> room
   - Description: Reads details of a Room object from stdin and creates a new
-  Room object.
+  Room object with id 'id'.
   - Preconditions: None.
   - Postconditions: Returns a pointer to the newly created Room object, or NULL
   if an error occurs. The caller is responsible for freeing the allocated memory
@@ -126,14 +126,15 @@ Room read_room(unsigned int id);
 
 /*
   Syntax Specification:
-  - save_room_to_file(ConstRoom, FILE*) -> void
+  - save_room_to_file(ConstRoom, FILE*)
   - types: ConstRoom, FILE*
   - internal types: none
 
   Semantic Specification:
   - Function: save_room_to_file(room, file)
   - Description: Saves the details of the given Room object to a file stream.
-  - Preconditions: 'room' is a valid Room object. 'file' is a valid FILE stream.
+  - Preconditions: 'room' is a valid Room object. 'file' is a valid FILE stream
+  opened in write mode.
   - Postconditions: The details of 'room' are written to the file stream 'file'.
 */
 void save_room_to_file(ConstRoom room, FILE *file);
@@ -141,14 +142,14 @@ void save_room_to_file(ConstRoom room, FILE *file);
 /*
   Syntax Specification:
   - read_room_from_file(FILE*) -> Room
-  - types: FILE*
-  - internal types: Room
+  - types: FILE*, Room
+  - internal types: unsigned int, char[]
 
   Semantic Specification:
   - Function: read_room_from_file(file) -> room
   - Description: Reads details of a Room object from a file stream and creates a
   new Room object.
-  - Preconditions: 'file' is a valid FILE stream.
+  - Preconditions: 'file' is a valid FILE stream opened in writing mode.
   - Postconditions: Returns a pointer to the newly created Room object, or NULL
   if an error occurs. The caller is responsible for freeing the allocated memory
   using free_room().
@@ -157,7 +158,7 @@ Room read_room_from_file(FILE *file);
 
 /*
   Syntax Specification:
-  - free_room(Room) -> void
+  - free_room(Room)
   - types: Room
   - internal types: none
 

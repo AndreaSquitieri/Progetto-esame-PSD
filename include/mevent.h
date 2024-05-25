@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #define NULL_EVENT NULL
+#define NULL_EVENT_ID 0
 
 typedef struct EventStruct *Event;
 typedef const struct EventStruct *ConstEvent;

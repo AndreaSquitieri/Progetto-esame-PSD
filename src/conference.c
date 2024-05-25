@@ -39,7 +39,7 @@ Conference new_conference(void) {
   Conference conf = my_alloc(1, sizeof(*conf));
   conf->bst = bst;
   conf->rooms = room_list;
-  conf->event_id_counter = 0;
+  conf->event_id_counter = NULL_EVENT_ID + 1;
   conf->room_id_counter = NULL_ROOM_ID + 1;
   return conf;
 }

@@ -1,60 +1,60 @@
-Id: 1
+Id: 2
 Evento: "Evento test 2"
 Tipo: Sessione di keynote
 Data inizio: 1 Gennaio 1970, 12:00
 Data fine: 1 Gennaio 1970, 13:00
 
-Id: 7
+Id: 8
 Evento: "Evento test 8"
 Tipo: Sessione di keynote
 Data inizio: 1 Gennaio 1970, 12:55
 Data fine: 1 Gennaio 1970, 13:55
 
-Id: 4
+Id: 5
 Evento: "Evento test 5"
 Tipo: Sessione di keynote
 Data inizio: 2 Gennaio 1970, 12:00
 Data fine: 2 Gennaio 1970, 13:00
 
-Id: 2
+Id: 3
 Evento: "Evento test 3"
 Tipo: Panel di discussione
 Data inizio: 1 Gennaio 2000, 12:00
 Data fine: 1 Gennaio 2000, 13:00
 
-Id: 8
+Id: 9
 Evento: "Evento test 9"
 Tipo: Panel di discussione
 Sala: Sala A
 Data inizio: 1 Gennaio 2000, 12:00
 Data fine: 1 Gennaio 2000, 13:00
 
-Id: 5
+Id: 6
 Evento: "Evento test 6"
 Tipo: Panel di discussione
 Data inizio: 1 Febbraio 2000, 12:00
 Data fine: 1 Febbraio 2000, 13:00
 
-Id: 6
+Id: 7
 Evento: "Evento test 7"
 Tipo: Workshop
 Data inizio: 1 Gennaio 2010, 10:00
 Data fine: 1 Gennaio 2011, 12:00
 
-Id: 0
+Id: 1
 Evento: "Evento test 1"
 Tipo: Workshop
 Data inizio: 1 Gennaio 2010, 12:00
 Data fine: 1 Gennaio 2011, 13:00
 
-Id: 9
+Id: 10
 Evento: "Evento test 10"
 Tipo: Workshop
 Sala: Sala B
 Data inizio: 1 Gennaio 2010, 12:00
 Data fine: 1 Gennaio 2011, 13:00
 
-Id: 3
+Id: 4
 Evento: "Evento test 4"
 Tipo: Workshop
 Data inizio: 1 Gennaio 2010, 12:00

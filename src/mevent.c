@@ -15,6 +15,9 @@
 
 #define MAX_NAME_SIZE 100
 
+static const char *const stringhe_type_event[] = {
+    "Workshop", "Sessione di keynote", "Panel di discussione"};
+
 // Event structure definition
 typedef struct EventStruct {
   unsigned int id; // Unique identifier for the event
@@ -29,6 +32,7 @@ typedef struct EventStruct {
 Event new_event(EventType type, const char *name, Date start_date,
                 Date end_date, unsigned int id) {
   if (name == NULL || start_date == NULL_DATE) {
+    log_error("Invalid parameters passed to 'new_event' function.");
     return NULL_EVENT;
   }
   // Allocate memory for the new event
@@ -56,45 +60,56 @@ int cmp_event(ConstEvent event_a, ConstEvent event_b) {
   // If start dates are equal, compare the names
   return strcmp(event_a->name, event_b->name);
 }
-unsigned int get_event_id(ConstEvent event) { return event->id; }
+unsigned int get_event_id(ConstEvent event) {
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'get_event_id' function.");
+    return NULL_EVENT_ID;
+  }
+  return event->id;
+}
 
 ConstDate get_event_start_date(ConstEvent event) {
-  if (event == NULL_EVENT) {
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'get_event_start_date' function.");
     return NULL_DATE;
   }
   return event->start_date;
 }
 
 ConstDate get_event_end_date(ConstEvent event) {
-  if (event == NULL_EVENT) {
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'get_event_end_date' function.");
     return NULL_DATE;
   }
   return event->end_date;
 }
 
 const char *get_event_name(ConstEvent event) {
-  if (event == NULL_EVENT) {
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'get_event_name' function.");
     return NULL;
   }
   return event->name;
 }
 
 EventType get_event_type(ConstEvent event) {
-  if (event == NULL_EVENT) {
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'get_event_type' function.");
     return -1;
   }
   return event->type;
 }
 unsigned int get_event_room_id(ConstEvent event) {
-  if (event == NULL_EVENT) {
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'get_event_room_id' function.");
     return NULL_ROOM_ID;
   }
   return event->assigned_room_id;
 }
 
 int set_event_room_id(Event event, unsigned int room_id) {
-  if (event == NULL_EVENT) {
-    log_error("Passato puntatore NULL alla funzione 'set_event_start_date'.");
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'set_event_room_id' function.");
     return -1;
   }
   event->assigned_room_id = room_id;
@@ -102,13 +117,12 @@ int set_event_room_id(Event event, unsigned int room_id) {
 }
 
 int set_event_start_date(Event event, Date start_date) {
-  if (event == NULL_EVENT) {
-    log_error("Passato puntatore NULL alla funzione 'set_event_start_date'.");
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'set_event_start_date' function.");
     return -1;
   }
   if (cmp_date(start_date, event->end_date) > 0) {
-    log_error(
-        "Data inizio superiore alla data di fine in 'set_event_start_date'.");
+    log_error("Start date is later than end date in 'set_event_start_date'.");
     return -2;
   }
   free_date(event->start_date);
@@ -117,13 +131,12 @@ int set_event_start_date(Event event, Date start_date) {
 }
 
 int set_event_end_date(Event event, Date end_date) {
-  if (event == NULL_EVENT) {
-    log_error("Passato puntatore NULL alla funzione 'set_event_end_date'.");
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'set_event_end_date' function.");
     return -1;
   }
   if (cmp_date(end_date, event->start_date) < 0) {
-    log_error(
-        "Data fine inferiore alla data di inizio in 'set_event_end_date'.");
+    log_error("End date is earlier than start date in 'set_event_end_date'.");
     return -2;
   }
   free_date(event->end_date);
@@ -132,33 +145,30 @@ int set_event_end_date(Event event, Date end_date) {
 }
 
 int set_event_name(Event event, const char *name) {
-  if (event == NULL_EVENT) {
-    log_error("Passato puntatore NULL alla funzione 'set_name'.");
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'set_event_name' function.");
     return -1;
   }
-  char *temp = strdup(name);
-  if (temp == NULL) {
-    log_error("Copia di 'name' in 'set_name' fallita.");
-    return -1;
-  }
+  char *temp = my_strdup(name);
   free(event->name);
   event->name = temp;
   return 0;
 }
 int set_event_type(Event event, EventType type) {
-  if (event == NULL_EVENT) {
-    log_error("Passato puntatore NULL alla funzione 'set_event_type'.");
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'set_event_type' function.");
     return -1;
   }
   event->type = type;
   return 0;
 }
 
-static const char *const stringhe_type_event[] = {
-    "Workshop", "Sessione di keynote", "Panel di discussione"};
-
 // Function to print the details of an event
 void print_event(ConstEvent event, ConstRoom assigned_room) {
+  if (are_events_equal(event, NULL_EVENT)) {
+    log_error("NULL pointer passed to 'print_event' function.");
+    return;
+  }
   printf(FORMAT_EVENT, event->id, event->name,
          stringhe_type_event[event->type]);
   puts("");
@@ -226,6 +236,13 @@ Event read_event(unsigned int event_id) {
 
 // Function to check if two events overlap in time
 bool do_events_overlap(ConstEvent event_a, ConstEvent event_b) {
+  if (are_events_equal(event_a, NULL_EVENT)) {
+    return false;
+  }
+  if (are_events_equal(event_b, NULL_EVENT)) {
+    return false;
+  }
+
   // Get the start and end dates of both events
   ConstDate start_a = get_event_start_date(event_a);
   ConstDate end_a = get_event_end_date(event_a);
