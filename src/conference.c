@@ -13,6 +13,24 @@
 
 #define MAXSIZE 102 // Define a maximum size constant
 
+// Define the edit menu options
+#define EDIT_MENU                                                              \
+  "[1] Nome\n"                                                                 \
+  "[2] Tipo\n"                                                                 \
+  "[3] Data inizio\n"                                                          \
+  "[4] Data fine\n"                                                            \
+  "[5] Esci\n"                                                                 \
+  "Selezionare cosa si desidera modificare: "
+
+// Enumeration for edit menu choices
+typedef enum {
+  EDIT_EVENT_TITLE = 1,
+  EDIT_EVENT_TYPE,
+  EDIT_EVENT_START_DATE,
+  EDIT_EVENT_END_DATE,
+  EDIT_EVENT_EXIT
+} EditMenuChoice;
+
 // Define the structure of a conference
 struct ConferenceStruct {
   unsigned int event_id_counter; // Counter for event IDs
@@ -253,88 +271,130 @@ static bool are_events_compatible(Event event, va_list args) {
 
 // Function to edit the start date of an event in the conference
 static int edit_conference_event_start_date(Conference conf, Event to_edit) {
+  // Declare a Date variable and initialize it to a null date
   Date date = NULL_DATE;
+
+  // Loop until a valid start date is entered and set
   do {
+    // Prompt user for the event start date
     printf("Inserisci data inizio evento (DD/MM/AAAA hh:mm): ");
-    date = read_date();
+    date = read_date(); // Read the date input from the user
+
+    // If the date read is a null date, continue prompting
     if (date == NULL_DATE) {
       continue;
     }
+
+    // Check if the entered start date is after the event's end date
     if (cmp_date(date, get_event_end_date(to_edit)) > 0) {
+      // If it is, free the allocated date and set date to null date
       free_date(date);
       date = NULL_DATE;
       continue;
     }
+
+    // Make a copy of the current start date of the event
     Date old_date = copy_date(get_event_start_date(to_edit));
+
+    // Attempt to set the new start date for the event
     if (set_event_start_date(to_edit, date)) {
+      // If setting the date fails, free the allocated dates and return error
       free_date(date);
       free_date(old_date);
       return -1;
     }
+
+    // Retrieve the room associated with the event
     Room room = get_room_by_id(conf->rooms, get_event_room_id(to_edit));
+
+    // Check if the event with the new start date is compatible with other
+    // events
     if (!event_bst_every(conf->bst, are_events_compatible, to_edit, room,
                          conf->rooms)) {
+      // If not compatible, attempt to revert to the old start date
       if (set_event_start_date(to_edit, old_date)) {
+        // If reverting fails, free the old date and return error
         free_date(old_date);
         return -2;
       }
+      // Reset the date to null date and continue the loop
       date = NULL_DATE;
       continue;
     }
-  } while (date == NULL_DATE && printf("Data inserita non valida\n"));
+
+    // Free the old date as the new date is valid and set successfully
+    free_date(old_date);
+
+  } while (date == NULL_DATE &&
+           printf("Data inserita non valida\n")); // Inform user of invalid date
+                                                  // and repeat
+
+  // If the loop exits successfully, return 0 indicating success
   return 0;
 }
+
 // Function to edit the end date of an event in the conference
 static int edit_conference_event_end_date(Conference conf, Event to_edit) {
+  // Declare a Date variable and initialize it to a null date
   Date date = NULL_DATE;
+
+  // Loop until a valid end date is entered and set
   do {
+    // Prompt the user to enter the event end date
     printf("Inserisci data fine evento (DD/MM/AAAA hh:mm): ");
-    date = read_date();
+    date = read_date(); // Read the date input from the user
+
+    // If the date read is a null date, continue prompting
     if (date == NULL_DATE) {
       continue;
     }
+
+    // Check if the entered end date is before the event's start date
     if (cmp_date(date, get_event_start_date(to_edit)) < 0) {
+      // If it is, free the allocated date and set date to null date
       free_date(date);
       date = NULL_DATE;
       continue;
     }
+
+    // Make a copy of the current end date of the event
     Date old_date = copy_date(get_event_end_date(to_edit));
+
+    // Attempt to set the new end date for the event
     if (set_event_end_date(to_edit, date)) {
+      // If setting the date fails, free the allocated dates and return error
       free_date(date);
       free_date(old_date);
       return -1;
     }
+
+    // Retrieve the room associated with the event
     Room room = get_room_by_id(conf->rooms, get_event_room_id(to_edit));
+
+    // Check if the event with the new end date is compatible with other events
     if (!event_bst_every(conf->bst, are_events_compatible, to_edit, room,
                          conf->rooms)) {
+      // If not compatible, attempt to revert to the old end date
       if (set_event_end_date(to_edit, old_date)) {
-
+        // If reverting fails, free the old date and return error
         free_date(old_date);
         return -2;
       }
+      // Reset the date to null date and continue the loop
       date = NULL_DATE;
       continue;
     }
-  } while (date == NULL_DATE && printf("Data inserita non valida\n"));
+
+    // Free the old date as the new date is valid and set successfully
+    free_date(old_date);
+
+  } while (date == NULL_DATE &&
+           printf("Data inserita non valida\n")); // Inform user of invalid date
+                                                  // and repeat
+
+  // If the loop exits successfully, return 0 indicating success
   return 0;
 }
-// Define the edit menu options
-#define EDIT_MENU                                                              \
-  "[1] Nome\n"                                                                 \
-  "[2] Tipo\n"                                                                 \
-  "[3] Data inizio\n"                                                          \
-  "[4] Data fine\n"                                                            \
-  "[5] Esci\n"                                                                 \
-  "Selezionare cosa si desidera modificare: "
-
-// Enumeration for edit menu choices
-typedef enum {
-  EDIT_EVENT_TITLE = 1,
-  EDIT_EVENT_TYPE,
-  EDIT_EVENT_START_DATE,
-  EDIT_EVENT_END_DATE,
-  EDIT_EVENT_EXIT
-} EditMenuChoice;
 
 // Function to edit an event in the conference
 int edit_conference_event(Conference conf) {
