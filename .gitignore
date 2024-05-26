@@ -5,8 +5,11 @@ tmp/
 bin/
 build/
 .cache/
+tests/test
+tests/test.o
 .editorconfig
 compile_commands.json
 *.o
 progetto-psd
 conf.txt
+log.txt
