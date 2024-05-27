@@ -87,42 +87,40 @@ Gli obiettivi principali del progetto includono:
 
 \section{Motivazione della scelta degli ADT}
 
-\subsection{Motivazioni per l'uso dell'ADT Date}
+\subsection{Motivazioni per l'uso dell'ADT Date, dell'ADT Room e dell'ADT Event}
 
-
-Nel progetto di gestione delle conferenze, una delle componenti fondamentali è la gestione delle date. Gli eventi della conferenza devono essere pianificati in specifici giorni e orari, e per garantire una gestione precisa e coerente di queste informazioni, è stato sviluppato e utilizzato un ADT chiamato Date. Utilizzando questo ADT possiamo garantire:
+ Gli eventi devono essere pianificati in specifici giorni e orari. Per garantire una gestione precisa e coerente di queste informazioni, è stato sviluppato l'ADT Date. L'uso di questo ADT permette di:
 \begin{itemize}
-	\item  \textbf{La validità delle date}:  Le date inserite nel sistema saranno sempre valide (es. nessuna data con un mese o giorno non esistente).
-	\item \textbf{Il corretto confronto fra date}: Il confronto fra due date avvenga in maniera corretta e semplice.
+    \item \textbf{Assicurare la validità delle date}: Le date inserite nel sistema sono sempre valide (es. nessuna data con un mese o giorno inesistente).
+    \item \textbf{Effettuare confronti corretti tra date}: Il confronto tra due date avviene in maniera corretta e semplice.
 \end{itemize}
-Nello specifico, l'ADT Date viene usato all'interno del progetto per rappresentare le date d'inizio e fine di ogni evento, offrendo una precisione al minuto.
+In particolare, l'ADT Date viene utilizzato per rappresentare le date di inizio e fine di ogni evento, con una precisione che arriva al minuto.
 
-\subsection{Motivazione dell'uso dell'ADT Room}
+\subsection{Motivazioni per l'uso dell'ADT Room}
 
+L'ADT Room gestisce le informazioni relative alle sale all'interno del sistema di gestione delle conferenze. Esso rappresenta una sala con attributi quali il nome della sala, il numero di posti e l'eventuale disponibilità.
 
-L'ADT Room è stato introdotto per gestire le informazioni relative alle sale all'interno del sistema di gestione delle conferenze. Esso è stato progettato per rappresentare una sala conferenze con attributi chiave quali il nome della sala, il numero di posti e l'eventuale disponibilità.
+\subsection{Motivazioni per l'uso dell'ADT RoomList}
 
+L'ADT RoomList è stato introdotto per gestire in modo efficiente un insieme di sale conferenze. Esso rappresenta una collezione di oggetti Room, permettendo di mantenere organizzate e facilmente accessibili tutte le informazioni relative alle diverse sale.
 
+\subsection{Motivazioni per l'uso dell'ADT Event}
 
-\subsection{Motivazione dell'uso dell'ADT RoomList}
+L'ADT Event è stato creato per gestire in modo efficiente le informazioni relative agli eventi all'interno del sistema. Esso rappresenta un singolo evento, includendo dettagli cruciali come il nome dell'evento, la data e l'ora di inizio e fine, e la sala assegnata.
 
-L'ADT RoomList è stato introdotto per gestire in modo efficiente un insieme di sale conferenze all'interno del sistema di gestione delle conferenze. Esso è stato progettato per rappresentare una collezione di oggetti Room, permettendo di mantenere organizzate e facilmente accessibili tutte le informazioni relative alle diverse sale conferenze.
+\subsection{Motivazioni per l'uso dell'ADT EventBst}
 
-\subsection{Motivazione dell'uso dell'ADT Event}
+L'ADT EventBst è stato introdotto per gestire in modo ordinato la raccolta di eventi all'interno del sistema. Esso rappresenta un albero binario di ricerca in cui ogni nodo contiene un singolo evento, e le relazioni di ordinamento sono definite sulla base delle proprietà degli eventi, come la data e l'ora di inizio e, se condivise da altri eventi, il nome.
 
-L'ADT Event è stato introdotto per gestire in modo efficiente e organizzato le informazioni relative agli eventi all'interno del sistema di gestione delle conferenze. Esso è stato progettato per rappresentare un singolo evento, includendo dettagli cruciali come il nome dell'evento, la data e l'ora di inizio e fine, e la sala assegnata.
+L'uso di un albero binario di ricerca permette di aggiungere eventi con una complessità temporale media di $O(\log{n})$. Tuttavia, per favorire l'usabilità del software, le operazioni di modifica e rimozione non possono sfruttare le proprietà dell'albero e sono quindi di complessità $O(n)$ (precedute da una ricerca lineare per ID dell'evento).
 
-\subsection{Motivazione dell'uso dell'ADT EventBst}
+Nonostante ciò, riteniamo che l'uso di questo ADT sia giustificato, dato che le possibili alternative avrebbero comunque mantenuto una complessità temporale di $O(n)$ nella modifica e nella rimozione, ma avrebbero reso lineare anche la complessità dell'aggiunta degli eventi.
 
-L'ADT EventBst è stato introdotto per gestire in modo efficiente e ordinato la raccolta di eventi all'interno del sistema di gestione delle conferenze.Esso rappresenta un albero binario di ricerca in cui ogni nodo contiene un singolo evento e le relazioni di ordinamento sono definite sulla base delle proprietà degli eventi, come la data e l'ora di inizio e, nel caso in cui queste vengano condivise da altri eventi, il nome.\\
-L'uso di un albero binario di ricerca permette di aggiungere eventi con una complessità temporale media di $O(\log{n})$ ma, per favorire l'utilizzabilità del software, le operazioni di modifica e rimozione non possono sfruttare le proprietà dell'albero e sono quindi di complessita $O(n)$ (Esse verranno sempre precedute da una ricerca lineare per ID dell'evento).\\
-Ciò nonostante, riteniamo che l'uso di questo ADT sia giustificato, dato che le possibili alternative avrebbero comunque mantenuto una complessità temporale di $O(n)$ nella modifica e nella rimozione ma avrebbero reso lineare anche la complessità dell'aggiunta degli eventi.
+\subsection{Motivazioni per l'uso dell'ADT Conference}
 
-\subsection{Motivazione dell'uso dell'ADT Conference}
+L'ADT Conference è stato implementato per gestire in modo completo e strutturato l'organizzazione di una conferenza, inclusi gli eventi, le sale e le loro assegnazioni. Esso è progettato come un'astrazione completa della conferenza, comprendendo una collezione di eventi, una lista delle sale disponibili e le assegnazioni degli eventi alle sale.
 
-L'ADT Conference è stato implementato per gestire in modo completo e strutturato l'organizzazione di una conferenza, inclusi gli eventi, le sale conferenze e le loro assegnazioni. Esso è progettato come un'astrazione completa della conferenza, che comprende una collezione di eventi, una lista delle sale conferenze disponibili e le assegnazioni degli eventi alle sale.\\
 Grazie a questa astrazione, ci assicuriamo che ciascun evento e sala siano identificati da ID univoci e che non vi siano sovrapposizioni temporali tra gli eventi assegnati alla stessa sala.
-
 
 \section{Progettazione}
 
@@ -715,8 +713,104 @@ Rappresenta una sala della conferenza.
 
 
 \section{Razionale dei casi di test}
+Il file \texttt{test.c} implementa un sistema di testing per il progetto di gestione delle conferenze. Questo sistema è progettato per eseguire una serie di test automatici che verificano il corretto funzionamento delle principali funzionalità del software. Di seguito viene fornita una panoramica del funzionamento del file \texttt{test.c}.
 
-\subsection{Casi di test relativi al nome dell'evento}
+\subsection{Tipi di Test}
+Il sistema di testing supporta vari tipi di test, definiti tramite una \texttt{enum} denominata \texttt{TestType}. I tipi di test implementati sono:
+\begin{itemize}
+    \item \texttt{TEST\_ADD\_EVENT}: Test per l'aggiunta di un evento.
+    \item \texttt{TEST\_REMOVE\_EVENT}: Test per la rimozione di un evento.
+    \item \texttt{TEST\_EDIT\_EVENT}: Test per la modifica di un evento.
+    \item \texttt{TEST\_ASSIGN\_ROOM\_EVENT}: Test per l'assegnazione di una sala a un evento.
+    \item \texttt{TEST\_FREE\_ROOM\_EVENT}: Test per la liberazione di una sala assegnata a un evento.
+    \item \texttt{TEST\_DISPLAY\_EVENTS}: Test per la visualizzazione del programma della conferenza.
+\end{itemize}
+
+\subsection{Funzionamento Generale}
+Il file \texttt{test.c} segue questi passaggi per eseguire i test:
+\begin{enumerate}
+    \item Legge il file di suite di test, il quale contiene le specifiche di ogni test da eseguire.
+    \item Per ogni test, carica i file necessari (ex. Per il test TC001 i file saranno contenuti nell'omonima cartella), inclusi i file di input (input.txt), di output atteso (oracle.txt) ed un opzionale file di conferenza iniziale (conference.txt)
+    \item Reindirizza l'input e l'output standard per eseguire le operazioni specificate dal tipo di test.
+    \item Confronta l'output generato dal test con l'output atteso (oracle) per determinare se il test è passato o fallito.
+    \item Registra i risultati di ogni test in un file di risultati.
+\end{enumerate}
+
+\subsection{Formato file conferenze}
+I file \texttt{conference.txt} e quelli di oracle (tranne nei test di visualizzazione del programma della conferenza) contengono le informazioni relative alla conferenza. Sono strutturati nel seguente modo:
+
+\begin{enumerate}
+    \item Le prime due righe rappresentano gli inizializzatori degli ID per eventi e stanze.
+    \item Il numero di eventi presenti nella conferenza è indicato dalla riga successiva.
+    \item Per ciascun evento, vengono forniti i seguenti dettagli:
+    \begin{itemize}
+        \item Tipo dell'evento (indicato con un numero tra 1 e 3), ID dell'evento, ID della sala a cui è assegnato l'evento e  nome dell'evento
+        \item Data di inizio dell'evento (espressa come ''mm hh GG MM AAAA'')
+        \item Data di fine dell'evento (espressa come ''mm hh GG MM AAAA'')
+    \end{itemize}
+    \item Dopo la lista degli eventi, viene fornito il numero di sale presenti nella conferenza, indicato dalla riga successiva, nel nostro caso "3".
+    \item Per ciascuna sala, vengono forniti i seguenti dettagli:
+    \begin{itemize}
+        \item Nome della sala
+        \item Capacità della sala
+    \end{itemize}
+\end{enumerate}
+
+
+\subsection{Test per l'aggiunta di un evento}
+\subsubsection{Formato del file \texttt{input.txt} per i Test di Aggiunta Evento}
+
+Per eseguire correttamente i test di aggiunta evento, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare l'aggiunta di un singolo evento. Questo file contiene le informazioni necessarie per aggiungere un nuovo evento alla conferenza, con ogni campo separato su righe diverse:
+
+\begin{itemize}
+    \item \textbf{Nome evento}: Una stringa che rappresenta il nome dell'evento.
+    \item \textbf{Tipologia evento}: Un intero che indica la tipologia dell'evento (valori tra 1 e 3).
+    \item \textbf{Data inizio evento}: La data e l'ora di inizio dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
+    \item \textbf{Data fine evento}: La data e l'ora di fine dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
+\end{itemize}
+
+Ogni riga non valida viene ignorata
+
+\paragraph{Esempio 1:}
+Di seguito è riportato un esempio di come deve essere formattato il file \texttt{input.txt}:
+
+\begin{verbatim}
+NomeEvento1
+1
+15/06/2024 09:00
+15/06/2024 11:00
+\end{verbatim}
+
+In questo esempio:
+\begin{itemize}
+    \item \texttt{NomeEvento1} è il nome dell'evento.
+    \item \texttt{1} è la tipologia dell'evento.
+    \item \texttt{15/06/2024 09:00} è la data e l'ora di inizio dell'evento.
+    \item \texttt{15/06/2024 11:00} è la data e l'ora di fine dell'evento.
+\end{itemize}
+
+\paragraph{Esempio 2:}
+
+Di seguito è riportato un esempio di come vengono interpretati dei file con righe non valide:
+
+\begin{verbatim}
+NomeEvento1
+1
+15/06/2024 09:00
+15/06/2024 08:00
+15/06/2024 11:00
+\end{verbatim}
+
+In questo esempio:
+\begin{itemize}
+    \item \texttt{NomeEvento1} è il nome dell'evento.
+    \item \texttt{1} è la tipologia dell'evento.
+    \item \texttt{15/06/2024 09:00} è la data e l'ora di inizio dell'evento.
+    \item \texttt{15/06/2024 11:00} è la data e l'ora di fine dell'evento, dato che la riga ''15/06/2024 08:00'' viene ignorata
+\end{itemize}
+
+
+\subsubsection{Casi di test relativi al nome dell'evento}
 
 \begin{itemize}
 	\item \textbf{TC001} : testiamo il caso in cui vengano inseriti regolarmente il nome dell’evento, la tipologia dell’evento, data di inizio e di fine.
@@ -734,7 +828,7 @@ Rappresenta una sala della conferenza.
 \end{itemize}
 
 
-\subsection{Casi di test relativi alla tipologia dell'evento}
+\subsubsection{Casi di test relativi alla tipologia dell'evento}
 
 \begin{itemize}
 
@@ -766,7 +860,7 @@ Rappresenta una sala della conferenza.
 \end{itemize}
 
 
-\subsection{Casi di test relativi alle date dell'evento}
+\subsubsection{Casi di test relativi alle date dell'evento}
 
 \begin{itemize}
 
@@ -822,7 +916,7 @@ Rappresenta una sala della conferenza.
 \end{itemize}
 
 
-\subsection{Casi di test relativi alla rimozione dell'evento}
+\subsection{Test per la rimozione di un evento}
 
 \begin{itemize}
 
@@ -838,7 +932,7 @@ Rappresenta una sala della conferenza.
 
 \end{itemize}
 
-\subsection{Casi di test relativi alla modifica dell'evento}
+\subsection{Test per la modifica di un evento}
 
 \begin{itemize}
 
@@ -869,7 +963,7 @@ Rappresenta una sala della conferenza.
 
 \end{itemize}
 
-\subsection{Casi di test relativi all'assegnazione di una sala ad un evento}
+\subsection{Test per l'assegnazione di una sala a un evento}
 
 \begin{itemize}
 
@@ -887,7 +981,7 @@ Rappresenta una sala della conferenza.
 
 \end{itemize}
 
-\subsection{Casi di test relativi alla rimozione di una sala da un evento}
+\subsection{Test per la liberazione di una sala assegnata a un evento}
 
 \begin{itemize}
 
@@ -895,15 +989,15 @@ Rappresenta una sala della conferenza.
 
 	\item \textbf{TC084} : testiamo la rimozione di una sala inesistente.
 
+	\item \textbf{TC085} : testiamo che un numero negativo annulli la selezione di una sala.
+
 \end{itemize}
 
 
-\subsection{Casi di test relativi alla visualizzazione di eventi}
+\subsection{Test per la visualizzazione del programma dela conferenza}
 
 \begin{itemize}
 
-
-	\item \textbf{TC085} : testiamo che un numero negativo annulli la selezione di una sala.
 
 	\item \textbf{TC086} : testiamo la corretta visualizzazione degli eventi in ordine alfabetico, perché le date sono tutte uguali.
 
