@@ -6,58 +6,70 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduzione}{1}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Obiettivi del progetto}{1}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Motivazione della scelta degli ADT}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Motivazioni per l'uso dell'ADT Date}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Motivazione dell'uso dell'ADT Room}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Motivazione dell'uso dell'ADT RoomList}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Motivazione dell'uso dell'ADT Event}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Motivazione dell'uso dell'ADT EventBst}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6}Motivazione dell'uso dell'ADT Conference}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Progettazione}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Motivazioni per l'uso dell'ADT Date, dell'ADT Room e dell'ADT Event}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Motivazioni per l'uso dell'ADT Room}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Motivazioni per l'uso dell'ADT RoomList}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Motivazioni per l'uso dell'ADT Event}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Motivazioni per l'uso dell'ADT EventBst}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6}Motivazioni per l'uso dell'ADT Conference}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Progettazione}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}Specifiche sintattiche e semantiche}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Funzioni e tipi di logging}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Specificazione del tipo \texttt  {LogLevel}}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Specificazione di \texttt  {set\_log\_file(FILE*)}}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Specificazione di \texttt  {log\_message(LogLevel, const char*)}}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.4}Specificazione di \texttt  {log\_error(const char*)}}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.4}Specificazione di \texttt  {log\_error(const char*)}}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Funzioni e tipi di utilità}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Specificazione del tipo \texttt  {ResultInt}}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Funzione \texttt  {clean\_file(FILE*)}}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.3}Funzione \texttt  {int read\_line\_from\_file(char*, int, FILE*)}}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.3}Funzione \texttt  {int read\_line\_from\_file(char*, int, FILE*)}}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.4}Funzione \texttt  {int read\_line(char*, int)}}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.5}Funzione \texttt  {ResultInt read\_int(void)}}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.6}Funzione \texttt  {my\_alloc(unsigned long, unsigned long)}}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.6}Funzione \texttt  {my\_alloc(unsigned long, unsigned long)}}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.7}Funzione \texttt  {my\_realloc(void*, unsigned long, unsigned long)}}{6}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.8}Funzione \texttt  {char* my\_strdup(const char*)}}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.9}Funzione \texttt  {trim\_whitespaces(char*, char*, int)}}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.9}Funzione \texttt  {trim\_whitespaces(char*, char*, int)}}{6}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Specifica dell'ADT Date}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Specificazione del tipo \texttt  {Date}}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}Funzione \texttt  {Date new\_date(unsigned char, unsigned char, unsigned char, unsigned char, unsigned short) }}{7}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.3}Funzione \texttt  {Date copy\_date(ConstDate)}}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.3}Funzione \texttt  {Date copy\_date(ConstDate)}}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.4}Funzione \texttt  {int cmp\_date(ConstDate, ConstDate) }}{8}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.5}Funzione \texttt  {save\_date\_to\_file(ConstDate, FILE*)}}{8}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.6}Funzione \texttt  {Date read\_date\_from\_file(FILE*)}}{8}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.7}Funzione \texttt  {print\_date(ConstDate)}}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.7}Funzione \texttt  {print\_date(ConstDate)}}{8}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.8}Funzione: \texttt  {Date read\_date(void)}}{9}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.9}Funzione: \texttt  {free\_date(Date)}}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Specifica dell'ADT Room}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}Specificazione del tipo \texttt  {Room}}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Specifica dell'ADT Room}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}Specificazione del tipo \texttt  {Room}}{9}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.2}Funzione: \texttt  {Room new\_room(const char*, unsigned int, unsigned int)}}{10}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.3}Funzione: \texttt  {Room copy\_room(ConstRoom)}}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.4}Funzione: \texttt  {bool are\_rooms\_equal(ConstRoom, ConstRoom)}}{11}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.5}Funzione: \texttt  {const char* get\_room\_name(ConstRoom)}}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.4}Funzione: \texttt  {bool are\_rooms\_equal(ConstRoom, ConstRoom)}}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.5}Funzione: \texttt  {const char* get\_room\_name(ConstRoom)}}{10}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.6}Funzione: \texttt  {unsigned int get\_room\_id(ConstRoom)}}{11}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.7}Funzione: \texttt  {print\_room(ConstRoom)}}{11}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.8}Funzione: \texttt  {Room read\_room(unsigned int)}}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.8}Funzione: \texttt  {Room read\_room(unsigned int)}}{11}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.9}Funzione: \texttt  {save\_room\_to\_file(ConstRoom, FILE*)}}{12}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.10}Funzione: \texttt  {Room read\_room\_from\_file(FILE*)}}{12}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.11}Funzione: \texttt  {free\_room(Room)}}{12}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Razionale dei casi di test}{13}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Casi di test relativi al nome dell'evento}{13}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Casi di test relativi alla tipologia dell'evento}{13}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Casi di test relativi alle date dell'evento}{13}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Casi di test relativi alla rimozione dell'evento}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Casi di test relativi alla modifica dell'evento}{15}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Casi di test relativi all'assegnazione di una sala ad un evento}{15}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Casi di test relativi alla rimozione di una sala da un evento}{15}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Casi di test relativi alla visualizzazione di eventi}{16}{}\protected@file@percent }
-\gdef \@abspage@last{16}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Razionale dei casi di test}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Tipi di Test}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Funzionamento Generale}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Formato file conferenze}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\nonumberline Esempio:}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Test per l'aggiunta di un evento}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.1}Formato del file \texttt  {input.txt} per i Test di Aggiunta Evento}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\nonumberline Esempio 1:}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\nonumberline Esempio 2:}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.2}Casi di test relativi al nome dell'evento}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.3}Casi di test relativi alla tipologia dell'evento}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.4}Casi di test relativi alle date dell'evento}{16}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Test per la rimozione di un evento}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.5.1}Formato del file \texttt  {input.txt} per i Test di Rimozione Evento}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\nonumberline Esempio 1:}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\nonumberline Esempio 2:}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.5.2}Casi di test}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Test per la modifica di un evento}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Test per l'assegnazione di una sala a un evento}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Test per la liberazione di una sala assegnata a un evento}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Test per la visualizzazione del programma dela conferenza}{19}{}\protected@file@percent }
+\gdef \@abspage@last{19}

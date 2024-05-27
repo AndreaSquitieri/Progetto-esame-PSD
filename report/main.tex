@@ -20,6 +20,35 @@
 %----------------------------------------------------------------------------------------
 
 \documentclass[11pt]{scrartcl} % Font size
+% \usepackage{beamer}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
 
 \input{structure.tex} % Include the file specifying the document structure and custom commands
 
@@ -751,20 +780,74 @@ I file \texttt{conference.txt} e quelli di oracle (tranne nei test di visualizza
     \item Dopo la lista degli eventi, viene fornito il numero di sale presenti nella conferenza, indicato dalla riga successiva, nel nostro caso "3".
     \item Per ciascuna sala, vengono forniti i seguenti dettagli:
     \begin{itemize}
+        \item ID della sala
         \item Nome della sala
-        \item Capacità della sala
+        \item Posti presenti nella sala
     \end{itemize}
 \end{enumerate}
 
 
+
+\begin{minipage}{\linewidth}
+\paragraph{Esempio:}
+Di seguito è riportato un esempio di come deve essere formattato un file contenente una conferenza:
+
+\begin{lstlisting}
+4 4
+3
+1 0 1 Evento test 1
+0 12 1 1 1970
+0 13 1 1 1970
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 3 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+3
+1
+Sala A
+50
+2
+Sala B
+50
+3
+Sala C
+50
+\end{lstlisting}
+
+\begin{enumerate}
+    \item il primo 4 è l'inizializzatore degli ID evento, il secondo è l' inizializzatore degli ID sala
+    \item 3 indica il numero di eventi nella conferenza
+    \item Il primo evento assume i seguenti valori:
+    \begin{itemize}
+        \item 1 è l'ID dell'evento, 0 è il tipo dell'evento, 1 è l'ID della sala a cui è assegnato e ``Evento test 1'' è il nome dell'evento
+				\item \texttt{01/01/1970 12:00} è la data e l'ora di inizio dell'evento.
+				\item \texttt{01/01/1970 13:00} è la data e l'ora di fine dell'evento.
+    \end{itemize}
+    \item Seguono altri due eventi formattati come il precedente
+    \item 3 rappresenta il numero di sale nella conferenza.
+    \item La prima sala assume i seguenti valori:
+    \begin{itemize}
+				\item 1 è l'ID della sala
+        \item Sala A è il nome della sala
+        \item 50 sono i posti della sala
+    \end{itemize}
+    \item Seguono altre due sale formattate in maniera similare
+\end{enumerate}
+
+\end{minipage}
+
 \subsection{Test per l'aggiunta di un evento}
+I test di aggiunta di un evento non usano il file opzionale conference.txt. I file output.txt e oracle.txt sono conferenze formattate come precedentemente descritto. Il formato del file input.txt è descritto nella sottosezione che segue.
+
 \subsubsection{Formato del file \texttt{input.txt} per i Test di Aggiunta Evento}
 
 Per eseguire correttamente i test di aggiunta evento, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare l'aggiunta di un singolo evento. Questo file contiene le informazioni necessarie per aggiungere un nuovo evento alla conferenza, con ogni campo separato su righe diverse:
 
 \begin{itemize}
     \item \textbf{Nome evento}: Una stringa che rappresenta il nome dell'evento.
-    \item \textbf{Tipologia evento}: Un intero che indica la tipologia dell'evento (valori tra 1 e 3).
+    \item \textbf{Tipologia evento}: Un intero che indica la tipologia dell'evento (valore tra 1 e 3).
     \item \textbf{Data inizio evento}: La data e l'ora di inizio dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
     \item \textbf{Data fine evento}: La data e l'ora di fine dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
 \end{itemize}
@@ -774,12 +857,12 @@ Ogni riga non valida viene ignorata
 \paragraph{Esempio 1:}
 Di seguito è riportato un esempio di come deve essere formattato il file \texttt{input.txt}:
 
-\begin{verbatim}
+\begin{lstlisting}
 NomeEvento1
 1
 15/06/2024 09:00
 15/06/2024 11:00
-\end{verbatim}
+\end{lstlisting}
 
 In questo esempio:
 \begin{itemize}
@@ -793,13 +876,13 @@ In questo esempio:
 
 Di seguito è riportato un esempio di come vengono interpretati dei file con righe non valide:
 
-\begin{verbatim}
+\begin{lstlisting}
 NomeEvento1
 1
 15/06/2024 09:00
 15/06/2024 08:00
 15/06/2024 11:00
-\end{verbatim}
+\end{lstlisting}
 
 In questo esempio:
 \begin{itemize}
@@ -845,17 +928,6 @@ In questo esempio:
 
 	\item \textbf{TC012}: testiamo il caso in cui venga inserita una stringa alla richiesta della tipologia dell’evento. Il programma chiederà nuovamente la tipologia.
 
-	\item \textbf{TC066} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
-
-	\item \textbf{TC067} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
-
-	\item \textbf{TC068} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
-
-	\item \textbf{TC069} : testiamo il caso in cui venga inserito "0"  come tipologia di evento. Il programma ciederà nuovamente la tipologia.
-
-	\item \textbf{TC070} : testiamo il caso in cui venga inserito "-1" come tipologia di evento. Il programma ciederà nuovamente la tipologia.
-
-	\item \textbf{TC071} : testiamo il caso in cui venga inserito "4"  come tipologia di evento. Il programma ciederà nuovamente la tipologia.
 
 \end{itemize}
 
@@ -917,16 +989,98 @@ In questo esempio:
 
 
 \subsection{Test per la rimozione di un evento}
+I file conference.txt, output.txt e oracle.txt sono conferenze formattate come precedentemente descritto. Il formato del file input.txt è descritto nella sottosezione che segue.
 
+\subsubsection{Formato del file \texttt{input.txt} per i Test di Rimozione Evento}
+
+Per eseguire correttamente i test di aggiunta evento, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare la rimozione di un singolo evento. Questo file contiene l'ID dell'evento da rimuovere.
+Gli ID non validi vengono ignorati e la conferenza non viene cambiata
+
+
+\paragraph{Esempio 1:}
+Dato il seguente file conference.txt:
+\begin{lstlisting}
+4 2
+3
+1 0 0 Evento test 1
+0 12 1 1 1970
+0 13 1 1 1970
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 0 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+1
+1
+Sala A
+50
+\end{lstlisting}
+
+Di seguito è riportato un esempio di come deve essere formattato il file \texttt{input.txt}:
+
+\begin{lstlisting}
+1
+\end{lstlisting}
+
+In questo esempio 1 indica l'ID di ``Evento test 1''\\
+Il file output.txt sarà quindi:
+
+\begin{lstlisting}
+4 2
+2
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 0 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+1
+1
+Sala A
+50
+\end{lstlisting}
+
+
+\paragraph{Esempio 2:}
+
+Considerando la conferenza dell'esempio precedente di seguito si riporta il caso in cui venga inserito un ID non valido:
+
+\begin{lstlisting}
+4
+\end{lstlisting}
+Il valore 4 nella precedente conferenza non è ID di alcun evento.\\
+Il file output.txt sarà quindi:
+
+\begin{lstlisting}
+4 2
+3
+1 0 0 Evento test 1
+0 12 1 1 1970
+0 13 1 1 1970
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 0 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+1
+1
+Sala A
+50
+\end{lstlisting}
+
+
+\subsubsection{Casi di test}
 \begin{itemize}
 
-	\item \textbf{TC055} : testiamo il caso in cui venga rimosso l'evento con id 0.
+	\item \textbf{TC055} : testiamo il caso in cui venga rimosso l'evento con id 1.
 
-	\item \textbf{TC056} : testiamo il caso in cui venga rimosso l'evento con id 1.
+	\item \textbf{TC056} : testiamo il caso in cui venga rimosso l'evento con id 2.
 
-	\item \textbf{TC057} : testiamo il caso in cui venga rimosso l'evento con id 2.
+	\item \textbf{TC057} : testiamo il caso in cui venga rimosso l'evento con id 3.
 
-	\item \textbf{TC058} : testiamo il caso in cui venga rimosso l'evento con id 3. Il programma non considererà la rimozione perché non è presente un evento con id 3.
+	\item \textbf{TC058} : testiamo il caso in cui venga rimosso l'evento con id 3. Il programma non considererà la rimozione perché non è presente un evento con id 4.
 
 	\item \textbf{TC059} : testiamo il caso in cui venga rimosso l'evento con id -1. Il programma non considererà la rimozione perché non è presente un evento con id -1.
 
