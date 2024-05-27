@@ -118,10 +118,10 @@ Gli obiettivi principali del progetto includono:
 
 \subsection{Motivazioni per l'uso dell'ADT Date, dell'ADT Room e dell'ADT Event}
 
- Gli eventi devono essere pianificati in specifici giorni e orari. Per garantire una gestione precisa e coerente di queste informazioni, è stato sviluppato l'ADT Date. L'uso di questo ADT permette di:
+Gli eventi devono essere pianificati in specifici giorni e orari. Per garantire una gestione precisa e coerente di queste informazioni, è stato sviluppato l'ADT Date. L'uso di questo ADT permette di:
 \begin{itemize}
-    \item \textbf{Assicurare la validità delle date}: Le date inserite nel sistema sono sempre valide (es. nessuna data con un mese o giorno inesistente).
-    \item \textbf{Effettuare confronti corretti tra date}: Il confronto tra due date avviene in maniera corretta e semplice.
+	\item \textbf{Assicurare la validità delle date}: Le date inserite nel sistema sono sempre valide (es. nessuna data con un mese o giorno inesistente).
+	\item \textbf{Effettuare confronti corretti tra date}: Il confronto tra due date avviene in maniera corretta e semplice.
 \end{itemize}
 In particolare, l'ADT Date viene utilizzato per rappresentare le date di inizio e fine di ogni evento, con una precisione che arriva al minuto.
 
@@ -747,52 +747,52 @@ Il file \texttt{test.c} implementa un sistema di testing per il progetto di gest
 \subsection{Tipi di Test}
 Il sistema di testing supporta vari tipi di test, definiti tramite una \texttt{enum} denominata \texttt{TestType}. I tipi di test implementati sono:
 \begin{itemize}
-    \item \texttt{TEST\_ADD\_EVENT}: Test per l'aggiunta di un evento.
-    \item \texttt{TEST\_REMOVE\_EVENT}: Test per la rimozione di un evento.
-    \item \texttt{TEST\_EDIT\_EVENT}: Test per la modifica di un evento.
-    \item \texttt{TEST\_ASSIGN\_ROOM\_EVENT}: Test per l'assegnazione di una sala a un evento.
-    \item \texttt{TEST\_FREE\_ROOM\_EVENT}: Test per la liberazione di una sala assegnata a un evento.
-    \item \texttt{TEST\_DISPLAY\_EVENTS}: Test per la visualizzazione del programma della conferenza.
+	\item \texttt{TEST\_ADD\_EVENT}: Test per l'aggiunta di un evento.
+	\item \texttt{TEST\_REMOVE\_EVENT}: Test per la rimozione di un evento.
+	\item \texttt{TEST\_EDIT\_EVENT}: Test per la modifica di un evento.
+	\item \texttt{TEST\_ASSIGN\_ROOM\_EVENT}: Test per l'assegnazione di una sala a un evento.
+	\item \texttt{TEST\_FREE\_ROOM\_EVENT}: Test per la liberazione di una sala assegnata a un evento.
+	\item \texttt{TEST\_DISPLAY\_EVENTS}: Test per la visualizzazione del programma della conferenza.
 \end{itemize}
 
 \subsection{Funzionamento Generale}
 Il file \texttt{test.c} segue questi passaggi per eseguire i test:
 \begin{enumerate}
-    \item Legge il file di suite di test, il quale contiene le specifiche di ogni test da eseguire.
-    \item Per ogni test, carica i file necessari (ex. Per il test TC001 i file saranno contenuti nell'omonima cartella), inclusi i file di input (input.txt), di output atteso (oracle.txt) ed un opzionale file di conferenza iniziale (conference.txt)
-    \item Reindirizza l'input e l'output standard per eseguire le operazioni specificate dal tipo di test.
-    \item Confronta l'output generato dal test con l'output atteso (oracle) per determinare se il test è passato o fallito.
-    \item Registra i risultati di ogni test in un file di risultati.
+	\item Legge il file di suite di test, il quale contiene le specifiche di ogni test da eseguire.
+	\item Per ogni test, carica i file necessari (ex. Per il test TC001 i file saranno contenuti nell'omonima cartella), inclusi i file di input (input.txt), di output atteso (oracle.txt) ed un opzionale file di conferenza iniziale (conference.txt)
+	\item Reindirizza l'input e l'output standard per eseguire le operazioni specificate dal tipo di test.
+	\item Confronta l'output generato dal test con l'output atteso (oracle) per determinare se il test è passato o fallito.
+	\item Registra i risultati di ogni test in un file di risultati.
 \end{enumerate}
 
 \subsection{Formato file conferenze}
 I file \texttt{conference.txt} e quelli di oracle (tranne nei test di visualizzazione del programma della conferenza) contengono le informazioni relative alla conferenza. Sono strutturati nel seguente modo:
 
 \begin{enumerate}
-    \item Le prime due righe rappresentano gli inizializzatori degli ID per eventi e stanze.
-    \item Il numero di eventi presenti nella conferenza è indicato dalla riga successiva.
-    \item Per ciascun evento, vengono forniti i seguenti dettagli:
-    \begin{itemize}
-        \item Tipo dell'evento (indicato con un numero tra 1 e 3), ID dell'evento, ID della sala a cui è assegnato l'evento e  nome dell'evento
-        \item Data di inizio dell'evento (espressa come ''mm hh GG MM AAAA'')
-        \item Data di fine dell'evento (espressa come ''mm hh GG MM AAAA'')
-    \end{itemize}
-    \item Dopo la lista degli eventi, viene fornito il numero di sale presenti nella conferenza, indicato dalla riga successiva, nel nostro caso "3".
-    \item Per ciascuna sala, vengono forniti i seguenti dettagli:
-    \begin{itemize}
-        \item ID della sala
-        \item Nome della sala
-        \item Posti presenti nella sala
-    \end{itemize}
+	\item Le prime due righe rappresentano gli inizializzatori degli ID per eventi e stanze.
+	\item Il numero di eventi presenti nella conferenza è indicato dalla riga successiva.
+	\item Per ciascun evento, vengono forniti i seguenti dettagli:
+	      \begin{itemize}
+		      \item Tipo dell'evento (indicato con un numero tra 1 e 3), ID dell'evento, ID della sala a cui è assegnato l'evento e  nome dell'evento
+		      \item Data di inizio dell'evento (espressa come ''mm hh GG MM AAAA'')
+		      \item Data di fine dell'evento (espressa come ''mm hh GG MM AAAA'')
+	      \end{itemize}
+	\item Dopo la lista degli eventi, viene fornito il numero di sale presenti nella conferenza, indicato dalla riga successiva.
+	\item Per ciascuna sala, vengono forniti i seguenti dettagli:
+	      \begin{itemize}
+		      \item ID della sala
+		      \item Nome della sala
+		      \item Posti presenti nella sala
+	      \end{itemize}
 \end{enumerate}
 
 
 
 \begin{minipage}{\linewidth}
-\paragraph{Esempio:}
-Di seguito è riportato un esempio di come deve essere formattato un file contenente una conferenza:
+	\paragraph{Esempio:}
+	Di seguito è riportato un esempio di come deve essere formattato un file contenente una conferenza:
 
-\begin{lstlisting}
+	\begin{lstlisting}
 4 4
 3
 1 0 1 Evento test 1
@@ -816,25 +816,25 @@ Sala C
 50
 \end{lstlisting}
 
-\begin{enumerate}
-    \item il primo 4 è l'inizializzatore degli ID evento, il secondo è l' inizializzatore degli ID sala
-    \item 3 indica il numero di eventi nella conferenza
-    \item Il primo evento assume i seguenti valori:
-    \begin{itemize}
-        \item 1 è l'ID dell'evento, 0 è il tipo dell'evento, 1 è l'ID della sala a cui è assegnato e ``Evento test 1'' è il nome dell'evento
-				\item \texttt{01/01/1970 12:00} è la data e l'ora di inizio dell'evento.
-				\item \texttt{01/01/1970 13:00} è la data e l'ora di fine dell'evento.
-    \end{itemize}
-    \item Seguono altri due eventi formattati come il precedente
-    \item 3 rappresenta il numero di sale nella conferenza.
-    \item La prima sala assume i seguenti valori:
-    \begin{itemize}
-				\item 1 è l'ID della sala
-        \item Sala A è il nome della sala
-        \item 50 sono i posti della sala
-    \end{itemize}
-    \item Seguono altre due sale formattate in maniera similare
-\end{enumerate}
+	\begin{enumerate}
+		\item il primo 4 è l'inizializzatore degli ID evento, il secondo è l' inizializzatore degli ID sala
+		\item 3 indica il numero di eventi nella conferenza
+		\item Il primo evento assume i seguenti valori:
+		      \begin{itemize}
+			      \item 1 è l'ID dell'evento, 0 è il tipo dell'evento, 1 è l'ID della sala a cui è assegnato e ``Evento test 1'' è il nome dell'evento
+			      \item \texttt{01/01/1970 12:00} è la data e l'ora di inizio dell'evento.
+			      \item \texttt{01/01/1970 13:00} è la data e l'ora di fine dell'evento.
+		      \end{itemize}
+		\item Seguono altri due eventi formattati come il precedente
+		\item 3 rappresenta il numero di sale nella conferenza.
+		\item La prima sala assume i seguenti valori:
+		      \begin{itemize}
+			      \item 1 è l'ID della sala
+			      \item Sala A è il nome della sala
+			      \item 50 sono i posti della sala
+		      \end{itemize}
+		\item Seguono altre due sale formattate in maniera similare
+	\end{enumerate}
 
 \end{minipage}
 
@@ -846,10 +846,10 @@ I test di aggiunta di un evento non usano il file opzionale conference.txt. I fi
 Per eseguire correttamente i test di aggiunta evento, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare l'aggiunta di un singolo evento. Questo file contiene le informazioni necessarie per aggiungere un nuovo evento alla conferenza, con ogni campo separato su righe diverse:
 
 \begin{itemize}
-    \item \textbf{Nome evento}: Una stringa che rappresenta il nome dell'evento.
-    \item \textbf{Tipologia evento}: Un intero che indica la tipologia dell'evento (valore tra 1 e 3).
-    \item \textbf{Data inizio evento}: La data e l'ora di inizio dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
-    \item \textbf{Data fine evento}: La data e l'ora di fine dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
+	\item \textbf{Nome evento}: Una stringa che rappresenta il nome dell'evento.
+	\item \textbf{Tipologia evento}: Un intero che indica la tipologia dell'evento (valore tra 1 e 3).
+	\item \textbf{Data inizio evento}: La data e l'ora di inizio dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
+	\item \textbf{Data fine evento}: La data e l'ora di fine dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
 \end{itemize}
 
 Ogni riga non valida viene ignorata
@@ -866,10 +866,10 @@ NomeEvento1
 
 In questo esempio:
 \begin{itemize}
-    \item \texttt{NomeEvento1} è il nome dell'evento.
-    \item \texttt{1} è la tipologia dell'evento.
-    \item \texttt{15/06/2024 09:00} è la data e l'ora di inizio dell'evento.
-    \item \texttt{15/06/2024 11:00} è la data e l'ora di fine dell'evento.
+	\item \texttt{NomeEvento1} è il nome dell'evento.
+	\item \texttt{1} è la tipologia dell'evento.
+	\item \texttt{15/06/2024 09:00} è la data e l'ora di inizio dell'evento.
+	\item \texttt{15/06/2024 11:00} è la data e l'ora di fine dell'evento.
 \end{itemize}
 
 \paragraph{Esempio 2:}
@@ -886,10 +886,10 @@ NomeEvento1
 
 In questo esempio:
 \begin{itemize}
-    \item \texttt{NomeEvento1} è il nome dell'evento.
-    \item \texttt{1} è la tipologia dell'evento.
-    \item \texttt{15/06/2024 09:00} è la data e l'ora di inizio dell'evento.
-    \item \texttt{15/06/2024 11:00} è la data e l'ora di fine dell'evento, dato che la riga ''15/06/2024 08:00'' viene ignorata
+	\item \texttt{NomeEvento1} è il nome dell'evento.
+	\item \texttt{1} è la tipologia dell'evento.
+	\item \texttt{15/06/2024 09:00} è la data e l'ora di inizio dell'evento.
+	\item \texttt{15/06/2024 11:00} è la data e l'ora di fine dell'evento, dato che la riga ''15/06/2024 08:00'' viene ignorata
 \end{itemize}
 
 
@@ -1101,6 +1101,17 @@ Sala A
 	\item \textbf{TC064} : testiamo il caso in cui nella modifica di un evento già presente, nell'inserimento del nome, venga inserito un nome che superi il limite di 100 caratteri. Il programma chiederà di inserire nuovamente il nome dell'evento.
 
 	\item \textbf{TC065} : testiamo il caso in cui nella modifica di un evento già presente, nell'inserimento del nome, venga inserito un nome di esattamente 100 caratteri.
+	\item \textbf{TC066} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
+
+	\item \textbf{TC067} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
+
+	\item \textbf{TC068} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
+
+	\item \textbf{TC069} : testiamo il caso in cui venga inserito "0"  come tipologia di evento. Il programma ciederà nuovamente la tipologia.
+
+	\item \textbf{TC070} : testiamo il caso in cui venga inserito "-1" come tipologia di evento. Il programma ciederà nuovamente la tipologia.
+
+	\item \textbf{TC071} : testiamo il caso in cui venga inserito "4"  come tipologia di evento. Il programma ciederà nuovamente la tipologia.
 
 	\item \textbf{TC072} : testiamo il caso in cui venga modificata correttamente la data di inizio.
 

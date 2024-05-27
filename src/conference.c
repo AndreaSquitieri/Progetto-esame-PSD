@@ -175,6 +175,7 @@ int remove_conference_event(Conference conf) {
   }
   free_event(removed);
   printf("Evento correttamente rimosso\n");
+
   return 0;
 }
 
@@ -600,31 +601,27 @@ Conference read_conference_from_file(FILE *file) {
   }
   clean_file(file);
 
-  // Create a new conference
-  Conference conf = new_conference();
-  if (conf == NULL_CONFERENCE) {
-    log_error("Error creating new conference");
-    return NULL_CONFERENCE;
-  }
-
-  conf->event_id_counter = event_id_counter;
-  conf->room_id_counter = room_id_counter;
-
   // Read events
-  conf->bst = read_event_bst_from_file(file);
-  if (conf->bst == NULL_EVENT_BST) {
+  EventBst bst = read_event_bst_from_file(file);
+  if (bst == NULL_EVENT_BST) {
     log_error("Error reading events");
-    free_conference(conf);
     return NULL_CONFERENCE;
   }
 
   // Read rooms
-  conf->rooms = read_room_list_from_file(file);
-  if (conf->rooms == NULL_ROOM_LIST) {
+  RoomList rooms = read_room_list_from_file(file);
+  if (rooms == NULL_ROOM_LIST) {
     log_error("Error reading rooms");
-    free_conference(conf);
+    free_event_bst(bst);
     return NULL_CONFERENCE;
   }
+
+  // Create a new conference
+  Conference conf = my_alloc(1, sizeof(*conf));
+  conf->event_id_counter = event_id_counter;
+  conf->room_id_counter = room_id_counter;
+  conf->bst = bst;
+  conf->rooms = rooms;
 
   return conf;
 }

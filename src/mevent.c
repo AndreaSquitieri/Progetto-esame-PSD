@@ -224,6 +224,9 @@ Event read_event(unsigned int event_id) {
   // Read event end date
   Date end_date = NULL_DATE;
   do {
+    if (end_date != NULL_DATE) {
+      free_date(end_date);
+    }
     printf("Inserisci data fine evento (DD/MM/AAAA hh:mm): ");
     end_date = read_date();
   } while ((end_date == NULL_DATE || cmp_date(start_date, end_date) > 0) &&

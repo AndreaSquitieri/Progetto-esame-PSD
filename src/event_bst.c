@@ -45,6 +45,9 @@ int bst_insert_event(EventBst bst, Event event) {
   // Create a new node for the event to insert
   EventBstNode to_insert = my_alloc(1, sizeof(*to_insert));
   to_insert->value = event;
+  to_insert->parent = NULL;
+  to_insert->left = NULL;
+  to_insert->right = NULL;
 
   // Traverse the tree to find the correct position to insert the new event
   EventBstNode parent = NULL;

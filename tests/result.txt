@@ -55,7 +55,7 @@ TC054 pass
 TC055 pass
 TC056 pass
 TC057 pass
-TC058 fail
+TC058 pass
 TC059 pass
 TC060 pass
 TC061 pass

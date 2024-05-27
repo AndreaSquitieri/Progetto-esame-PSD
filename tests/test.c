@@ -141,9 +141,11 @@ int run_test_case(TestType test_type, const char *oracle_fname,
     rewind(output);
 
     test_result = cmp_file(oracle, output);
+    free_conference(conf);
     break;
   }
   case TEST_REMOVE_EVENT: {
+
     Conference conf = read_conference_from_file(conference);
     if (conf == NULL_CONFERENCE) {
       conf = new_conference();
@@ -162,6 +164,7 @@ int run_test_case(TestType test_type, const char *oracle_fname,
     rewind(output);
 
     test_result = cmp_file(oracle, output);
+    free_conference(conf);
     break;
   }
   case TEST_EDIT_EVENT: {
@@ -182,6 +185,7 @@ int run_test_case(TestType test_type, const char *oracle_fname,
     fflush(output);
     rewind(output);
     test_result = cmp_file(oracle, output);
+    free_conference(conf);
     break;
   }
   case TEST_ASSIGN_ROOM_EVENT: {
@@ -204,6 +208,7 @@ int run_test_case(TestType test_type, const char *oracle_fname,
     fflush(output);
     rewind(output);
     test_result = cmp_file(oracle, output);
+    free_conference(conf);
     break;
   }
   case TEST_FREE_ROOM_EVENT: {
@@ -226,6 +231,7 @@ int run_test_case(TestType test_type, const char *oracle_fname,
     fflush(output);
     rewind(output);
     test_result = cmp_file(oracle, output);
+    free_conference(conf);
     break;
   }
   case TEST_DISPLAY_EVENTS: {
@@ -250,6 +256,7 @@ int run_test_case(TestType test_type, const char *oracle_fname,
     rewind(output);
 
     test_result = cmp_file(oracle, output);
+    free_conference(conf);
 
     break;
   }
