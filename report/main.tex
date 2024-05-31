@@ -101,13 +101,13 @@ Gli obiettivi principali del progetto includono:
 \section{Motivazione della scelta degli ADT}
 \subsection{Motivazioni per l'uso dell'ADT RoomList}
 
-Abbiamo deciso di utilizzare una lista per gestire le informazioni sulle sale all'interno del sistema di gestione delle conferenze per diverse ragioni. Le liste offrono flessibilità nella gestione dinamica delle sale, consentendo l'aggiunta e la rimozione efficiente di elementi in risposta alle variazioni nel numero di sale nel tempo. Inoltre, semplificano l'accesso e la ricerca delle sale, consentendo operazioni come l'ordinamento o la ricerca di una specifica sala in modo rapido ed efficiente.
+Abbiamo deciso di utilizzare una lista per gestire le informazioni sulle sale all'interno del sistema di gestione delle conferenze per diverse ragioni. Le liste offrono flessibilità nella gestione dinamica delle sale, consentendo l'aggiunta e la rimozione efficiente di elementi in risposta alle variazioni nel numero di sale nel tempo. Inoltre, semplificano l'accesso e la ricerca delle sale, consentendo operazioni come l'ordinamento o la ricerca di una specifica sala.
 
 Per implementare l'ADT RoomList, abbiamo scelto di utilizzare un array dinamico anziché una lista concatenata. Questa decisione è stata motivata da diverse considerazioni. Gli array dinamici offrono un accesso casuale più efficiente rispetto alle liste concatenate, il che si traduce in un'operatività più veloce e prevedibile per le operazioni che richiedono l'accesso non sequenziale alle sale nella lista.
 
 Inoltre, gli array dinamici consentono un accesso continuo e contiguo alla memoria, migliorando la località dei dati e riducendo il numero di cache miss durante l'accesso ai dati nella lista. Questo porta a prestazioni ottimali in termini di accesso ai dati e di utilizzo della memoria.
 
-Infine, l'utilizzo della memoria è più efficiente con gli array dinamici rispetto alle liste concatenate. Mentre una lista concatenata avrebbe utilizzato il doppio della memoria necessaria (un puntatore al valore e un puntatore al prossimo nodo), la nostra implementazione utilizza al massimo il doppio della memoria grazie all'utilizzo di un fattore di crescita per l'array dinamico che garantisce inoltre un numero limitato di spostamenti di dati durante il processo di reallocazione (il numero di spostamenti effettuati sarà sempre inferirore a 2n, dove n rappresenta il numero di sale).
+Infine, l'utilizzo della memoria è più efficiente con gli array dinamici rispetto alle liste concatenate. Mentre una lista concatenata avrebbe utilizzato sempre il doppio della memoria necessaria (un puntatore al valore e un puntatore al prossimo nodo), la nostra implementazione utilizza \textbf{al massimo} il doppio della memoria grazie all'utilizzo di un fattore di crescita per l'array dinamico che garantisce inoltre un numero limitato di spostamenti di dati durante il processo di reallocazione (il numero di spostamenti effettuati sarà sempre inferirore a 2n, dove n rappresenta il numero di sale).
 
 
 \subsection{Motivazioni per l'uso dell'ADT EventBst}
