@@ -37,7 +37,7 @@ RoomList new_room_list(void);
   Semantic Specification:
   - Function: is_room_list_empty(list) -> empty
   - Description: Checks if the room list is empty.
-  - Preconditions: 'list' is a valid RoomList object or NULL.
+  - Preconditions: 'list' is a valid RoomList object.
   - Postconditions: Returns true if the list is empty, false otherwise.
 */
 bool is_room_list_empty(ConstRoomList list);
@@ -51,7 +51,7 @@ bool is_room_list_empty(ConstRoomList list);
   Semantic Specification:
   - Function: get_size_room_list(list) -> size
   - Description: Gets the number of rooms in the list.
-  - Preconditions: 'list' is a valid RoomList object or NULL.
+  - Preconditions: 'list' is a valid RoomList object.
   - Postconditions: Returns the number of rooms in the list.
 */
 int get_size_room_list(ConstRoomList list);
@@ -164,7 +164,7 @@ int get_pos_room_list(ConstRoomList list, ConstRoom to_search);
   Syntax Specification:
   - print_room_list(ConstRoomList) -> void
   - types: ConstRoomList
-  - internal types: none
+  - internal types: int
 
   Semantic Specification:
   - Function: print_room_list(list)
@@ -178,13 +178,13 @@ void print_room_list(ConstRoomList list);
   Syntax Specification:
   - save_room_list_to_file(ConstRoomList, FILE*) -> void
   - types: ConstRoomList, FILE*
-  - internal types: none
+  - internal types: int
 
   Semantic Specification:
   - Function: save_room_list_to_file(list, file)
   - Description: Saves the list of rooms to a file.
   - Preconditions: 'list' is a valid RoomList object, 'file' is a valid FILE
-                   stream.
+                   stream opened in write mode.
   - Postconditions: Writes the details of each room in the list to the file
                     stream.
 */
@@ -194,12 +194,12 @@ void save_room_list_to_file(ConstRoomList list, FILE *file);
   Syntax Specification:
   - read_room_list_from_file(FILE*) -> RoomList
   - types: FILE*
-  - internal types: RoomList
+  - internal types: RoomList, int
 
   Semantic Specification:
   - Function: read_room_list_from_file(file) -> list
   - Description: Reads a list of rooms from a file.
-  - Preconditions: 'file' is a valid FILE stream.
+  - Preconditions: 'file' is a valid FILE stream opened in read mode.
   - Postconditions: Returns a pointer to the newly created RoomList object
                     containing the rooms read from the file.
 */
@@ -209,7 +209,7 @@ RoomList read_room_list_from_file(FILE *file);
   Syntax Specification:
   - free_room_list(RoomList) -> void
   - types: RoomList
-  - internal types: none
+  - internal types: int
 
   Semantic Specification:
   - Function: free_room_list(list)

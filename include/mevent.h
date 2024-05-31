@@ -57,7 +57,7 @@ Event new_event(EventType type, const char *name, Date start_date,
   Semantic Specification:
   - Function: are_events_equal(event_a, event_b) -> result
   - Description: Checks if two events are equal based on their IDs.
-  - Preconditions: None.
+  - Preconditions: event_a and event_b are valid Event objects.
   - Postconditions: Returns 1 if the events are equal, 0 otherwise.
 */
 int are_events_equal(ConstEvent event_a, ConstEvent event_b);
@@ -71,7 +71,7 @@ int are_events_equal(ConstEvent event_a, ConstEvent event_b);
   Semantic Specification:
   - Function: cmp_event(event_a, event_b) -> result
   - Description: Compares two events for sorting based on start date and name.
-  - Preconditions: None.
+  - Preconditions: event_a and event_b are valid Event objects.
   - Postconditions: Returns a negative value if event_a should come before
                     event_b, a positive value if event_a should come after
                     event_b, and 0 if they are equal.
@@ -87,7 +87,7 @@ int cmp_event(ConstEvent event_a, ConstEvent event_b);
   Semantic Specification:
   - Function: do_events_overlap(event_a, event_b) -> result
   - Description: Checks if two events overlap in time.
-  - Preconditions: None.
+  - Preconditions: event_a and event_b are valid Event objects.
   - Postconditions: Returns true if the events overlap, false otherwise.
 */
 bool do_events_overlap(ConstEvent event_a, ConstEvent event_b);
@@ -103,7 +103,7 @@ bool do_events_overlap(ConstEvent event_a, ConstEvent event_b);
   Semantic Specification:
   - Function: get_event_type(event) -> type
   - Description: Retrieves the type of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object.
   - Postconditions: Returns the EventType of the event.
 */
 EventType get_event_type(ConstEvent event);
@@ -116,8 +116,7 @@ EventType get_event_type(ConstEvent event);
 
   Semantic Specification:
   - Function: set_event_type(event, type) -> result
-  - Description: Sets the type of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object.
   - Postconditions: Returns 0 if successful, -1 otherwise.
 */
 int set_event_type(Event event, EventType type);
@@ -131,7 +130,7 @@ int set_event_type(Event event, EventType type);
   Semantic Specification:
   - Function: get_event_start_date(event) -> start_date
   - Description: Retrieves the start date of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object.
   - Postconditions: Returns a pointer to the start Date object of the event.
 */
 ConstDate get_event_start_date(ConstEvent event);
@@ -145,7 +144,8 @@ ConstDate get_event_start_date(ConstEvent event);
   Semantic Specification:
   - Function: set_event_start_date(event, start_date) -> result
   - Description: Sets the start date of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object and start_date is a valid Date
+  object.
   - Postconditions: Returns 0 if successful, -1 otherwise.
 */
 int set_event_start_date(Event event, Date start_date);
@@ -159,7 +159,7 @@ int set_event_start_date(Event event, Date start_date);
   Semantic Specification:
   - Function: get_event_end_date(event) -> end_date
   - Description: Retrieves the end date of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object.
   - Postconditions: Returns a pointer to the end Date object of the event.
 */
 ConstDate get_event_end_date(ConstEvent event);
@@ -173,7 +173,8 @@ ConstDate get_event_end_date(ConstEvent event);
   Semantic Specification:
   - Function: set_event_end_date(event, end_date) -> result
   - Description: Sets the end date of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object and end_date is a valid Date
+  object.
   - Postconditions: Returns 0 if successful, -1 otherwise.
 */
 int set_event_end_date(Event event, Date end_date);
@@ -187,7 +188,7 @@ int set_event_end_date(Event event, Date end_date);
   Semantic Specification:
   - Function: get_event_name(event) -> name
   - Description: Retrieves the name of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object.
   - Postconditions: Returns a pointer to the name string of the event.
 */
 const char *get_event_name(ConstEvent event);
@@ -201,7 +202,7 @@ const char *get_event_name(ConstEvent event);
   Semantic Specification:
   - Function: set_event_name(event, name) -> result
   - Description: Sets the name of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object and name is a valid string.
   - Postconditions: Returns 0 if successful, -1 otherwise.
 */
 int set_event_name(Event event, const char *name);
@@ -215,7 +216,7 @@ int set_event_name(Event event, const char *name);
   Semantic Specification:
   - Function: get_event_room_id(event) -> room_id
   - Description: Retrieves the assigned room ID of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object.
   - Postconditions: Returns the room ID of the event.
 */
 unsigned int get_event_room_id(ConstEvent event);
@@ -229,7 +230,7 @@ unsigned int get_event_room_id(ConstEvent event);
   Semantic Specification:
   - Function: set_event_room_id(event, room_id) -> result
   - Description: Sets the assigned room ID of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object.
   - Postconditions: Returns 0 if successful, -1 otherwise.
 */
 int set_event_room_id(Event event, unsigned int room_id);
@@ -243,7 +244,7 @@ int set_event_room_id(Event event, unsigned int room_id);
   Semantic Specification:
   - Function: get_event_id(event) -> id
   - Description: Retrieves the ID of the event.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object.
   - Postconditions: Returns the ID of the event.
 */
 unsigned int get_event_id(ConstEvent event);
@@ -258,7 +259,7 @@ unsigned int get_event_id(ConstEvent event);
   - Function: print_event(event, assigned_room)
   - Description: Prints the details of the event to stdout, including assigned
                  room information if available.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object.
   - Postconditions: None.
 */
 void print_event(ConstEvent event, ConstRoom assigned_room);
@@ -272,7 +273,7 @@ void print_event(ConstEvent event, ConstRoom assigned_room);
   Semantic Specification:
   - Function: read_event(event_id) -> event
   - Description: Reads event details from user input.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object.
   - Postconditions: Returns a pointer to the newly created Event object.
 */
 Event read_event(unsigned int event_id);
@@ -286,7 +287,8 @@ Event read_event(unsigned int event_id);
   Semantic Specification:
   - Function: save_event_to_file(event, file)
   - Description: Saves event details to a file.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object and file is opened in writing
+  mode.
   - Postconditions: None.
 */
 void save_event_to_file(ConstEvent event, FILE *file);
@@ -300,7 +302,8 @@ void save_event_to_file(ConstEvent event, FILE *file);
   Semantic Specification:
   - Function: read_event_from_file(file) -> event
   - Description: Reads event details from a file.
-  - Preconditions: None.
+  - Preconditions: event is a vaild Event object and file is opened in reading
+  mode.
   - Postconditions: Returns a pointer to the newly created Event object.
 */
 Event read_event_from_file(FILE *file);
@@ -314,8 +317,8 @@ Event read_event_from_file(FILE *file);
   Semantic Specification:
   - Function: free_event(event)
   - Description: Frees memory allocated for the event.
-  - Preconditions: None.
-  - Postconditions: None.
+  - Preconditions: event is a vaild Event object.
+  - Postconditions: The memory allocated for 'event' is deallocated.
 */
 void free_event(Event event);
 

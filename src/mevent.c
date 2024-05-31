@@ -274,6 +274,9 @@ int are_events_equal(ConstEvent event_a, ConstEvent event_b) {
 
 // Function to free the memory allocated for an event
 void free_event(Event event) {
+  if (are_events_equal(event, NULL_EVENT)) {
+    return;
+  }
   free_date(event->start_date);
   free_date(event->end_date);
   free(event->name);

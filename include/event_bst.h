@@ -29,7 +29,6 @@ typedef bool (*EventPredicate)(Event, va_list);
   - Postconditions: Returns a pointer to the newly created empty EventBst
   object.
 */
-
 EventBst new_event_bst(void);
 
 /*
@@ -88,7 +87,6 @@ Event bst_remove_event(EventBst bst, ConstEvent event);
     - Returns the removed Event object, or NULL_EVENT if the event was not
   found.
 */
-
 Event bst_remove_event_by_id(EventBst bst, unsigned int id);
 
 /*
@@ -114,7 +112,7 @@ Event bst_get_event_by_id(EventBst bst, unsigned int id);
   Syntax Specification:
   - get_bst_size(ConstEventBst) -> size_t
   - types: ConstEventBst
-  - internal types: EventBst
+  - internal types: None
 
   Semantic Specification:
   - Function: get_bst_size(bst) -> size
@@ -135,8 +133,8 @@ size_t get_bst_size(ConstEventBst bst);
 
   Semantic Specification:
   - Function: print_event_bst(bst, room_list)
-  - Description: Prints the events stored in the binary search tree (BST) along
-  with their assigned rooms.
+  - Description: Prints the events stored in the binary search tree (BST) in
+  order along with their assigned rooms.
   - Preconditions:
     - 'bst' must point to a valid ConstEventBst object.
     - 'room_list' must point to a valid ConstRoomList object.
@@ -159,7 +157,8 @@ void print_event_bst(ConstEventBst bst, ConstRoomList room_list);
   - Preconditions:
     - 'bst' must point to a valid EventBst object.
     - 'predicate' must be a valid function pointer to a predicate function that
-  takes variable arguments.
+  takes variable arguments (copies of the other arguments passed to the
+  event_bst_every function).
   - Postconditions:
     - Returns true if the predicate holds true for every event in the BST, false
   otherwise.
@@ -176,7 +175,8 @@ bool event_bst_every(EventBst bst, EventPredicate predicate, ...);
   - Function: read_event_bst_from_file(file) -> bst
   - Description: Reads event data from a file and constructs a binary search
   tree (BST) to store the events.
-  - Preconditions: 'file' must point to a valid FILE object.
+  - Preconditions: 'file' must point to a valid FILE object opened in reading
+  mode.
   - Postconditions: Returns a pointer to the newly created EventBst object
   containing the events read from the file.
 */
