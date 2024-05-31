@@ -7,7 +7,6 @@ CC = gcc
 CFLAGS = -Wall -Wextra -I$(INCLUDE_DIR) -g
 LDFLAGS =
 
-
 # Name of the main executable
 MAIN_EXEC = $(BIN_DIR)/progetto
 
@@ -57,4 +56,4 @@ $(TEST_DIR)/test.o: $(TEST_DIR)/test.c $(INCLUDE_DIR)/conference.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(TEST_DIR)/test.c -o $@
 
 clean:
-	rm -rf $(BUILD_DIR)/*.o $(MAIN_EXEC) $(TEST_DIR)/test.o $(TEST_DIR)/test
+	rm -rf $(BUILD_DIR) $(BIN_DIR) $(TEST_DIR)/test.o $(TEST_DIR)/test

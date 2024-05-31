@@ -70,10 +70,6 @@
 
 \tableofcontents
 
-%----------------------------------------------------------------------------------------
-%	FIGURE EXAMPLE
-%----------------------------------------------------------------------------------------
-
 \section{Introduzione}
 
 
@@ -153,10 +149,10 @@ Ogni evento possiede una data di inizio e fine, rappresentate attraverso istanze
 
 
 \subsection{Coordinamento della Conferenza (Conference)}
-Il modulo \textbf{Conference} funge da coordinatore centrale. Esso mantiene un riferimento all'albero degli eventi (\textbf{EventBst}) e alla lista delle sale (\textbf{RoomList}). Gestisce anche gli inizializzatori degli ID per assegnare identificativi univoci agli eventi e alle sale. Quando un utente interagisce con il sistema per creare, modificare o rimuovere un evento o una sala, il modulo \textbf{Conference} invoca le appropriate funzioni degli altri moduli per eseguire le operazioni richieste. Garantisce quindi che tutti gli eventi e le sale abbiano ID univoci e che non ci siano sovrapposizioni temporali tra due eventi assegnati alla stessa sala. Permette anche di salvare la sessione e leggere da file quelle precedenti.
+Il modulo \textbf{Conference} funge da coordinatore centrale. Esso mantiene un riferimento all'albero degli eventi (\textbf{EventBst}) e alla lista delle sale (\textbf{RoomList}). Gestisce anche gli inizializzatori degli ID per assegnare identificativi univoci agli eventi e alle sale. Quando un utente interagisce con il sistema per creare, modificare o rimuovere un evento o una sala, il modulo \textbf{Conference} invoca le appropriate funzioni degli altri moduli per eseguire le operazioni richieste. Garantisce quindi che tutti gli eventi e le sale abbiano ID univoci e che non ci siano sovrapposizioni temporali tra due eventi assegnati alla stessa sala. Permette anche di salvare la sessione e leggere da file quelle precedenti. 
 In questo modulo abbiamo quindi implementato le seguenti operazioni:
 \begin{itemize}
-    \item \textbf{Aggiunta di un evento}: Vengono chiesti i dati dell'evento all'utente, viene creato l'oggetto Event, assegnandogli un nuovo ID, e viene aggiunto all'albero degli eventi.
+    \item \textbf{Aggiunta di un evento}: Vengono chiesti i dati dell'evento all'utente, viene creato l'oggetto Event, assegnandogli un nuovo ID, e viene aggiunto all'albero degli eventi. 
     \item \textbf{Rimozione di un evento}: Viene mostrata la lista ordinata degli eventi e si chiede all'utente di inserire l'ID dell'evento che si desidera rimuovere. Viene poi rimosso l'evento dall'albero degli eventi.
     \item \textbf{Modifica di un evento}: Viene mostrata la lista ordinata degli eventi e si chiede all'utente di inserire l'ID dell'evento che si desidera modificare. Viene poi rimosso l'evento selezionato, apportate le modifiche richieste dall'utente e reinserito nell'albero degli eventi.
     \item \textbf{Mostra eventi}: Viene mostrata la lista ordinata degli eventi.
@@ -164,7 +160,7 @@ In questo modulo abbiamo quindi implementato le seguenti operazioni:
     \item \textbf{Mostra sala}: Viene mostrata la lista delle sale
     \item \textbf{Assegnazione di una sala ad un evento}: Viene mostrata la lista ordinata degli eventi e si chiede all'utente di inserire l'ID dell'evento a cui si desidera assegnare la sala. Viene poi mostrata la lista delle sale e si chiede all'utente di inserire l'ID della sala da assegnare. Viene verifacto poi che non ci siano conflitti con gli orari di altri eventi assegnati alla stessa sala e in caso positivo viene modificato il campo room\_id dell'evento selezionato.
     \item \textbf{Liberare evento da sala}: Viene mostrata la lista ordinata degli eventi e si chiede all'utente di inserire l'ID dell'evento che si desidera liberare. Viene quindi impostato l'ID della sala contenuto nell'evento a "\textbf{NULL\_ROOM\_ID}".
-
+    
 \end{itemize}
 
 
@@ -181,7 +177,7 @@ Definisce un tipo enumerato chiamato \texttt{LogLevel} con i seguenti valori:
 	\item \texttt{LOG\_ERROR}: Messaggi di errore.
 \end{itemize}
 
-\subsubsection{Specificazione di \texttt{set\_log\_file(FILE*)}}
+\subsubsection{Specificazione di \texttt{void set\_log\_file(FILE*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -200,7 +196,7 @@ Definisce un tipo enumerato chiamato \texttt{LogLevel} con i seguenti valori:
 
 
 
-\subsubsection{Specificazione di \texttt{log\_message(LogLevel,  char*)}}
+\subsubsection{Specificazione di \texttt{void log\_message(LogLevel, char*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -226,12 +222,12 @@ Definisce un tipo enumerato chiamato \texttt{LogLevel} con i seguenti valori:
 	      \end{itemize}
 \end{itemize}
 
-\subsubsection{Specificazione di \texttt{log\_error( char*)}}
+\subsubsection{Specificazione di \texttt{void log\_error(char*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{log\_error( char*)}
-	\item tipi: \texttt{ char*}
+	\item \texttt{log\_error(char*)}
+	\item tipi: \texttt{char*}
 	\item tipi interni: Nessuno
 \end{itemize}
 
@@ -272,7 +268,7 @@ Definisce un tipo enumerato chiamato \texttt{LogLevel} con i seguenti valori:
 \textbf{Specificazione Semantica:} \\
 Rappresenta il valore intero di ritorno di un'operazione che potrebbe fallire.
 
-\subsubsection{Funzione \texttt{clean\_file(FILE*)}}
+\subsubsection{Funzione \texttt{void clean\_file(FILE*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -340,7 +336,7 @@ Rappresenta il valore intero di ritorno di un'operazione che potrebbe fallire.
 	\item Postcondizioni: In caso di successo, restituisce un \texttt{ResultInt} con il valore dell'intero e \texttt{error\_code} pari a 0. In caso di errore, \texttt{error\_code} viene impostato a -1 per errori di lettura, -2 per errori di intervallo e -3 per input non valido.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{my\_alloc(unsigned long, unsigned long)}}
+\subsubsection{Funzione \texttt{void my\_alloc(unsigned long, unsigned long)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -357,7 +353,7 @@ Rappresenta il valore intero di ritorno di un'operazione che potrebbe fallire.
 	\item Postcondizioni: In caso di successo, restituisce un puntatore alla memoria allocata. In caso di errore, registra un errore e termina il programma.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{my\_realloc(void*, unsigned long, unsigned long)}}
+\subsubsection{Funzione \texttt{void my\_realloc(void*, unsigned long, unsigned long)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -374,11 +370,11 @@ Rappresenta il valore intero di ritorno di un'operazione che potrebbe fallire.
 	\item Postcondizioni: In caso di successo, restituisce un puntatore alla memoria riallocata. In caso di errore, registra un errore e termina il programma.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{char* my\_strdup( char*)}}
+\subsubsection{Funzione \texttt{char* my\_strdup(char*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{my\_strdup( char*) -> char*}
+	\item \texttt{my\_strdup(char*) -> char*}
 	\item Tipi: \texttt{char*}
 	\item Tipi interni: \texttt{char*}
 \end{itemize}
@@ -391,7 +387,7 @@ Rappresenta il valore intero di ritorno di un'operazione che potrebbe fallire.
 	\item Postcondizioni: In caso di successo, restituisce un puntatore alla stringa duplicata. In caso di errore, registra un errore e termina il programma.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{trim\_whitespaces(char*, char*, int)}}
+\subsubsection{Funzione \texttt{void trim\_whitespaces(char*, char*, int)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -420,7 +416,7 @@ Rappresenta il valore intero di ritorno di un'operazione che potrebbe fallire.
 \textbf{Specificazione Semantica:} \\
 Date rappresenta una data valida con precisione al minuto. \\
 
-\textbf{Operatori:}
+\textbf{Operatori:} 
 \begin{itemize}
     \item \texttt{new\_date(unsigned int, unsigned int, unsigned int) -> Date}
     \item \texttt{copy\_date(Date) -> Date}
@@ -485,7 +481,7 @@ Date rappresenta una data valida con precisione al minuto. \\
 	\item Postcondizioni: Restituisce un intero minore di zero, uguale a zero o maggiore di zero se 'date\_a' è rispettivamente inferiore, uguale o superiore a 'date\_b'.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{save\_date\_to\_file(Date, FILE*)}}
+\subsubsection{Funzione \texttt{void save\_date\_to\_file(Date, FILE*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -519,7 +515,7 @@ Date rappresenta una data valida con precisione al minuto. \\
 	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Date} letto dal file 'file', o NULL se la lettura fallisce. Il chiamante è responsabile di liberare la memoria allocata utilizzando \texttt{free\_date()}.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{print\_date(Date)}}
+\subsubsection{Funzione \texttt{void print\_date(Date)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -553,7 +549,7 @@ Date rappresenta una data valida con precisione al minuto. \\
 	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Date} letto dall'input standard (stdin), o NULL se la lettura fallisce. Il chiamante è responsabile di liberare la memoria allocata utilizzando \texttt{free\_date()}.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{free\_date(Date)}}
+\subsubsection{Funzione: \texttt{void free\_date(Date)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -596,12 +592,12 @@ Room rappresenta una sala della conferenza.\\
 
 
 
-\subsubsection{Funzione: \texttt{Room new\_room( char*, unsigned int, unsigned int)}}
+\subsubsection{Funzione: \texttt{Room new\_room(char*, unsigned int, unsigned int)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{new\_room( char* name, unsigned int id, unsigned int capacity) -> Room}
-	\item Tipi: \texttt{ char *}, \texttt{unsigned int}
+	\item \texttt{new\_room(char* name, unsigned int id, unsigned int capacity) -> Room}
+	\item Tipi: \texttt{char *}, \texttt{unsigned int}
 	\item Tipi interni: \texttt{Room}
 \end{itemize}
 
@@ -647,7 +643,7 @@ Room rappresenta una sala della conferenza.\\
 	\item Postcondizioni: Restituisce true se \texttt{room\_a} e \texttt{room\_b} hanno lo stesso ID, altrimenti false.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{ char* get\_room\_name(Room)}}
+\subsubsection{Funzione: \texttt{char* get\_room\_name(Room)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -681,7 +677,7 @@ Room rappresenta una sala della conferenza.\\
 	\item Postcondizioni: Restituisce l'ID di \texttt{room}.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{print\_room(Room)}}
+\subsubsection{Funzione: \texttt{void print\_room(Room)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -715,7 +711,7 @@ Room rappresenta una sala della conferenza.\\
 	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Room} creato, o NULL se si verifica un errore. Il chiamante è responsabile di liberare la memoria allocata utilizzando la funzione \texttt{free\_room()}.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{save\_room\_to\_file(Room, FILE*)}}
+\subsubsection{Funzione: \texttt{void save\_room\_to\_file(Room, FILE*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -749,7 +745,7 @@ Room rappresenta una sala della conferenza.\\
 	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Room} creato, o NULL se si verifica un errore. Il chiamante è responsabile di liberare la memoria allocata utilizzando la funzione \texttt{free\_room()}.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{free\_room(Room)}}
+\subsubsection{Funzione: \texttt{void free\_room(Room)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -802,7 +798,7 @@ Event rappresenta un evento della conferenza.\\
 
 
 
-\subsubsection{Funzione: \texttt{is\_valid\_event\_type(int)}}
+\subsubsection{Funzione: \texttt{void is\_valid\_event\_type(int)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -989,7 +985,7 @@ Event rappresenta un evento della conferenza.\\
 \item Postcondizioni: Restituisce 0 se l'operazione ha avuto successo, -1 altrimenti.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{ char *get\_event\_name(Event event)}}
+\subsubsection{Funzione: \texttt{char *get\_event\_name(Event event)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -1074,7 +1070,7 @@ Event rappresenta un evento della conferenza.\\
 \item Postcondizioni: Restituisce l'ID dell'evento.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{print\_event(Event event, Room assigned\_room)}}
+\subsubsection{Funzione: \texttt{void print\_event(Event event, Room assigned\_room)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -1108,7 +1104,7 @@ Event rappresenta un evento della conferenza.\\
 \item Postcondizioni: Restituisce un puntatore al nuovo oggetto Event creato.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{save\_event\_to\_file(Event event, FILE *file)}}
+\subsubsection{Funzione: \texttt{void save\_event\_to\_file(Event event, FILE *file)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -1142,7 +1138,7 @@ Event rappresenta un evento della conferenza.\\
 \item Postcondizioni: Restituisce un puntatore al nuovo oggetto Event creato.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{free\_event(Event event)}}
+\subsubsection{Funzione: \texttt{void free\_event(Event event)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -1170,7 +1166,7 @@ Event rappresenta un evento della conferenza.\\
 \textbf{Specificazione Semantica:} \\
 EventBst rappresenta un albero binario di ricerca di oggetti di tipo Event\\
 
-\textbf{Operatori:}
+\textbf{Operatori:} 
 \begin{itemize}
     \item \texttt{new\_event\_bst(void) -> EventBst}
     \item \texttt{bst\_insert\_event(EventBst bst, Event event) -> int}
@@ -1404,7 +1400,7 @@ EventBst rappresenta un albero binario di ricerca di oggetti di tipo Event\\
 \textbf{Specificazione Semantica:} \\
 RoomList rappresenta una sequenza di oggetti di tipo Room\\
 
-\textbf{Operazioni:}
+\textbf{Operazioni:} 
 \begin{itemize}
     \item \texttt{new\_room\_list(void) -> RoomList}
     \item \texttt{is\_room\_list\_empty(RoomList list) -> bool}
@@ -1671,7 +1667,7 @@ RoomList rappresenta una sequenza di oggetti di tipo Room\\
 \textbf{Specificazione Semantica:} \\
 Conference rappresenta una conferenza\\
 
-\textbf{Operatori:}
+\textbf{Operatori:} 
 \begin{itemize}
     \item \texttt{new\_conference(void) -> Conference}
     \item \texttt{add\_conference\_event(Conference conf) -> int}
@@ -1861,7 +1857,7 @@ add\_conference\_event(Conference conf)}}
 \item Postcondizioni: Restituisce 0 in caso di successo, -1 in caso di errore.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{free\_conference(Conference conf)}}
+\subsubsection{Funzione: \texttt{void free\_conference(Conference conf)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -1878,7 +1874,7 @@ add\_conference\_event(Conference conf)}}
 \item Postcondizioni: Libera la memoria allocata per la conferenza.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{save\_conference\_to\_file(Conference conf, FILE* file)}}
+\subsubsection{Funzione: \texttt{void save\_conference\_to\_file(Conference conf, FILE* file)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -1895,7 +1891,7 @@ add\_conference\_event(Conference conf)}}
 \item Postcondizioni: Scrive i dati della conferenza sul file specificato.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{save\_conference\_to\_file\_sorted(Conference conf, FILE* file)}}
+\subsubsection{Funzione: \texttt{void save\_conference\_to\_file\_sorted(Conference conf, FILE* file)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
@@ -2471,7 +2467,7 @@ I file conference.txt, output.txt e oracle.txt sono conferenze formattate come p
 
 \subsubsection{Formato del file \texttt{input.txt} per i Test di  liberazione di una sala assegnata a un evento}
 
-Per eseguire correttamente i test, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare l'assegnazione di una sala a un evento. Questo file contiene l'ID dell'evento da cui si vuole rimuovere la sala.
+Per eseguire correttamente i test, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare la liberazione di una sala a un evento. Questo file contiene l'ID dell'evento da cui si vuole rimuovere la sala.
 Gli ID non validi vengono ignorati e la conferenza non viene modificata.
 
 
@@ -2640,3 +2636,4 @@ Il file risultante si troverà nella cartella \texttt{tests} e avrà il nome \te
 %-----------------------------------------------%
 
 \end{document}
+

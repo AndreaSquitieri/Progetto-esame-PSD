@@ -1,0 +1,152 @@
+[
+ {
+  "directory": "/home/andrea/Documents/projects/uni/psd/Progetto-esame-PSD",
+  "arguments": [
+   "gcc",
+   "-Wall",
+   "-Wextra",
+   "-Iinclude",
+   "-g",
+   "-c",
+   "src/logging.c",
+   "-o",
+   "build/logging.o"
+  ],
+  "file": "src/logging.c"
+ },
+ {
+  "directory": "/home/andrea/Documents/projects/uni/psd/Progetto-esame-PSD",
+  "arguments": [
+   "gcc",
+   "-Wall",
+   "-Wextra",
+   "-Iinclude",
+   "-g",
+   "-c",
+   "src/utils.c",
+   "-o",
+   "build/utils.o"
+  ],
+  "file": "src/utils.c"
+ },
+ {
+  "directory": "/home/andrea/Documents/projects/uni/psd/Progetto-esame-PSD",
+  "arguments": [
+   "gcc",
+   "-Wall",
+   "-Wextra",
+   "-Iinclude",
+   "-g",
+   "-c",
+   "src/date.c",
+   "-o",
+   "build/date.o"
+  ],
+  "file": "src/date.c"
+ },
+ {
+  "directory": "/home/andrea/Documents/projects/uni/psd/Progetto-esame-PSD",
+  "arguments": [
+   "gcc",
+   "-Wall",
+   "-Wextra",
+   "-Iinclude",
+   "-g",
+   "-c",
+   "src/room.c",
+   "-o",
+   "build/room.o"
+  ],
+  "file": "src/room.c"
+ },
+ {
+  "directory": "/home/andrea/Documents/projects/uni/psd/Progetto-esame-PSD",
+  "arguments": [
+   "gcc",
+   "-Wall",
+   "-Wextra",
+   "-Iinclude",
+   "-g",
+   "-c",
+   "src/mevent.c",
+   "-o",
+   "build/mevent.o"
+  ],
+  "file": "src/mevent.c"
+ },
+ {
+  "directory": "/home/andrea/Documents/projects/uni/psd/Progetto-esame-PSD",
+  "arguments": [
+   "gcc",
+   "-Wall",
+   "-Wextra",
+   "-Iinclude",
+   "-g",
+   "-c",
+   "src/room_list.c",
+   "-o",
+   "build/room_list.o"
+  ],
+  "file": "src/room_list.c"
+ },
+ {
+  "directory": "/home/andrea/Documents/projects/uni/psd/Progetto-esame-PSD",
+  "arguments": [
+   "gcc",
+   "-Wall",
+   "-Wextra",
+   "-Iinclude",
+   "-g",
+   "-c",
+   "src/event_bst.c",
+   "-o",
+   "build/event_bst.o"
+  ],
+  "file": "src/event_bst.c"
+ },
+ {
+  "directory": "/home/andrea/Documents/projects/uni/psd/Progetto-esame-PSD",
+  "arguments": [
+   "gcc",
+   "-Wall",
+   "-Wextra",
+   "-Iinclude",
+   "-g",
+   "-c",
+   "src/conference.c",
+   "-o",
+   "build/conference.o"
+  ],
+  "file": "src/conference.c"
+ },
+ {
+  "directory": "/home/andrea/Documents/projects/uni/psd/Progetto-esame-PSD",
+  "arguments": [
+   "gcc",
+   "-Wall",
+   "-Wextra",
+   "-Iinclude",
+   "-g",
+   "-c",
+   "src/main.c",
+   "-o",
+   "build/main.o"
+  ],
+  "file": "src/main.c"
+ },
+ {
+  "directory": "/home/andrea/Documents/projects/uni/psd/Progetto-esame-PSD",
+  "arguments": [
+   "gcc",
+   "-Wall",
+   "-Wextra",
+   "-Iinclude",
+   "-g",
+   "-c",
+   "tests/test.c",
+   "-o",
+   "tests/test.o"
+  ],
+  "file": "tests/test.c"
+ }
+]
