@@ -125,7 +125,9 @@ int set_event_start_date(Event event, Date start_date) {
     log_error("Start date is later than end date in 'set_event_start_date'.");
     return -2;
   }
-  free_date(event->start_date);
+  if (event->start_date != start_date) {
+    free_date(event->start_date);
+  }
   event->start_date = start_date;
   return 0;
 }
@@ -139,7 +141,9 @@ int set_event_end_date(Event event, Date end_date) {
     log_error("End date is earlier than start date in 'set_event_end_date'.");
     return -2;
   }
-  free_date(event->end_date);
+  if (event->end_date != end_date) {
+    free_date(event->end_date);
+  }
   event->end_date = end_date;
   return 0;
 }
@@ -154,6 +158,7 @@ int set_event_name(Event event, const char *name) {
   event->name = temp;
   return 0;
 }
+
 int set_event_type(Event event, EventType type) {
   if (are_events_equal(event, NULL_EVENT)) {
     log_error("NULL pointer passed to 'set_event_type' function.");

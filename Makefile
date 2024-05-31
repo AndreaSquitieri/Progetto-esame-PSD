@@ -23,35 +23,37 @@ $(TEST_DIR)/test: $(BUILD_DIR)/logging.o $(BUILD_DIR)/utils.o $(BUILD_DIR)/date.
 
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
-$(BUILD_DIR)/logging.o: $(SRC_DIR)/logging.c $(INCLUDE_DIR)/logging.h
+$(BUILD_DIR)/logging.o: $(SRC_DIR)/logging.c $(INCLUDE_DIR)/logging.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/logging.c -o $@
 
-$(BUILD_DIR)/utils.o: $(SRC_DIR)/utils.c $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h
+$(BUILD_DIR)/utils.o: $(SRC_DIR)/utils.c $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/utils.c -o $@
 
-$(BUILD_DIR)/date.o: $(SRC_DIR)/date.c $(INCLUDE_DIR)/date.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h
+$(BUILD_DIR)/date.o: $(SRC_DIR)/date.c $(INCLUDE_DIR)/date.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/date.c -o $@
 
-$(BUILD_DIR)/room.o: $(SRC_DIR)/room.c $(INCLUDE_DIR)/room.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h
+$(BUILD_DIR)/room.o: $(SRC_DIR)/room.c $(INCLUDE_DIR)/room.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/room.c -o $@
 
-$(BUILD_DIR)/mevent.o: $(SRC_DIR)/mevent.c $(INCLUDE_DIR)/mevent.h $(INCLUDE_DIR)/date.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h
+$(BUILD_DIR)/mevent.o: $(SRC_DIR)/mevent.c $(INCLUDE_DIR)/mevent.h $(INCLUDE_DIR)/date.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/mevent.c -o $@
 
-$(BUILD_DIR)/room_list.o: $(SRC_DIR)/room_list.c $(INCLUDE_DIR)/room_list.h $(INCLUDE_DIR)/room.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h
+$(BUILD_DIR)/room_list.o: $(SRC_DIR)/room_list.c $(INCLUDE_DIR)/room_list.h $(INCLUDE_DIR)/room.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/room_list.c -o $@
 
-$(BUILD_DIR)/event_bst.o: $(SRC_DIR)/event_bst.c $(INCLUDE_DIR)/event_bst.h $(INCLUDE_DIR)/room_list.h $(INCLUDE_DIR)/mevent.h $(INCLUDE_DIR)/date.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h
+$(BUILD_DIR)/event_bst.o: $(SRC_DIR)/event_bst.c $(INCLUDE_DIR)/event_bst.h $(INCLUDE_DIR)/room_list.h $(INCLUDE_DIR)/mevent.h $(INCLUDE_DIR)/date.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/event_bst.c -o $@
 
-$(BUILD_DIR)/conference.o: $(SRC_DIR)/conference.c $(INCLUDE_DIR)/conference.h $(INCLUDE_DIR)/event_bst.h $(INCLUDE_DIR)/room_list.h $(INCLUDE_DIR)/room.h $(INCLUDE_DIR)/mevent.h $(INCLUDE_DIR)/date.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h
+$(BUILD_DIR)/conference.o: $(SRC_DIR)/conference.c $(INCLUDE_DIR)/conference.h $(INCLUDE_DIR)/event_bst.h $(INCLUDE_DIR)/room_list.h $(INCLUDE_DIR)/room.h $(INCLUDE_DIR)/mevent.h $(INCLUDE_DIR)/date.h $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/conference.c -o $@
 
-$(BUILD_DIR)/main.o: $(SRC_DIR)/main.c $(INCLUDE_DIR)/conference.h  $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h
+$(BUILD_DIR)/main.o: $(SRC_DIR)/main.c $(INCLUDE_DIR)/conference.h  $(INCLUDE_DIR)/utils.h $(INCLUDE_DIR)/logging.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/main.c -o $@
 
-$(TEST_DIR)/test.o: $(TEST_DIR)/test.c $(INCLUDE_DIR)/conference.h
+$(TEST_DIR)/test.o: $(TEST_DIR)/test.c $(INCLUDE_DIR)/conference.h $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(TEST_DIR)/test.c -o $@
 
 clean:
