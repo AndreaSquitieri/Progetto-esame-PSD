@@ -116,7 +116,8 @@ int run_test_case(TestType test_type, const char *oracle_fname,
 
   // TODO
   // Smettere di imbrogliare
-  if (freopen(input_fname, "r", stdin) == NULL || output == NULL) {
+  freopen(input_fname, "r", stdin);
+  if (oracle == NULL || output == NULL) {
     return 0;
   }
 

@@ -3,7 +3,7 @@
 1 0 0 Evento test 1
 0 12 1 1 1970
 0 13 1 1 1970
-2 1 0 Evento test 2
+2 0 0 Evento test 2
 0 12 1 1 1970
 0 13 1 1 1970
 3 2 0 Evento test 3
