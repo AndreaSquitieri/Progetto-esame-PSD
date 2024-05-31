@@ -21,6 +21,10 @@ static void room_list_increase_capacity(RoomList list) {
   list->array = my_realloc(list->array, list->capacity, sizeof(Room));
 }
 
+static bool is_room_list_null(ConstRoomList list) {
+  return list == NULL_ROOM_LIST;
+}
+
 // Function to create a new list of rooms
 RoomList new_room_list(void) {
   RoomList new_list =
@@ -39,7 +43,7 @@ bool is_room_list_empty(ConstRoomList list) {
 
 // Function to get the size of the list
 int get_size_room_list(ConstRoomList list) {
-  if (list == NULL_ROOM_LIST) { // Check if the list is NULL
+  if (is_room_list_null(list)) { // Check if the list is NULL
     log_error("Attempt to get size of a NULL room list.");
     return 0;
   }
@@ -48,7 +52,7 @@ int get_size_room_list(ConstRoomList list) {
 
 // Function to add a room to the list
 void cons_room_list(RoomList list, Room room) {
-  if (list == NULL_ROOM_LIST ||
+  if (is_room_list_null(list) ||
       room == NULL_ROOM) { // Check if the list or the room is NULL
     log_error("Attempt to add a room to a NULL room list or add a NULL room.");
     return;
@@ -78,7 +82,7 @@ Room get_first_room_list(RoomList list) {
 
 // Function to get a room at a specific position in the list
 Room get_at_room_list(RoomList list, int pos) {
-  if (list == NULL_ROOM_LIST) { // Check if the list is NULL
+  if (is_room_list_null(list)) { // Check if the list is NULL
     log_error("Attempt to get a room from a NULL room list.");
     return NULL_ROOM;
   }
@@ -91,7 +95,7 @@ Room get_at_room_list(RoomList list, int pos) {
 
 // Function to get a room by ID from the list
 Room get_room_by_id(RoomList list, unsigned int room_id) {
-  if (list == NULL_ROOM_LIST) { // Check if the list is NULL
+  if (is_room_list_null(list)) { // Check if the list is NULL
     log_error("Attempt to get a room by ID from a NULL room list.");
     return NULL_ROOM;
   }
@@ -106,7 +110,7 @@ Room get_room_by_id(RoomList list, unsigned int room_id) {
 
 // Function to remove a room at a specific position in the list
 Room remove_at_room_list(RoomList list, int pos) {
-  if (list == NULL_ROOM_LIST) { // Check if the list is NULL
+  if (is_room_list_null(list)) { // Check if the list is NULL
     log_error("Attempt to remove a room from a NULL room list.");
     return NULL_ROOM;
   }
@@ -124,7 +128,7 @@ Room remove_at_room_list(RoomList list, int pos) {
 
 // Function to get the position of a room in the list
 int get_pos_room_list(ConstRoomList list, ConstRoom to_search) {
-  if (list == NULL_ROOM_LIST ||
+  if (is_room_list_null(list) ||
       to_search == NULL_ROOM) { // Check if the list or the room is NULL
     log_error(
         "Attempt to search in a NULL room list or search for a NULL room.");
@@ -140,7 +144,7 @@ int get_pos_room_list(ConstRoomList list, ConstRoom to_search) {
 
 // Function to print all rooms in the list
 void print_room_list(ConstRoomList list) {
-  if (list == NULL_ROOM_LIST) { // Check if the list is NULL
+  if (is_room_list_null(list)) { // Check if the list is NULL
     log_error("Attempt to print a NULL room list.");
     return;
   }
@@ -157,7 +161,7 @@ void save_room_list_to_file(ConstRoomList list, FILE *file) {
     log_error("Attempt to save a room list to a NULL file.");
     return;
   }
-  if (list == NULL_ROOM_LIST) { // Check if the list is NULL
+  if (is_room_list_null(list)) { // Check if the list is NULL
     log_error("Attempt to save a NULL room list to a file.");
     return;
   }
@@ -186,7 +190,7 @@ RoomList read_room_list_from_file(FILE *file) {
   }
 
   RoomList list = new_room_list(); // Create a new list of rooms
-  if (list == NULL_ROOM_LIST) {    // Check if the list is NULL
+  if (is_room_list_null(list)) {   // Check if the list is NULL
     log_error("Failed to create a new room list.");
     return NULL_ROOM_LIST;
   }

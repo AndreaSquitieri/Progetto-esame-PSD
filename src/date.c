@@ -52,6 +52,9 @@ struct DateStruct {
   unsigned short year;
 };
 
+// Function to check if a date is null
+static bool is_date_null(ConstDate date) { return date == NULL_DATE; }
+
 // Function to check if a year is a leap year
 static bool is_leap_year(unsigned short year) {
   return (year % 400 == 0) || (year % 100 != 0 && year % 4 == 0);
@@ -59,7 +62,7 @@ static bool is_leap_year(unsigned short year) {
 
 // Function to check if a date is valid
 static bool is_valid_date(ConstDate date) {
-  if (date == NULL_DATE) {
+  if (is_date_null(date)) {
     return false;
   }
   if (date->minutes >= MINUTES_IN_HOUR || date->hour >= HOURS_IN_DAY) {
@@ -101,7 +104,7 @@ Date new_date(unsigned char minutes, unsigned char hour, unsigned char day,
 // Function to create a copy of the date
 // Returns a new date with the same values as the input date
 Date copy_date(ConstDate date) {
-  if (date == NULL_DATE) {
+  if (is_date_null(date)) {
     log_error("Attempt to copy a NULL date.");
     return NULL_DATE;
   }
@@ -119,13 +122,13 @@ static inline int cmp_date_component(unsigned int a, unsigned int b) {
 // Returns -1 if date_a < date_b, 0 if date_a == date_b, and 1 if date_a >
 // date_b
 int cmp_date(ConstDate date_a, ConstDate date_b) {
-  if (date_a == NULL_DATE && date_b == NULL_DATE) {
+  if (is_date_null(date_a) && is_date_null(date_b)) {
     return 0;
   }
-  if (date_a == NULL_DATE) {
+  if (is_date_null(date_a)) {
     return -1;
   }
-  if (date_b == NULL_DATE) {
+  if (is_date_null(date_b)) {
     return 1;
   }
 
@@ -159,7 +162,7 @@ static const char *get_month_name(ConstDate date) {
 
 // Function to print the date to stdout
 void print_date(ConstDate date) {
-  if (date == NULL_DATE) {
+  if (is_date_null(date)) {
     log_error("Attempt to print a NULL date.");
     return;
   }
@@ -194,7 +197,7 @@ Date read_date(void) {
 
 // Function to save the date to a file
 void save_date_to_file(ConstDate date, FILE *file) {
-  if (date == NULL_DATE) {
+  if (is_date_null(date)) {
     log_error("Attempt to save NULL date to file");
     return;
   }
@@ -238,7 +241,7 @@ Date read_date_from_file(FILE *file) {
 
 // Function to free the memory allocated for the date
 void free_date(Date date) {
-  if (date == NULL_DATE) {
+  if (is_date_null(date)) {
     log_error("Attempt to free a NULL date.");
     return;
   }

@@ -1,6 +1,7 @@
 #ifndef DATE_H_
 #define DATE_H_
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #define NULL_DATE NULL

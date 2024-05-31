@@ -293,7 +293,7 @@ static bool every_node(EventBstNode node, EventPredicate predicate,
 // search tree
 bool event_bst_every(EventBst bst, EventPredicate predicate, ...) {
   if (bst == NULL_EVENT_BST || bst->root == NULL) {
-    return false; // Handle edge cases where the tree is empty
+    return true; // Handle edge cases where the tree is empty
   }
 
   // Initialize variable arguments
