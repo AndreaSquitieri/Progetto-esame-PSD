@@ -292,7 +292,7 @@ static bool every_node(EventBstNode node, EventPredicate predicate,
 // Function to apply a predicate function to every node in the event binary
 // search tree
 bool event_bst_every(EventBst bst, EventPredicate predicate, ...) {
-  if (bst == NULL_EVENT_BST || bst->root == NULL) {
+  if (bst == NULL_EVENT_BST || bst->root == NULL || bst->size == 0) {
     return true; // Handle edge cases where the tree is empty
   }
 

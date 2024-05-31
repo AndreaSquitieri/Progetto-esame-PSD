@@ -1,28 +1,10 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Wenneker Assignment
-% LaTeX Template
-% Version 2.0 (12/1/2019)
-%
-% This template originates from:
-% http://www.LaTeXTemplates.com
-%
-% Authors:
-% Vel (vel@LaTeXTemplates.com)
-% Frits Wenneker
-%
-% License:
-% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%----------------------------------------------------------------------------------------
-%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
-%----------------------------------------------------------------------------------------
-
 \documentclass[11pt]{scrartcl} % Font size
 % \usepackage{beamer}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage[utf8]{inputenc} % Per l'encoding dei caratteri
+\usepackage[T1]{fontenc} % Per la codifica dei font
+\usepackage[italian]{babel}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -49,8 +31,8 @@
 }
 
 \lstset{style=mystyle}
-
 \input{structure.tex} % Include the file specifying the document structure and custom commands
+
 
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
@@ -81,10 +63,12 @@
 % \date{\normalsize\today} % Today's date (\today) or a custom date
 \date{\null}
 
+
 \begin{document}
 
 \maketitle % Print the title
 
+\tableofcontents
 
 %----------------------------------------------------------------------------------------
 %	FIGURE EXAMPLE
@@ -115,43 +99,74 @@ Gli obiettivi principali del progetto includono:
 %----------------------------------------------------------------------------------------
 
 \section{Motivazione della scelta degli ADT}
-
-\subsection{Motivazioni per l'uso dell'ADT Date, dell'ADT Room e dell'ADT Event}
-
-Gli eventi devono essere pianificati in specifici giorni e orari. Per garantire una gestione precisa e coerente di queste informazioni, è stato sviluppato l'ADT Date. L'uso di questo ADT permette di:
-\begin{itemize}
-	\item \textbf{Assicurare la validità delle date}: Le date inserite nel sistema sono sempre valide (es. nessuna data con un mese o giorno inesistente).
-	\item \textbf{Effettuare confronti corretti tra date}: Il confronto tra due date avviene in maniera corretta e semplice.
-\end{itemize}
-In particolare, l'ADT Date viene utilizzato per rappresentare le date di inizio e fine di ogni evento, con una precisione che arriva al minuto.
-
-\subsection{Motivazioni per l'uso dell'ADT Room}
-
-L'ADT Room gestisce le informazioni relative alle sale all'interno del sistema di gestione delle conferenze. Esso rappresenta una sala con attributi quali il nome della sala, il numero di posti e l'eventuale disponibilità.
-
 \subsection{Motivazioni per l'uso dell'ADT RoomList}
 
-L'ADT RoomList è stato introdotto per gestire in modo efficiente un insieme di sale conferenze. Esso rappresenta una collezione di oggetti Room, permettendo di mantenere organizzate e facilmente accessibili tutte le informazioni relative alle diverse sale.
+Abbiamo deciso di utilizzare una lista per gestire le informazioni sulle sale all'interno del sistema di gestione delle conferenze per diverse ragioni. Le liste offrono flessibilità nella gestione dinamica delle sale, consentendo l'aggiunta e la rimozione efficiente di elementi in risposta alle variazioni nel numero di sale nel tempo. Inoltre, semplificano l'accesso e la ricerca delle sale, consentendo operazioni come l'ordinamento o la ricerca di una specifica sala in modo rapido ed efficiente.
 
-\subsection{Motivazioni per l'uso dell'ADT Event}
+Per implementare l'ADT RoomList, abbiamo scelto di utilizzare un array dinamico anziché una lista concatenata. Questa decisione è stata motivata da diverse considerazioni. Gli array dinamici offrono un accesso casuale più efficiente rispetto alle liste concatenate, il che si traduce in un'operatività più veloce e prevedibile per le operazioni che richiedono l'accesso non sequenziale alle sale nella lista.
 
-L'ADT Event è stato creato per gestire in modo efficiente le informazioni relative agli eventi all'interno del sistema. Esso rappresenta un singolo evento, includendo dettagli cruciali come il nome dell'evento, la data e l'ora di inizio e fine, e la sala assegnata.
+Inoltre, gli array dinamici consentono un accesso continuo e contiguo alla memoria, migliorando la località dei dati e riducendo il numero di cache miss durante l'accesso ai dati nella lista. Questo porta a prestazioni ottimali in termini di accesso ai dati e di utilizzo della memoria.
+
+Infine, l'utilizzo della memoria è più efficiente con gli array dinamici rispetto alle liste concatenate. Mentre una lista concatenata avrebbe utilizzato il doppio della memoria necessaria (un puntatore al valore e un puntatore al prossimo nodo), la nostra implementazione utilizza al massimo il doppio della memoria grazie all'utilizzo di un fattore di crescita per l'array dinamico che garantisce inoltre un numero limitato di spostamenti di dati durante il processo di reallocazione (il numero di spostamenti effettuati sarà sempre inferirore a 2n, dove n rappresenta il numero di sale).
+
 
 \subsection{Motivazioni per l'uso dell'ADT EventBst}
+Per gestire in modo ordinato la raccolta di eventi all'interno del sistema, abbiamo adottato un albero binario di ricerca. Questa scelta consente di aggiungere eventi con una complessità temporale media di \( O(\log{n}) \). Tuttavia, per garantire un'usabilità ottimale del software, le operazioni di modifica e rimozione degli eventi non sfruttano le proprietà dell'albero e sono quindi di complessità \( O(n) \), poiché precedute da una ricerca lineare per l'ID dell'evento.
 
-L'ADT EventBst è stato introdotto per gestire in modo ordinato la raccolta di eventi all'interno del sistema. Esso rappresenta un albero binario di ricerca in cui ogni nodo contiene un singolo evento, e le relazioni di ordinamento sono definite sulla base delle proprietà degli eventi, come la data e l'ora di inizio e, se condivise da altri eventi, il nome.
+Nonostante questa considerazione, riteniamo che l'utilizzo dell'albero di ricerca binario sia giustificato, dato che rappresenta un buon compromesso da un punto di vista computazionale. Altre strutture ordinate avrebbero mantenuto comunque una complessità temporale di \( O(n) \) per le operazioni di modifica e rimozione, rendendo però lineare anche la complessità dell'aggiunta degli eventi. La preferenza per una struttura ordinata è derivata dalla frequenza delle operazioni di visualizzazione degli eventi nel software, evitando così la necessità di ordinare la struttura prima di ogni operazione di visualizzazione, che potrebbe causare rallentamenti.
 
-L'uso di un albero binario di ricerca permette di aggiungere eventi con una complessità temporale media di $O(\log{n})$. Tuttavia, per favorire l'usabilità del software, le operazioni di modifica e rimozione non possono sfruttare le proprietà dell'albero e sono quindi di complessità $O(n)$ (precedute da una ricerca lineare per ID dell'evento).
-
-Nonostante ciò, riteniamo che l'uso di questo ADT sia giustificato, dato che le possibili alternative avrebbero comunque mantenuto una complessità temporale di $O(n)$ nella modifica e nella rimozione, ma avrebbero reso lineare anche la complessità dell'aggiunta degli eventi.
-
-\subsection{Motivazioni per l'uso dell'ADT Conference}
-
-L'ADT Conference è stato implementato per gestire in modo completo e strutturato l'organizzazione di una conferenza, inclusi gli eventi, le sale e le loro assegnazioni. Esso è progettato come un'astrazione completa della conferenza, comprendendo una collezione di eventi, una lista delle sale disponibili e le assegnazioni degli eventi alle sale.
-
-Grazie a questa astrazione, ci assicuriamo che ciascun evento e sala siano identificati da ID univoci e che non vi siano sovrapposizioni temporali tra gli eventi assegnati alla stessa sala.
 
 \section{Progettazione}
+
+Il sistema di gestione delle conferenze è strutturato in modo modulare, suddiviso in vari componenti che interagiscono tra loro per fornire le funzionalità richieste. Ogni componente è stato progettato come un ADT per garantire una chiara separazione delle responsabilità e facilitare il mantenimento del codice.
+
+\subsection{Moduli Principali}
+I principali moduli del sistema sono:
+
+\begin{itemize}
+    \item \textbf{Date} (date.h): Gestisce le date e gli orari degli eventi.
+    \item \textbf{Room} (room.h): Rappresenta le sale dove si tengono gli eventi.
+    \item \textbf{RoomList} (room\_list.h): Gestisce una lista dinamica di sale.
+    \item \textbf{Event} (mevent.h): Rappresenta gli eventi della conferenza.
+    \item \textbf{EventBst} (event\_bst.h): Organizza gli eventi in un albero binario di ricerca per una gestione efficiente.
+    \item \textbf{Conference} (conference.h): Coordina tutti gli elementi sopra menzionati, fornendo un'interfaccia unificata per la gestione della conferenza.
+\end{itemize}
+
+I componenti interagiscono tra loro attraverso chiamate a funzioni che rispettano i contratti definiti dai rispettivi ADT. Questa progettazione permette di mantenere un alto grado di incapsulamento e modularità.
+
+\subsection{Gestione delle Date e Orari (Date)}
+Il modulo \textbf{Date} è impiegato dai moduli \textbf{Event} e \textbf{Conference} per la gestione delle operazioni relative alle date e agli orari, come la creazione, il confronto e la validazione. Ad esempio, quando si crea un nuovo evento tramite il modulo \textbf{Event}, le funzioni di \textbf{Date} vengono utilizzate per definire con precisione la data e l'orario di inizio e fine. Questo modulo garantisce la validità delle date assegnate agli eventi, prevenendo conflitti temporali. Inoltre, permette di verificare che la data di inizio e quella di fine di un evento siano appropriate e che non vi siano due eventi programmati nella stessa sala nello stesso periodo.
+
+
+\subsection{Gestione delle Sale (Room e RoomList)}
+Le stanze, trattate come istanze dell'ADT \textbf{Room}, sono gestite all'interno di una struttura dati dinamica denominata \textbf{RoomList}. Questo approccio consente di gestire l'aggiunta, la rimozione e la ricerca delle stanze in modo efficiente. Attraverso questi due moduli, è possibile associare una stanza a un evento; all'interno della rappresentazione di un evento, la stanza è identificata dal suo ID, che viene utilizzato per individuarla all'interno della \textbf{RoomList} e recuperarne le informazioni pertinenti.
+
+\subsection{Gestione degli Eventi (Event e EventBst)}
+
+I singoli eventi sono rappresentati come istanze dell'ADT \textbf{Event} e vengono organizzati all'interno di una struttura gerarchica nota come \textbf{EventBst}, un albero binario di ricerca specializzato. Questo albero consente di gestire l'aggiunta, la ricerca e la rimozione degli eventi in modo relativamente efficiente.
+
+All'atto della creazione di un nuovo evento, quest'ultimo viene inserito nell'albero binario di ricerca, garantendo un ordinamento basato sulla data di inizio dell'evento. In caso di eventi con la stessa data di inizio, l'ordinamento viene effettuato in base al nome dell'evento.
+
+Le operazioni di modifica e rimozione degli eventi vengono eseguite attraverso una ricerca lineare dell'ID dell'evento all'interno dell'albero binario di ricerca. Gli eventi contengono al loro interno un ID che indica la sala a loro assegnata. Nel caso in cui non ci sia una sala assegnata all'evento, questo ID viene impostato al valore \textbf{"NULL\_ROOM\_ID"} definito nel modulo \textbf{Room}.
+
+Ogni evento possiede una data di inizio e fine, rappresentate attraverso istanze dell'ADT \textbf{Date}. La tipologia dell'evento è rappresentata nel modulo attraverso l'enumerazione \textbf{EventType}.
+
+
+\subsection{Coordinamento della Conferenza (Conference)}
+Il modulo \textbf{Conference} funge da coordinatore centrale. Esso mantiene un riferimento all'albero degli eventi (\textbf{EventBst}) e alla lista delle sale (\textbf{RoomList}). Gestisce anche gli inizializzatori degli ID per assegnare identificativi univoci agli eventi e alle sale. Quando un utente interagisce con il sistema per creare, modificare o rimuovere un evento o una sala, il modulo \textbf{Conference} invoca le appropriate funzioni degli altri moduli per eseguire le operazioni richieste. Garantisce quindi che tutti gli eventi e le sale abbiano ID univoci e che non ci siano sovrapposizioni temporali tra due eventi assegnati alla stessa sala. Permette anche di salvare la sessione e leggere da file quelle precedenti.
+In questo modulo abbiamo quindi implementato le seguenti operazioni:
+\begin{itemize}
+    \item \textbf{Aggiunta di un evento}: Vengono chiesti i dati dell'evento all'utente, viene creato l'oggetto Event, assegnandogli un nuovo ID, e viene aggiunto all'albero degli eventi.
+    \item \textbf{Rimozione di un evento}: Viene mostrata la lista ordinata degli eventi e si chiede all'utente di inserire l'ID dell'evento che si desidera rimuovere. Viene poi rimosso l'evento dall'albero degli eventi.
+    \item \textbf{Modifica di un evento}: Viene mostrata la lista ordinata degli eventi e si chiede all'utente di inserire l'ID dell'evento che si desidera modificare. Viene poi rimosso l'evento selezionato, apportate le modifiche richieste dall'utente e reinserito nell'albero degli eventi.
+    \item \textbf{Mostra eventi}: Viene mostrata la lista ordinata degli eventi.
+    \item \textbf{Aggiunta di una sala}: Vengono chiesti i dati della sala all'utente, viene creato l'oggetto Room, assegnandogli un nuovo ID, e viene aggiunto alla lista delle sale.
+    \item \textbf{Mostra sala}: Viene mostrata la lista delle sale
+    \item \textbf{Assegnazione di una sala ad un evento}: Viene mostrata la lista ordinata degli eventi e si chiede all'utente di inserire l'ID dell'evento a cui si desidera assegnare la sala. Viene poi mostrata la lista delle sale e si chiede all'utente di inserire l'ID della sala da assegnare. Viene verifacto poi che non ci siano conflitti con gli orari di altri eventi assegnati alla stessa sala e in caso positivo viene modificato il campo room\_id dell'evento selezionato.
+    \item \textbf{Liberare evento da sala}: Viene mostrata la lista ordinata degli eventi e si chiede all'utente di inserire l'ID dell'evento che si desidera liberare. Viene quindi impostato l'ID della sala contenuto nell'evento a "\textbf{NULL\_ROOM\_ID}".
+
+\end{itemize}
+
 
 \section{Specifiche sintattiche e semantiche}
 
@@ -185,12 +200,12 @@ Definisce un tipo enumerato chiamato \texttt{LogLevel} con i seguenti valori:
 
 
 
-\subsubsection{Specificazione di \texttt{log\_message(LogLevel, const char*)}}
+\subsubsection{Specificazione di \texttt{log\_message(LogLevel,  char*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{log\_message(LogLevel, const char*)}
-	\item tipi: \texttt{LogLevel}, \texttt{const char*}
+	\item \texttt{log\_message(LogLevel,  char*)}
+	\item tipi: \texttt{LogLevel}, \texttt{ char*}
 	\item tipi interni: \texttt{time\_t}, \texttt{struct tm}, \texttt{char[]}, \texttt{FILE*}
 \end{itemize}
 
@@ -211,12 +226,12 @@ Definisce un tipo enumerato chiamato \texttt{LogLevel} con i seguenti valori:
 	      \end{itemize}
 \end{itemize}
 
-\subsubsection{Specificazione di \texttt{log\_error(const char*)}}
+\subsubsection{Specificazione di \texttt{log\_error( char*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{log\_error(const char*)}
-	\item tipi: \texttt{const char*}
+	\item \texttt{log\_error( char*)}
+	\item tipi: \texttt{ char*}
 	\item tipi interni: Nessuno
 \end{itemize}
 
@@ -359,11 +374,11 @@ Rappresenta il valore intero di ritorno di un'operazione che potrebbe fallire.
 	\item Postcondizioni: In caso di successo, restituisce un puntatore alla memoria riallocata. In caso di errore, registra un errore e termina il programma.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{char* my\_strdup(const char*)}}
+\subsubsection{Funzione \texttt{char* my\_strdup( char*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{my\_strdup(const char*) -> char*}
+	\item \texttt{my\_strdup( char*) -> char*}
 	\item Tipi: \texttt{char*}
 	\item Tipi interni: \texttt{char*}
 \end{itemize}
@@ -395,25 +410,30 @@ Rappresenta il valore intero di ritorno di un'operazione che potrebbe fallire.
 
 \subsection{Specifica dell'ADT Date}
 
-\subsubsection{Specificazione del tipo \texttt{Date}}
-
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
 	\item Tipo di riferimento: Date
 	\item Tipi utilizzati: unsigned char, unsigned short
-	\item Campi:
-	      \begin{itemize}
-		      \item minutes: Campo rappresentante i minuti.
-		      \item hour: Campo rappresentante le ore.
-		      \item day: Campo rappresentante i giorni.
-		      \item months: Campo rappresentante i mesi.
-		      \item year: Campo rappresentante gli anni.
-	      \end{itemize}
 \end{itemize}
 
 \textbf{Specificazione Semantica:} \\
-Rappresenta una data valida con precisione al minuto.
+Date rappresenta una data valida con precisione al minuto. \\
+
+\textbf{Operatori:}
+\begin{itemize}
+    \item \texttt{new\_date(unsigned int, unsigned int, unsigned int) -> Date}
+    \item \texttt{copy\_date(Date) -> Date}
+    \item \texttt{cmp\_date(Date, Date) -> int}
+    \item \texttt{save\_date\_to\_file(Date, FILE*) -> void}
+    \item \texttt{read\_date\_from\_file(FILE*) -> Date}
+    \item \texttt{print\_date(Date) -> void}
+    \item \texttt{read\_date(unsigned int) -> Date}
+    \item \texttt{free\_date(Date) -> void}
+\end{itemize}
+
+
+
 
 \subsubsection{Funzione \texttt{Date new\_date(unsigned char, unsigned char, unsigned char, unsigned char, unsigned short) }}
 
@@ -432,11 +452,11 @@ Rappresenta una data valida con precisione al minuto.
 	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Date} creato o NULL se la data non è valida. Il chiamante è responsabile di liberare la memoria allocata utilizzando \texttt{free\_date()}.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{Date copy\_date(ConstDate)}}
+\subsubsection{Funzione \texttt{Date copy\_date(Date)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{copy\_date(ConstDate) -> Date}
+	\item \texttt{copy\_date(Date) -> Date}
 	\item Tipi: \texttt{Date}
 	\item Tipi interni: Nessuno
 \end{itemize}
@@ -449,12 +469,12 @@ Rappresenta una data valida con precisione al minuto.
 	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Date} creato, che è una copia di 'date'. Il chiamante è responsabile di liberare la memoria allocata utilizzando \texttt{free\_date()}.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{int cmp\_date(ConstDate, ConstDate) }}
+\subsubsection{Funzione \texttt{int cmp\_date(Date, Date) }}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{cmp\_date(ConstDate, ConstDate) -> int}
-	\item Tipi: \texttt{ConstDate}
+	\item \texttt{cmp\_date(Date, Date) -> int}
+	\item Tipi: \texttt{Date}
 	\item Tipi interni: \texttt{int}
 \end{itemize}
 
@@ -465,12 +485,12 @@ Rappresenta una data valida con precisione al minuto.
 	\item Postcondizioni: Restituisce un intero minore di zero, uguale a zero o maggiore di zero se 'date\_a' è rispettivamente inferiore, uguale o superiore a 'date\_b'.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{save\_date\_to\_file(ConstDate, FILE*)}}
+\subsubsection{Funzione \texttt{save\_date\_to\_file(Date, FILE*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{save\_date\_to\_file(ConstDate, FILE*)}
-	\item Tipi: \texttt{ConstDate}, \texttt{FILE*}
+	\item \texttt{save\_date\_to\_file(Date, FILE*)}
+	\item Tipi: \texttt{Date}, \texttt{FILE*}
 	\item Tipi interni: Nessuno
 \end{itemize}
 
@@ -499,12 +519,12 @@ Rappresenta una data valida con precisione al minuto.
 	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Date} letto dal file 'file', o NULL se la lettura fallisce. Il chiamante è responsabile di liberare la memoria allocata utilizzando \texttt{free\_date()}.
 \end{itemize}
 
-\subsubsection{Funzione \texttt{print\_date(ConstDate)}}
+\subsubsection{Funzione \texttt{print\_date(Date)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{print\_date(ConstDate)}
-	\item Tipi: \texttt{ConstDate}
+	\item \texttt{print\_date(Date)}
+	\item Tipi: \texttt{Date}
 	\item Tipi interni: Nessuno
 \end{itemize}
 
@@ -552,30 +572,36 @@ Rappresenta una data valida con precisione al minuto.
 
 \subsection{Specifica dell'ADT Room}
 
-\subsubsection{Specificazione del tipo \texttt{Room}}
-
-
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
 	\item Tipo di riferimento: Room
 	\item Tipi utilizzati: unsigned int, char*
-	\item Campi:
-	      \begin{itemize}
-		      \item id: Campo rappresentante l'ID dell'oggetto Room.
-		      \item name: Campo rappresentante il nome della sala.
-		      \item capacity: Campo rappresentante i posti all'interno della sala.
-
-	      \end{itemize}
 \end{itemize}
 \textbf{Specificazione Semantica:} \\
-Rappresenta una sala della conferenza.
+Room rappresenta una sala della conferenza.\\
 
-\subsubsection{Funzione: \texttt{Room new\_room(const char*, unsigned int, unsigned int)}}
+\textbf{Operatori:} \\
+\begin{itemize}
+    \item \texttt{new\_room(char*, unsigned int, unsigned int) -> Room}
+    \item \texttt{copy\_room(Room) -> Room}
+    \item \texttt{are\_rooms\_equal(Room, Room) -> bool}
+    \item \texttt{get\_room\_name(Room) ->  char*}
+    \item \texttt{get\_room\_id(Room) -> unsigned int}
+    \item \texttt{print\_room(Room) -> void}
+    \item \texttt{read\_room(unsigned int) -> Room}
+    \item \texttt{save\_room\_to\_file(Room, FILE*) -> void}
+    \item \texttt{read\_room\_from\_file(FILE*) -> Room}
+    \item \texttt{free\_room(Room) -> void}
+\end{itemize}
+
+
+
+\subsubsection{Funzione: \texttt{Room new\_room( char*, unsigned int, unsigned int)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{new\_room(const char* name, unsigned int id, unsigned int capacity) -> Room}
-	\item Tipi: \texttt{const char *}, \texttt{unsigned int}
+	\item \texttt{new\_room( char* name, unsigned int id, unsigned int capacity) -> Room}
+	\item Tipi: \texttt{ char *}, \texttt{unsigned int}
 	\item Tipi interni: \texttt{Room}
 \end{itemize}
 
@@ -587,12 +613,12 @@ Rappresenta una sala della conferenza.
 	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Room} creato, o NULL se si verifica un errore. Il chiamante è responsabile di liberare la memoria allocata utilizzando la funzione \texttt{free\_room()}.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{Room copy\_room(ConstRoom)}}
+\subsubsection{Funzione: \texttt{Room copy\_room(Room)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{copy\_room(ConstRoom room) -> Room}
-	\item Tipi: \texttt{ConstRoom}
+	\item \texttt{copy\_room(Room room) -> Room}
+	\item Tipi: \texttt{Room}
 	\item Tipi interni: \texttt{Room}
 \end{itemize}
 
@@ -604,12 +630,12 @@ Rappresenta una sala della conferenza.
 	\item Postcondizioni: Restituisce un puntatore alla copia appena creata di \texttt{room}. Il chiamante è responsabile di liberare la memoria allocata utilizzando la funzione \texttt{free\_room()}.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{bool are\_rooms\_equal(ConstRoom, ConstRoom)}}
+\subsubsection{Funzione: \texttt{bool are\_rooms\_equal(Room, Room)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{are\_rooms\_equal(ConstRoom room\_a, ConstRoom room\_b) -> bool}
-	\item Tipi: \texttt{ConstRoom}, \texttt{bool}
+	\item \texttt{are\_rooms\_equal(Room room\_a, Room room\_b) -> bool}
+	\item Tipi: \texttt{Room}, \texttt{bool}
 	\item Tipi interni: Nessuno
 \end{itemize}
 
@@ -621,12 +647,12 @@ Rappresenta una sala della conferenza.
 	\item Postcondizioni: Restituisce true se \texttt{room\_a} e \texttt{room\_b} hanno lo stesso ID, altrimenti false.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{const char* get\_room\_name(ConstRoom)}}
+\subsubsection{Funzione: \texttt{ char* get\_room\_name(Room)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{get\_room\_name(ConstRoom room) -> const char*}
-	\item Tipi: \texttt{ConstRoom}, \texttt{const char *}
+	\item \texttt{get\_room\_name(Room room) ->  char*}
+	\item Tipi: \texttt{Room}, \texttt{ char *}
 	\item Tipi interni: Nessuno
 \end{itemize}
 
@@ -638,12 +664,12 @@ Rappresenta una sala della conferenza.
 	\item Postcondizioni: Restituisce un puntatore al nome di \texttt{room}.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{unsigned int get\_room\_id(ConstRoom)}}
+\subsubsection{Funzione: \texttt{unsigned int get\_room\_id(Room)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{get\_room\_id(ConstRoom room) -> unsigned int}
-	\item Tipi: \texttt{ConstRoom}, \texttt{unsigned int}
+	\item \texttt{get\_room\_id(Room room) -> unsigned int}
+	\item Tipi: \texttt{Room}, \texttt{unsigned int}
 	\item Tipo interno: Nessuno
 \end{itemize}
 
@@ -655,12 +681,12 @@ Rappresenta una sala della conferenza.
 	\item Postcondizioni: Restituisce l'ID di \texttt{room}.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{print\_room(ConstRoom)}}
+\subsubsection{Funzione: \texttt{print\_room(Room)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{print\_room(ConstRoom room) -> void}
-	\item Tipi: \texttt{ConstRoom}
+	\item \texttt{print\_room(Room room) -> void}
+	\item Tipi: \texttt{Room}
 	\item Tipo interno: Nessuno
 \end{itemize}
 
@@ -689,12 +715,12 @@ Rappresenta una sala della conferenza.
 	\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Room} creato, o NULL se si verifica un errore. Il chiamante è responsabile di liberare la memoria allocata utilizzando la funzione \texttt{free\_room()}.
 \end{itemize}
 
-\subsubsection{Funzione: \texttt{save\_room\_to\_file(ConstRoom, FILE*)}}
+\subsubsection{Funzione: \texttt{save\_room\_to\_file(Room, FILE*)}}
 
 \textbf{Specificazione Sintattica:}
 \begin{itemize}
-	\item \texttt{save\_room\_to\_file(ConstRoom room, FILE* file)}
-	\item Tipi: \texttt{ConstRoom} , \texttt{FILE*}
+	\item \texttt{save\_room\_to\_file(Room room, FILE* file)}
+	\item Tipi: \texttt{Room} , \texttt{FILE*}
 	\item Tipo interno: Nessuno
 \end{itemize}
 
@@ -740,6 +766,1168 @@ Rappresenta una sala della conferenza.
 	\item Postcondizioni: La memoria allocata per 'room' viene deallocata.
 \end{itemize}
 
+\subsection{Specifica dell'ADT Event}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item Tipo di riferimento: Event
+	\item Tipi utilizzati: unsigned int, char*, Date, EventType (intero da 0 a 2)
+\end{itemize}
+\textbf{Specificazione Semantica:} \\
+Event rappresenta un evento della conferenza.\\
+
+\textbf{Operatori:}:
+\begin{itemize}
+\item \texttt{new\_event(EventType,  char *, Date, Date, unsigned int) -> Event}
+\item \texttt{are\_events\_equal(Event, Event) -> int}
+\item \texttt{cmp\_event(Event, Event) -> int}
+\item \texttt{do\_events\_overlap(Event, Event) -> bool}
+\item \texttt{get\_event\_type(Event) -> EventType}
+\item \texttt{set\_event\_type(Event, EventType) -> int}
+\item \texttt{get\_event\_start\_date(Event) -> Date}
+\item \texttt{set\_event\_start\_date(Event, Date) -> int}
+\item \texttt{get\_event\_end\_date(Event) -> Date}
+\item \texttt{set\_event\_end\_date(Event, Date) -> int}
+\item \texttt{get\_event\_name(Event) ->  char *}
+\item \texttt{set\_event\_name(Event,  char *) -> int}
+\item \texttt{get\_event\_room\_id(Event) -> unsigned int}
+\item \texttt{set\_event\_room\_id(Event, unsigned int) -> int}
+\item \texttt{get\_event\_id(Event) -> unsigned int}
+\item \texttt{print\_event(Event, Room) -> void}
+\item \texttt{read\_event(unsigned int) -> Event}
+\item \texttt{save\_event\_to\_file(Event, FILE *) -> void}
+\item \texttt{read\_event\_from\_file(FILE *) -> Event}
+\item \texttt{free\_event(Event) -> void}
+\end{itemize}
+
+
+
+\subsubsection{Funzione: \texttt{is\_valid\_event\_type(int)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{is\_valid\_event\_type(int type) -> int}
+\item Tipi: \texttt{int}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{is\_valid\_event\_type(type) -> result}
+\item Verifica se il tipo evento fornito è valido.
+\item Precondizioni: Nessuna.
+\item Postcondizioni: Restituisce 1 se il tipo evento è valido, 0 altrimenti.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Event new\_event(EventType,  char *, Date, Date, unsigned int)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{new\_event(EventType type,  char *name, Date start\_date, Date end\_date, unsigned int id) -> Event}
+\item Tipi: \texttt{EventType}, \texttt{ char *}, \texttt{Date}, \texttt{unsigned int}
+\item Tipo interno: \texttt{Event}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{new\_event(type, name, start\_date, end\_date, id) -> event}
+\item Crea un nuovo evento con il tipo, nome, data di inizio, data di fine e ID specificati.
+\item Precondizioni: Nessuna.
+\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Event} creato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int are\_events\_equal(Event, Event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{are\_events\_equal(Event event\_a, Event event\_b) -> int}
+\item Tipi: \texttt{Event}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{are\_events\_equal(event\_a, event\_b) -> result}
+\item Verifica se due eventi sono uguali in base ai loro ID.
+\item Precondizioni: event\_a e event\_b sono due oggeti Event validi..
+\item Postcondizioni: Restituisce 1 se gli eventi sono uguali, 0 altrimenti.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int cmp\_event(Event, Event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{cmp\_event(Event event\_a, Event event\_b) -> int}
+\item Tipi: \texttt{Event}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{cmp\_event(event\_a, event\_b) -> result}
+\item Confronta due eventi per l'ordinamento basato sulla data di inizio e sul nome.
+\item Precondizioni: event\_a e event\_b sono due oggeti Event validi.
+\item Postcondizioni: Restituisce un valore negativo se \texttt{event\_a} viene prima di \texttt{event\_b}, un valore positivo se \texttt{event\_a} viene dopo \texttt{event\_b}, e 0 se sono uguali.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{bool do\_events\_overlap(Event, Event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{do\_events\_overlap(Event event\_a, Event event\_b) -> bool}
+\item Tipi: \texttt{Event}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{do\_events\_overlap(event\_a, event\_b) -> result}
+\item Verifica se due eventi si sovrappongono nel tempo.
+\item Precondizioni: event\_a e event\_b sono due oggeti Event validi.
+\item Postcondizioni: Restituisce vero se gli eventi si sovrappongono, falso altrimenti.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{EventType get\_event\_type(Event event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_event\_type(Event event) -> EventType}
+\item Tipi: \texttt{Event}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_event\_type(event) -> type}
+\item Recupera il tipo dell'evento.
+\item Precondizioni: event è un oggetto Event valido.
+\item Postcondizioni: Restituisce il tipo di evento (\texttt{EventType}).
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int set\_event\_type(Event event, EventType type)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{set\_event\_type(Event event, EventType type) -> int}
+\item Tipi: \texttt{Event}, \texttt{EventType}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{set\_event\_type(event, type) -> result}
+\item Imposta il tipo dell'evento.
+\item Precondizioni: event è un oggetto Event valido.
+\item Postcondizioni: Restituisce 0 se l'operazione ha avuto successo, -1 altrimenti.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Date get\_event\_start\_date(Event event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_event\_start\_date(Event event) -> Date}
+\item Tipi: \texttt{Event}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_event\_start\_date(event) -> start\_date}
+\item Recupera la data di inizio dell'evento.
+\item Precondizioni: event è un oggetto Event valido.
+\item Postcondizioni: Restituisce un puntatore all'oggetto Data di inizio dell'evento.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int set\_event\_start\_date(Event event, Date start\_date)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{set\_event\_start\_date(Event event, Date start\_date) -> int}
+\item Tipi: \texttt{Event}, \texttt{Date}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{set\_event\_start\_date(event, start\_date) -> result}
+\item Imposta la data di inizio dell'evento.
+\item Precondizioni: event è un oggetto Event valido, start date è un oggetto date valido.
+\item Postcondizioni: Restituisce 0 se l'operazione ha avuto successo, -1 altrimenti.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Date get\_event\_end\_date(Event event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_event\_end\_date(Event event) -> Date}
+\item Tipi: \texttt{Event}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_event\_end\_date(event) -> end\_date}
+\item Recupera la data di fine dell'evento.
+\item Precondizioni: event è un oggetto Event valido.
+\item Postcondizioni: Restituisce un puntatore all'oggetto Data di fine dell'evento.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int set\_event\_end\_date(Event event, Date end\_date)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{set\_event\_end\_date(Event event, Date end\_date) -> int}
+\item Tipi: \texttt{Event}, \texttt{Date}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{set\_event\_end\_date(event, end\_date) -> result}
+\item Imposta la data di fine dell'evento.
+\item Precondizioni: event è un oggetto Event valido, end date è un oggetto date valido.
+\item Postcondizioni: Restituisce 0 se l'operazione ha avuto successo, -1 altrimenti.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{ char *get\_event\_name(Event event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_event\_name(Event event) ->  char *}
+\item Tipi: \texttt{Event}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_event\_name(event) -> name}
+\item Restituisce il nome dell'evento.
+\item Precondizioni: event è un oggetto Event valido.
+\item Postcondizioni: Restituisce un puntatore alla stringa del nome dell'evento.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int set\_event\_name(Event event,  char *name)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{set\_event\_name(Event event,  char *name) -> int}
+\item Tipi: \texttt{Event}, \texttt{ char *}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{set\_event\_name(event, name) -> result}
+\item Imposta il nome dell'evento.
+\item Precondizioni: event è un oggetto Event valido, name è una stringa valida.
+\item Postcondizioni: Restituisce 0 se l'operazione ha avuto successo, -1 altrimenti.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{unsigned int get\_event\_room\_id(Event event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_event\_room\_id(Event event) -> unsigned int}
+\item Tipi: \texttt{Event}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_event\_room\_id(event) -> room\_id}
+\item Restituisce l'ID della stanza assegnata all'evento.
+\item Precondizioni: event è un oggetto Event valido.
+\item Postcondizioni: Restituisce l'ID della stanza dell'evento.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int set\_event\_room\_id(Event event, unsigned int room\_id)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{set\_event\_room\_id(Event event, unsigned int room\_id) -> int}
+\item Tipi: \texttt{Event}, \texttt{unsigned int}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{set\_event\_room\_id(event, room\_id) -> result}
+\item Imposta l'ID della stanza assegnata all'evento.
+\item Precondizioni: event è un oggetto Event valido.
+\item Postcondizioni: Restituisce 0 se l'operazione ha avuto successo, -1 altrimenti.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{unsigned int get\_event\_id(Event event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_event\_id(Event event) -> unsigned int}
+\item Tipi: \texttt{Event}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_event\_id(event) -> id}
+\item Restituisci l'ID dell'evento.
+\item Precondizioni: event è un oggetto Event valido.
+\item Postcondizioni: Restituisce l'ID dell'evento.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{print\_event(Event event, Room assigned\_room)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{print\_event(Event event, Room assigned\_room) -> void}
+\item Tipi: \texttt{Event}, \texttt{Room}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{print\_event(event, assigned\_room)}
+\item Stampa i dettagli dell'evento su stdout, inclusa l'informazione sulla stanza assegnata se disponibile.
+\item Precondizioni: Nessuna.
+\item Postcondizioni: Nessuna.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Event read\_event(unsigned int event\_id)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{read\_event(unsigned int event\_id) -> Event}
+\item Tipi: \texttt{unsigned int}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{read\_event(event\_id) -> event}
+\item Legge i dettagli dell'evento dall'input dell'utente.
+\item Precondizioni: event è un oggetto Event valido.
+\item Postcondizioni: Restituisce un puntatore al nuovo oggetto Event creato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{save\_event\_to\_file(Event event, FILE *file)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{save\_event\_to\_file(Event event, FILE *file) -> void}
+\item Tipi: \texttt{Event}, \texttt{FILE}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{save\_event\_to\_file(event, file)}
+\item Salva i dettagli dell'evento su un file.
+\item Precondizioni: event è un oggetto Event valido, il file è aperto in scrittura.
+\item Postcondizioni: Nessuna.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Event read\_event\_from\_file(FILE *file)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{read\_event\_from\_file(FILE *file) -> Event}
+\item Tipi: \texttt{FILE}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{read\_event\_from\_file(file) -> event}
+\item Legge i dettagli dell'evento da un file.
+\item Precondizioni: event è un oggetto Event valido, il file è aperto in lettura.
+\item Postcondizioni: Restituisce un puntatore al nuovo oggetto Event creato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{free\_event(Event event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{free\_event(Event event) -> void}
+\item Tipi: \texttt{Event}
+\item Tipo interno: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{free\_event(event)}
+\item Libera la memoria allocata per l'evento.
+\item Precondizioni: event è un oggetto Event valido.
+\item Postcondizioni: La memoria allocate per event viene deallocata.
+\end{itemize}
+
+
+\subsection{Specifica dell'ADT EventBst}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item Tipo di riferimento: EventBst
+	\item Tipi utilizzati: Event
+\end{itemize}
+\textbf{Specificazione Semantica:} \\
+EventBst rappresenta un albero binario di ricerca di oggetti di tipo Event\\
+
+\textbf{Operatori:}
+\begin{itemize}
+    \item \texttt{new\_event\_bst(void) -> EventBst}
+    \item \texttt{bst\_insert\_event(EventBst bst, Event event) -> int}
+    \item \texttt{bst\_remove\_event(EventBst bst, Event event) -> Event}
+    \item \texttt{bst\_remove\_event\_by\_id(EventBst bst, unsigned int id) -> Event}
+    \item \texttt{bst\_get\_event\_by\_id(EventBst bst, unsigned int id) -> Event}
+    \item \texttt{get\_bst\_size(EventBst bst) -> size\_t}
+    \item \texttt{print\_event\_bst(EventBst bst, RoomList room\_list) -> void}
+    \item \texttt{event\_bst\_every(EventBst bst, EventPredicate predicate, ...) -> bool}
+    \item \texttt{read\_event\_bst\_from\_file(FILE* file) -> EventBst}
+    \item \texttt{save\_event\_bst\_to\_file(EventBst bst, FILE* file) -> void}
+    \item \texttt{save\_event\_bst\_to\_file\_sorted(EventBst bst, FILE* file) -> void}
+    \item \texttt{free\_event\_bst(EventBst bst) -> void}
+\end{itemize}
+
+
+\subsubsection{Funzione: \texttt{EventBst new\_event\_bst}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{new\_event\_bst(void) -> EventBst}
+\item Tipi: Nessuno
+\item Tipi interni: \texttt{EventBst}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{new\_event\_bst() -> bst}
+\item Crea un nuovo albero di ricerca binario (BST) vuoto per memorizzare eventi.
+\item Precondizioni: Nessuna.
+\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{EventBst} vuoto.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int bst\_insert\_event(EventBst bst, Event event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{bst\_insert\_event(EventBst, Event) -> int}
+\item Tipi: \texttt{EventBst, Event}
+\item Tipi interni: \texttt{EventBstNode}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{bst\_insert\_event(bst, event) -> result}
+\item Inserisce un evento nell'albero di ricerca binario (BST).
+\item Precondizioni: \texttt{bst} deve puntare a un oggetto \texttt{EventBst} valido. \texttt{event} deve puntare a un oggetto \texttt{Event} valido.
+\item Postcondizioni: Se l'operazione ha successo, l'evento viene inserito nel BST. Restituisce 0 in caso di successo, -1 in caso di errore.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Event bst\_remove\_event(EventBst bst, Event event)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{bst\_remove\_event(EventBst, Event) -> Event}
+\item Tipi: \texttt{EventBst, Event}
+\item Tipi interni: \texttt{EventBstNode}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{bst\_remove\_event(bst, event) -> removed\_event}
+\item Rimuove l'evento specificato dall'albero di ricerca binario (BST).
+\item Precondizioni: \texttt{bst} deve puntare a un oggetto \texttt{EventBst} valido. \texttt{event} deve puntare a un oggetto \texttt{Event} valido.
+\item Postcondizioni: Se l'operazione ha successo, l'evento viene rimosso dal BST. Restituisce l'oggetto Event rimosso, o NULL\_EVENT se l'evento non è stato trovato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Event bst\_remove\_event\_by\_id(EventBst bst, unsigned int id)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{bst\_remove\_event\_by\_id(EventBst, unsigned int) -> Event}
+\item Tipi: \texttt{EventBst, unsigned int}
+\item Tipi interni: \texttt{EventBstNode}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{bst\_remove\_event\_by\_id(bst, id) -> removed\_event}
+\item Rimuove l'evento con l'ID specificato dall'albero di ricerca binario (BST).
+\item Precondizioni: \texttt{bst} deve puntare a un oggetto \texttt{EventBst} valido.
+\item Postcondizioni: Se l'operazione ha successo, l'evento con l'ID specificato viene rimosso dal BST. Restituisce l'oggetto Event rimosso, o NULL\_EVENT se l'evento non è stato trovato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Event bst\_get\_event\_by\_id(EventBst bst, unsigned int id)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{bst\_get\_event\_by\_id(EventBst, unsigned int) -> Event}
+\item Tipi: \texttt{EventBst, unsigned int}
+\item Tipi interni: \texttt{EventBstNode}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{bst\_get\_event\_by\_id(bst, id) -> event}
+\item Recupera l'evento con l'ID specificato dall'albero di ricerca binario (BST).
+\item Precondizioni: \texttt{bst} deve puntare a un oggetto \texttt{EventBst} valido.
+\item Postcondizioni: Restituisce l'oggetto Event con l'ID specificato, o NULL\_EVENT se l'evento non è stato trovato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{size\_t get\_bst\_size(EventBst bst)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_bst\_size(EventBst) -> size\_t}
+\item Tipi: \texttt{EventBst}
+\item Tipi interni: \texttt{Nessuna}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_bst\_size(bst) -> size}
+\item Restituisce il numero di eventi memorizzati nell'albero di ricerca binario (BST).
+\item Precondizioni: \texttt{bst} deve puntare a un oggetto \texttt{EventBst} valido.
+\item Postcondizioni: Restituisce il numero di eventi memorizzati nel BST.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{bool print\_event\_bst(EventBst bst, RoomList room\_list)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{print\_event\_bst(EventBst, RoomList) -> void}
+\item Tipi: \texttt{EventBst, RoomList}
+\item Tipi interni: \texttt{EventBstNode}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{print\_event\_bst(bst, room\_list)}
+\item Stampa in ordine gli eventi memorizzati nell'albero di ricerca binario (BST) insieme alle stanze assegnate.
+\item Precondizioni: \texttt{bst} deve puntare a un oggetto \texttt{EventBst} valido. \texttt{room\_list} deve puntare a un oggetto \texttt{RoomList} valido.
+\item Postcondizioni: Stampa gli eventi e le stanze assegnate all'output standard.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{bool event\_bst\_every(EventBst, EventPredicate, ...)}}
+
+\textbf{Specificazione Sintattica}
+\begin{itemize}
+\item \texttt{event\_bst\_every(EventBst, EventPredicate, ...) -> bool}
+\item Tipi: \texttt{EventBst, EventPredicate}
+\item Tipi interni: \texttt{EventBstNode}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{event\_bst\_every(bst, predicate, ...)}
+\item Verifica se un dato predicato è vero per ogni evento nell'albero di ricerca binario (BST).
+\item Precondizione : \texttt{bst} deve puntare a un oggetto valido di tipo \texttt{EventBst}.
+\texttt{predicate} deve essere un puntatore valido a una funzione predicato che prende un Evento e argomenti variabili (copie degli ulteriori argomenti passati alla funzione \texttt{event\_bst\_every}).
+\item Postcondizioni: Restituisce \texttt{true} se il predicato è vero per ogni evento nel BST, \texttt{false} altrimenti.
+\end{itemize}
+
+
+\subsubsection{Funzione: \texttt{EventBst read\_event\_bst\_from\_file(FILE* file)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{read\_event\_bst\_from\_file(FILE*) -> EventBst}
+\item Tipi: \texttt{FILE*}
+\item Tipi interni: \texttt{EventBstNode}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{read\_event\_bst\_from\_file(file) -> bst}
+\item Legge i dati degli eventi da un file e costruisce un albero di ricerca binario (BST) per memorizzare gli eventi.
+\item Precondizioni: \texttt{file} deve puntare a un oggetto \texttt{FILE} valido aperto in lettura.
+\item Postcondizioni: Restituisce un puntatore al nuovo oggetto
+\texttt{EventBst} contenente gli eventi letti dal file.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{void save\_event\_bst\_to\_file(EventBst bst, FILE* file)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{save\_event\_bst\_to\_file(EventBst, FILE*) -> void}
+\item Tipi: \texttt{EventBst, FILE*}
+\item Tipi interni: \texttt{EventBstNode}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{save\_event\_bst\_to\_file(bst, file)}
+\item Salva gli eventi memorizzati nell'albero di ricerca binario (BST) su un file.
+\item Precondizioni: \texttt{bst} deve puntare a un oggetto \texttt{EventBst} valido. \texttt{file} deve puntare a un oggetto \texttt{FILE} valido aperto in modalità scrittura.
+\item Postcondizioni: Scrive gli eventi memorizzati nel BST sul file specificato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{void save\_event\_bst\_to\_file\_sorted(EventBst bst, FILE* file)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{save\_event\_bst\_to\_file\_sorted(EventBst, FILE*) -> void}
+\item Tipi: \texttt{EventBst, FILE*}
+\item Tipi interni: \texttt{EventBstNode}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{save\_event\_bst\_to\_file\_sorted(bst, file)}
+\item Salva gli eventi memorizzati nell'albero di ricerca binario (BST) su un file in ordine ordinato.
+\item Precondizioni: \texttt{bst} deve puntare a un oggetto \texttt{EventBst} valido. \texttt{file} deve puntare a un oggetto \texttt{FILE} valido aperto in modalità scrittura.
+\item Postcondizioni: Scrive gli eventi memorizzati nel BST sul file specificato in ordine ordinato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{void free\_event\_bst(EventBst bst)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{free\_event\_bst(EventBst) -> void}
+\item Tipi: \texttt{EventBst}
+\item Tipi interni: \texttt{EventBstNode}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{free\_event\_bst(bst)}
+\item Libera la memoria allocata per l'albero di ricerca binario (BST) e i suoi nodi.
+\item Precondizioni: \texttt{bst} deve puntare a un oggetto \texttt{EventBst} valido.
+\item Postcondizioni: Libera la memoria allocata per il BST e i suoi nodi.
+\end{itemize}
+
+\subsection{Specifica dell'ADT RoomList}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item Tipo di riferimento: RoomList
+	\item Tipi utilizzati: int, Room
+\end{itemize}
+\textbf{Specificazione Semantica:} \\
+RoomList rappresenta una sequenza di oggetti di tipo Room\\
+
+\textbf{Operazioni:}
+\begin{itemize}
+    \item \texttt{new\_room\_list(void) -> RoomList}
+    \item \texttt{is\_room\_list\_empty(RoomList list) -> bool}
+    \item \texttt{get\_size\_room\_list(RoomList list) -> int}
+    \item \texttt{cons\_room\_list(RoomList list, Room room) -> void}
+    \item \texttt{tail\_room\_list(RoomList list) -> Room}
+    \item \texttt{get\_first\_room\_list(RoomList list) -> Room}
+    \item \texttt{get\_at\_room\_list(RoomList list, int pos) -> Room}
+    \item \texttt{get\_room\_by\_id(RoomList list, unsigned int room\_id) -> Room}
+    \item \texttt{remove\_at\_room\_list(RoomList list, int pos) -> Room}
+    \item \texttt{get\_pos\_room\_list(RoomList list, Room to\_search) -> int}
+    \item \texttt{print\_room\_list(RoomList list) -> void}
+    \item \texttt{save\_room\_list\_to\_file(RoomList list, FILE* file) -> void}
+    \item \texttt{read\_room\_list\_from\_file(FILE* file) -> RoomList}
+    \item \texttt{free\_room\_list(RoomList list) -> void}
+\end{itemize}
+
+
+\subsubsection{Funzione: \texttt{RoomList new\_room\_list(void)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{new\_room\_list(void) -> RoomList}
+\item Tipi: Nessuno
+\item Tipi interni: \texttt{RoomList}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{new\_room\_list() -> list}
+\item Crea una nuova lista vuota di stanze.
+\item Precondizioni: Nessuna.
+\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{RoomList} vuoto creato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{bool is\_room\_list\_empty(RoomList list)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{is\_room\_list\_empty(RoomList) -> bool}
+\item Tipi: \texttt{RoomList}
+\item Tipi interni: \texttt{bool}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{is\_room\_list\_empty(list) -> empty}
+\item Verifica se la lista delle stanze è vuota.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido.
+\item Postcondizioni: Restituisce true se la lista è vuota, false altrimenti.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int get\_size\_room\_list(RoomList list)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_size\_room\_list(RoomList) -> int}
+\item Tipi: \texttt{RoomList}
+\item Tipi interni: \texttt{int}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_size\_room\_list(list) -> size}
+\item Ottiene il numero di stanze nella lista.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido.
+\item Postcondizioni: Restituisce il numero di stanze nella lista.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{void cons\_room\_list(RoomList list, Room room)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{cons\_room\_list(RoomList, Room) -> void}
+\item Tipi: \texttt{RoomList, Room}
+\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{cons\_room\_list(list, room)}
+\item Aggiunge una stanza all'inizio della lista.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido, \texttt{room} è un oggetto \texttt{Room} valido.
+\item Postcondizioni: La stanza viene aggiunta all'inizio della lista.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Room tail\_room\_list(RoomList list)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{tail\_room\_list(RoomList) -> Room}
+\item Tipi: \texttt{RoomList}
+\item Tipi interni: \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{tail\_room\_list(list) -> room}
+\item Rimuove e restituisce l'ultima stanza dalla lista.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido.
+\item Postcondizioni: Restituisce l'ultima stanza dalla lista. La dimensione della lista viene ridotta di uno.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Room get\_first\_room\_list(RoomList list)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_first\_room\_list(RoomList) -> Room}
+\item Tipi: \texttt{RoomList}
+\item Tipi interni: \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_first\_room\_list(list) -> room}
+\item Ottiene la prima stanza nella lista.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido.
+\item Postcondizioni: Restituisce la prima stanza nella lista.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Room get\_at\_room\_list(RoomList list, int pos)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_at\_room\_list(RoomList, int) -> Room}
+\item Tipi: \texttt{RoomList, int}
+\item Tipi interni: \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_at\_room\_list(list, pos) -> room}
+\item Ottiene la stanza alla posizione specificata nella lista.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido, \texttt{pos} è un indice valido.
+\item Postcondizioni: Restituisce la stanza alla posizione specificata nella lista.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Room get\_room\_by\_id(RoomList list, unsigned int room\_id)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_room\_by\_id(RoomList, unsigned int) -> Room}
+\item Tipi: \texttt{RoomList, unsigned int}
+\item Tipi interni: \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_room\_by\_id(list, room\_id) -> room}
+\item Ottiene la stanza con l'ID specificato dalla lista.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido.
+\item Postcondizioni: Restituisce la stanza con l'ID specificato dalla lista, o NULL se non trovata.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Room remove\_at\_room\_list(RoomList list, int pos)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{remove\_at\_room\_list(RoomList, int) -> Room}
+\item Tipi: \texttt{RoomList, int}
+\item Tipi interni: \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{remove\_at\_room\_list(list, pos) -> room}
+\item Rimuove e restituisce la stanza alla posizione specificata nella lista.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido, \texttt{pos} è un indice valido.
+\item Postcondizioni: Restituisce la stanza rimossa dalla lista.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int get\_pos\_room\_list(RoomList list, Room to\_search)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{get\_pos\_room\_list(RoomList, Room) -> int}
+\item Tipi: \texttt{RoomList, Room}
+\item Tipi interni: \texttt{int}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{get\_pos\_room\_list(list, to\_search) -> pos}
+\item Ottiene la posizione della stanza specificata nella lista.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido, \texttt{to\_search} è un oggetto \texttt{Room} valido.
+\item Postcondizioni: Restituisce la posizione della stanza nella lista, o -1 se non trovata.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{void print\_room\_list(RoomList list)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{print\_room\_list(RoomList) -> void}
+\item Tipi: \texttt{RoomList}
+\item Tipi interni: int
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{print\_room\_list(list)}
+\item Stampa tutte le stanze nella lista.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido.
+\item Postcondizioni: Stampa i dettagli di ogni stanza nella lista su stdout.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{void save\_room\_list\_to\_file(RoomList list, FILE* file)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{save\_room\_list\_to\_file(RoomList, FILE*) -> void}
+\item Tipi: \texttt{RoomList, FILE*}
+\item Tipi interni: int
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{save\_room\_list\_to\_file(list, file)}
+\item Salva l'elenco delle stanze su un file.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido, \texttt{file} è un file valido aperto in scrittura.
+\item Postcondizioni: Scrive i dettagli di ogni stanza nella lista sullo stream del file.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{RoomList read\_room\_list\_from\_file(FILE* file)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{read\_room\_list\_from\_file(FILE*) -> RoomList}
+\item Tipi: \texttt{FILE*}
+\item Tipi interni: \texttt{RoomList}, \texttt{int}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{read\_room\_list\_from\_file(file) -> list}
+\item Legge un elenco di stanze da un file.
+\item Precondizioni: \texttt{file} è un file valido aperto in lettura.
+\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{RoomList} contenente le stanze lette dal file.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{void free\_room\_list(RoomList list)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{free\_room\_list(RoomList) -> void}
+\item Tipi: \texttt{RoomList}
+\item Tipi interni: Nessuno
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{free\_room\_list(list)}
+\item Libera la memoria allocata per l'elenco delle stanze.
+\item Precondizioni: \texttt{list} è un oggetto \texttt{RoomList} valido.
+\item Postcondizioni: Rilascia la memoria allocata per l'oggetto \texttt{RoomList} e tutte le sue stanze contenute.
+\end{itemize}
+
+\subsection{Specifica dell'ADT Conference}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+	\item Tipo di riferimento: Conference
+	\item Tipi utilizzati: EventBst, RoomList, unsigned int
+\end{itemize}
+\textbf{Specificazione Semantica:} \\
+Conference rappresenta una conferenza\\
+
+\textbf{Operatori:}
+\begin{itemize}
+    \item \texttt{new\_conference(void) -> Conference}
+    \item \texttt{add\_conference\_event(Conference conf) -> int}
+    \item \texttt{edit\_conference\_event(Conference conf) -> int}
+    \item \texttt{remove\_conference\_event(Conference conf) -> int}
+    \item \texttt{display\_conference\_schedule(Conference conf) -> voic}
+    \item \texttt{display\_conference\_rooms(Conference conf) -> voic}
+    \item \texttt{add\_conference\_room(Conference conf) -> int}
+    \item \texttt{remove\_conference\_room(Conference conf) -> int}
+    \item \texttt{conference\_assign\_event\_to\_room(Conference conf) -> int}
+    \item \texttt{conference\_free\_event\_room(Conference conf) -> int}
+    \item \texttt{free\_conference(Conference conf) -> void}
+    \item \texttt{save\_conference\_to\_file(Conference conf, FILE* file) -> void}
+    \item \texttt{save\_conference\_to\_file\_sorted(Conference conf, FILE* file) -> Conference}
+    \item \texttt{read\_conference\_from\_file(FILE* file)}
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Conference new\_conference(void)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{new\_conference(void) -> Conference}
+\item Tipi: Nessuno
+\item Tipo interno: \texttt{Conference}, \texttt{EventBst}, \texttt{RoomList}, \texttt{unsigned int}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{new\_conference() -> conferenza}
+\item Crea una nuova conferenza vuota per memorizzare eventi e stanze.
+\item Precondizioni: Nessuna.
+\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Conference} vuoto.
+\end{itemize}
+
+
+\subsubsection{Funzione: \texttt{int
+add\_conference\_event(Conference conf)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{add\_conference\_event(Conference conf) -> int}
+\item Tipi: \texttt{Conference}
+\item Tipo interno: \texttt{Event}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{add\_conference\_event(conf) -> risultato}
+\item Aggiunge un nuovo evento alla conferenza.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido.
+\item Postcondizioni: Restituisce 0 in caso di successo, -1 in caso di errore.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int edit\_conference\_event(Conference conf)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{edit\_conference\_event(Conference conf) -> int}
+\item Tipi: \texttt{Conference}
+\item Tipo interno: \texttt{Event}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{edit\_conference\_event(conf) -> risultato}
+\item Modifica un evento esistente nella conferenza.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido.
+\item Postcondizioni: Restituisce 0 in caso di successo, -1 in caso di errore.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int remove\_conference\_event(Conference conf)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{remove\_conference\_event(Conference conf) -> int}
+\item Tipi: \texttt{Conference}
+\item Tipo interno: \texttt{Event}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{remove\_conference\_event(conf) -> risultato}
+\item Rimuove un evento dalla conferenza.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido.
+\item Postcondizioni: Restituisce 0 in caso di successo, -1 in caso di errore.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{void display\_conference\_schedule(Conference conf)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{display\_conference\_schedule(Conference conf) -> void}
+\item Tipi: \texttt{Conference}
+\item Tipo interno: \texttt{Event}, \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{display\_conference\_schedule(conf)}
+\item Mostra l'orario degli eventi nella conferenza.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido.
+\item Postcondizioni: Stampa l'orario degli eventi.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{void display\_conference\_rooms(Conference conf)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{display\_conference\_rooms(Conference conf) -> void}
+\item Tipi: \texttt{Conference}
+\item Tipo interno: \texttt{Event}, \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{display\_conference\_rooms(conf)}
+\item Mostra l'elenco delle stanze disponibili nella conferenza.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido.
+\item Postcondizioni: Stampa l'elenco delle stanze.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int add\_conference\_room(Conference conf)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{add\_conference\_room(Conference conf) -> int}
+\item Tipi: \texttt{Conference}
+\item Tipo interno: \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{add\_conference\_room(conf) -> risultato}
+\item Aggiunge una nuova stanza alla conferenza.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido.
+\item Postcondizioni: Restituisce 0 in caso di successo, -1 in caso di errore.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int remove\_conference\_room(Conference conf)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{remove\_conference\_room(Conference conf) -> int}
+\item Tipi: \texttt{Conference}
+\item Tipo interno: \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{remove\_conference\_room(conf) -> risultato}
+\item Rimuove una stanza dalla conferenza.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido.
+\item Postcondizioni: Restituisce 0 in caso di successo, -1 in caso di errore.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int conference\_assign\_event\_to\_room(Conference conf)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{conference\_assign\_event\_to\_room(Conference conf) -> int}
+\item Tipi: \texttt{Conference}
+\item Tipo interno: \texttt{Event}, \texttt{Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{conference\_assign\_event\_to\_room(conf) -> risultato}
+\item Assegna un evento a una stanza nella conferenza.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido.
+\item Postcondizioni: Restituisce 0 in caso di successo, -1 in caso di errore.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{int conference\_free\_event\_room(Conference conf)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{conference\_free\_event\_room(Conference conf) -> int}
+\item Tipi: \texttt{Conference}
+\item Tipo interno: \texttt{Event}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{conference\_free\_event\_room(conf) -> risultato}
+\item Libera la stanza assegnata per un evento nella conferenza.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido.
+\item Postcondizioni: Restituisce 0 in caso di successo, -1 in caso di errore.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{free\_conference(Conference conf)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{free\_conference(Conference)}
+\item Tipi: \texttt{Conference}
+\item Tipi interni: \texttt{Event, Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{free\_conference(conf)}
+\item Libera la memoria allocata per la conferenza e i suoi eventi e sale.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido.
+\item Postcondizioni: Libera la memoria allocata per la conferenza.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{save\_conference\_to\_file(Conference conf, FILE* file)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{save\_conference\_to\_file(Conference, FILE*) -> void}
+\item Tipi: \texttt{Conference, FILE*}
+\item Tipi interni: \texttt{Event, Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{save\_conference\_to\_file(conf, file)}
+\item Salva i dati della conferenza su un file.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido. \texttt{file} deve puntare a un oggetto \texttt{FILE} valido aperto in modalità scrittura.
+\item Postcondizioni: Scrive i dati della conferenza sul file specificato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{save\_conference\_to\_file\_sorted(Conference conf, FILE* file)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{save\_conference\_to\_file\_sorted(Conference, FILE*) -> void}
+\item Tipi: \texttt{Conference, FILE*}
+\item Tipi interni: \texttt{Event, Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{save\_conference\_to\_file\_sorted(conf, file)}
+\item Salva i dati della conferenza su un file in ordine ordinato.
+\item Precondizioni: \texttt{conf} deve puntare a un oggetto \texttt{Conference} valido. \texttt{file} deve puntare a un oggetto \texttt{FILE} valido aperto in modalità scrittura.
+\item Postcondizioni: Scrive i dati della conferenza sul file specificato in ordine ordinato.
+\end{itemize}
+
+\subsubsection{Funzione: \texttt{Conference read\_conference\_from\_file(FILE* file)}}
+
+\textbf{Specificazione Sintattica:}
+\begin{itemize}
+\item \texttt{Conference read\_conference\_from\_file(FILE*)}
+\item Tipi: \texttt{FILE*}
+\item Tipi interni: \texttt{Event, Room}
+\end{itemize}
+
+\textbf{Specificazione Semantica:}
+\begin{itemize}
+\item Funzione: \texttt{read\_conference\_from\_file(file) -> conf}
+\item Legge i dati della conferenza da un file e costruisce un nuovo oggetto conferenza.
+\item Precondizioni: \texttt{file} deve puntare a un oggetto \texttt{FILE} valido aperto in modalità lettura.
+\item Postcondizioni: Restituisce un puntatore al nuovo oggetto \texttt{Conference} contenente i dati della conferenza letti dal file.
+\end{itemize}
 
 \section{Razionale dei casi di test}
 Il file \texttt{test.c} implementa un sistema di testing per il progetto di gestione delle conferenze. Questo sistema è progettato per eseguire una serie di test automatici che verificano il corretto funzionamento delle principali funzionalità del software. Di seguito viene fornita una panoramica del funzionamento del file \texttt{test.c}.
@@ -747,52 +1935,52 @@ Il file \texttt{test.c} implementa un sistema di testing per il progetto di gest
 \subsection{Tipi di Test}
 Il sistema di testing supporta vari tipi di test, definiti tramite una \texttt{enum} denominata \texttt{TestType}. I tipi di test implementati sono:
 \begin{itemize}
-	\item \texttt{TEST\_ADD\_EVENT}: Test per l'aggiunta di un evento.
-	\item \texttt{TEST\_REMOVE\_EVENT}: Test per la rimozione di un evento.
-	\item \texttt{TEST\_EDIT\_EVENT}: Test per la modifica di un evento.
-	\item \texttt{TEST\_ASSIGN\_ROOM\_EVENT}: Test per l'assegnazione di una sala a un evento.
-	\item \texttt{TEST\_FREE\_ROOM\_EVENT}: Test per la liberazione di una sala assegnata a un evento.
-	\item \texttt{TEST\_DISPLAY\_EVENTS}: Test per la visualizzazione del programma della conferenza.
+    \item \texttt{TEST\_ADD\_EVENT}: Test per l'aggiunta di un evento.
+    \item \texttt{TEST\_REMOVE\_EVENT}: Test per la rimozione di un evento.
+    \item \texttt{TEST\_EDIT\_EVENT}: Test per la modifica di un evento.
+    \item \texttt{TEST\_ASSIGN\_ROOM\_EVENT}: Test per l'assegnazione di una sala a un evento.
+    \item \texttt{TEST\_FREE\_ROOM\_EVENT}: Test per la liberazione di una sala assegnata a un evento.
+    \item \texttt{TEST\_DISPLAY\_EVENTS}: Test per la visualizzazione del programma della conferenza.
 \end{itemize}
 
 \subsection{Funzionamento Generale}
 Il file \texttt{test.c} segue questi passaggi per eseguire i test:
 \begin{enumerate}
-	\item Legge il file di suite di test, il quale contiene le specifiche di ogni test da eseguire.
-	\item Per ogni test, carica i file necessari (ex. Per il test TC001 i file saranno contenuti nell'omonima cartella), inclusi i file di input (input.txt), di output atteso (oracle.txt) ed un opzionale file di conferenza iniziale (conference.txt)
-	\item Reindirizza l'input e l'output standard per eseguire le operazioni specificate dal tipo di test.
-	\item Confronta l'output generato dal test con l'output atteso (oracle) per determinare se il test è passato o fallito.
-	\item Registra i risultati di ogni test in un file di risultati.
+    \item Legge il file di suite di test, il quale contiene le specifiche di ogni test da eseguire.
+    \item Per ogni test, carica i file necessari (ex. Per il test TC001 i file saranno contenuti nell'omonima cartella), inclusi i file di input (input.txt), di output atteso (oracle.txt) ed un opzionale file di conferenza iniziale (conference.txt)
+    \item Reindirizza l'input e l'output standard per eseguire le operazioni specificate dal tipo di test.
+    \item Confronta l'output generato dal test con l'output atteso (oracle) per determinare se il test è passato o fallito.
+    \item Registra i risultati di ogni test in un file di risultati.
 \end{enumerate}
 
 \subsection{Formato file conferenze}
 I file \texttt{conference.txt} e quelli di oracle (tranne nei test di visualizzazione del programma della conferenza) contengono le informazioni relative alla conferenza. Sono strutturati nel seguente modo:
 
 \begin{enumerate}
-	\item Le prime due righe rappresentano gli inizializzatori degli ID per eventi e stanze.
-	\item Il numero di eventi presenti nella conferenza è indicato dalla riga successiva.
-	\item Per ciascun evento, vengono forniti i seguenti dettagli:
-	      \begin{itemize}
-		      \item Tipo dell'evento (indicato con un numero tra 1 e 3), ID dell'evento, ID della sala a cui è assegnato l'evento e  nome dell'evento
-		      \item Data di inizio dell'evento (espressa come ''mm hh GG MM AAAA'')
-		      \item Data di fine dell'evento (espressa come ''mm hh GG MM AAAA'')
-	      \end{itemize}
-	\item Dopo la lista degli eventi, viene fornito il numero di sale presenti nella conferenza, indicato dalla riga successiva.
-	\item Per ciascuna sala, vengono forniti i seguenti dettagli:
-	      \begin{itemize}
-		      \item ID della sala
-		      \item Nome della sala
-		      \item Posti presenti nella sala
-	      \end{itemize}
+    \item Le prime due righe rappresentano gli inizializzatori degli ID per eventi e stanze.
+    \item Il numero di eventi presenti nella conferenza è indicato dalla riga successiva.
+    \item Per ciascun evento, vengono forniti i seguenti dettagli:
+    \begin{itemize}
+        \item Tipo dell'evento (indicato con un numero tra 1 e 3), ID dell'evento, ID della sala a cui è assegnato l'evento e  nome dell'evento
+        \item Data di inizio dell'evento (espressa come ''mm hh GG MM AAAA'')
+        \item Data di fine dell'evento (espressa come ''mm hh GG MM AAAA'')
+    \end{itemize}
+    \item Dopo la lista degli eventi, viene fornito il numero di sale presenti nella conferenza, indicato dalla riga successiva.
+    \item Per ciascuna sala, vengono forniti i seguenti dettagli:
+    \begin{itemize}
+        \item ID della sala
+        \item Nome della sala
+        \item Posti presenti nella sala
+    \end{itemize}
 \end{enumerate}
 
 
 
 \begin{minipage}{\linewidth}
-	\paragraph{Esempio:}
-	Di seguito è riportato un esempio di come deve essere formattato un file contenente una conferenza:
+\paragraph{Esempio:}
+Di seguito è riportato un esempio di come deve essere formattato un file contenente una conferenza:
 
-	\begin{lstlisting}
+\begin{lstlisting}
 4 4
 3
 1 0 1 Evento test 1
@@ -816,25 +2004,25 @@ Sala C
 50
 \end{lstlisting}
 
-	\begin{enumerate}
-		\item il primo 4 è l'inizializzatore degli ID evento, il secondo è l' inizializzatore degli ID sala
-		\item 3 indica il numero di eventi nella conferenza
-		\item Il primo evento assume i seguenti valori:
-		      \begin{itemize}
-			      \item 1 è l'ID dell'evento, 0 è il tipo dell'evento, 1 è l'ID della sala a cui è assegnato e ``Evento test 1'' è il nome dell'evento
-			      \item \texttt{01/01/1970 12:00} è la data e l'ora di inizio dell'evento.
-			      \item \texttt{01/01/1970 13:00} è la data e l'ora di fine dell'evento.
-		      \end{itemize}
-		\item Seguono altri due eventi formattati come il precedente
-		\item 3 rappresenta il numero di sale nella conferenza.
-		\item La prima sala assume i seguenti valori:
-		      \begin{itemize}
-			      \item 1 è l'ID della sala
-			      \item Sala A è il nome della sala
-			      \item 50 sono i posti della sala
-		      \end{itemize}
-		\item Seguono altre due sale formattate in maniera similare
-	\end{enumerate}
+\begin{enumerate}
+    \item il primo 4 è l'inizializzatore degli ID evento, il secondo è l' inizializzatore degli ID sala
+    \item 3 indica il numero di eventi nella conferenza
+    \item Il primo evento assume i seguenti valori:
+    \begin{itemize}
+        \item 1 è l'ID dell'evento, 0 è il tipo dell'evento, 1 è l'ID della sala a cui è assegnato e ``Evento test 1'' è il nome dell'evento
+				\item \texttt{01/01/1970 12:00} è la data e l'ora di inizio dell'evento.
+				\item \texttt{01/01/1970 13:00} è la data e l'ora di fine dell'evento.
+    \end{itemize}
+    \item Seguono altri due eventi formattati come il precedente
+    \item 3 rappresenta il numero di sale nella conferenza.
+    \item La prima sala assume i seguenti valori:
+    \begin{itemize}
+				\item 1 è l'ID della sala
+        \item "Sala A" è il nome della sala
+        \item 50 sono i posti della sala
+    \end{itemize}
+    \item Seguono altre due sale formattate in maniera similare
+\end{enumerate}
 
 \end{minipage}
 
@@ -846,10 +2034,10 @@ I test di aggiunta di un evento non usano il file opzionale conference.txt. I fi
 Per eseguire correttamente i test di aggiunta evento, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare l'aggiunta di un singolo evento. Questo file contiene le informazioni necessarie per aggiungere un nuovo evento alla conferenza, con ogni campo separato su righe diverse:
 
 \begin{itemize}
-	\item \textbf{Nome evento}: Una stringa che rappresenta il nome dell'evento.
-	\item \textbf{Tipologia evento}: Un intero che indica la tipologia dell'evento (valore tra 1 e 3).
-	\item \textbf{Data inizio evento}: La data e l'ora di inizio dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
-	\item \textbf{Data fine evento}: La data e l'ora di fine dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
+    \item \textbf{Nome evento}: Una stringa che rappresenta il nome dell'evento.
+    \item \textbf{Tipologia evento}: Un intero che indica la tipologia dell'evento (valore tra 1 e 3).
+    \item \textbf{Data inizio evento}: La data e l'ora di inizio dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
+    \item \textbf{Data fine evento}: La data e l'ora di fine dell'evento, formattata come \texttt{DD/MM/YYYY HH:MM}.
 \end{itemize}
 
 Ogni riga non valida viene ignorata
@@ -866,10 +2054,10 @@ NomeEvento1
 
 In questo esempio:
 \begin{itemize}
-	\item \texttt{NomeEvento1} è il nome dell'evento.
-	\item \texttt{1} è la tipologia dell'evento.
-	\item \texttt{15/06/2024 09:00} è la data e l'ora di inizio dell'evento.
-	\item \texttt{15/06/2024 11:00} è la data e l'ora di fine dell'evento.
+    \item \texttt{NomeEvento1} è il nome dell'evento.
+    \item \texttt{1} è la tipologia dell'evento.
+    \item \texttt{15/06/2024 09:00} è la data e l'ora di inizio dell'evento.
+    \item \texttt{15/06/2024 11:00} è la data e l'ora di fine dell'evento.
 \end{itemize}
 
 \paragraph{Esempio 2:}
@@ -886,10 +2074,10 @@ NomeEvento1
 
 In questo esempio:
 \begin{itemize}
-	\item \texttt{NomeEvento1} è il nome dell'evento.
-	\item \texttt{1} è la tipologia dell'evento.
-	\item \texttt{15/06/2024 09:00} è la data e l'ora di inizio dell'evento.
-	\item \texttt{15/06/2024 11:00} è la data e l'ora di fine dell'evento, dato che la riga ''15/06/2024 08:00'' viene ignorata
+    \item \texttt{NomeEvento1} è il nome dell'evento.
+    \item \texttt{1} è la tipologia dell'evento.
+    \item \texttt{15/06/2024 09:00} è la data e l'ora di inizio dell'evento.
+    \item \texttt{15/06/2024 11:00} è la data e l'ora di fine dell'evento, dato che la riga ''15/06/2024 08:00'' viene ignorata
 \end{itemize}
 
 
@@ -993,7 +2181,7 @@ I file conference.txt, output.txt e oracle.txt sono conferenze formattate come p
 
 \subsubsection{Formato del file \texttt{input.txt} per i Test di Rimozione Evento}
 
-Per eseguire correttamente i test di aggiunta evento, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare la rimozione di un singolo evento. Questo file contiene l'ID dell'evento da rimuovere.
+Per eseguire correttamente i test, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare la rimozione di un singolo evento. Questo file contiene l'ID dell'evento da rimuovere.
 Gli ID non validi vengono ignorati e la conferenza non viene cambiata
 
 
@@ -1074,23 +2262,91 @@ Sala A
 \subsubsection{Casi di test}
 \begin{itemize}
 
-	\item \textbf{TC055} : testiamo il caso in cui venga rimosso l'evento con id 1.
+	\item \textbf{TC055} : testiamo il caso in cui venga rimosso l'evento con ID 1.
 
-	\item \textbf{TC056} : testiamo il caso in cui venga rimosso l'evento con id 2.
+	\item \textbf{TC056} : testiamo il caso in cui venga rimosso l'evento con ID 2.
 
-	\item \textbf{TC057} : testiamo il caso in cui venga rimosso l'evento con id 3.
+	\item \textbf{TC057} : testiamo il caso in cui venga rimosso l'evento con ID 3.
 
-	\item \textbf{TC058} : testiamo il caso in cui venga rimosso l'evento con id 3. Il programma non considererà la rimozione perché non è presente un evento con id 4.
+	\item \textbf{TC058} : testiamo il caso in cui venga rimosso l'evento con ID 4. Il programma non considererà la rimozione perché non è presente un evento con ID 4.
 
-	\item \textbf{TC059} : testiamo il caso in cui venga rimosso l'evento con id -1. Il programma non considererà la rimozione perché non è presente un evento con id -1.
+	\item \textbf{TC059} : testiamo il caso in cui venga rimosso l'evento con ID -1. Il programma non considererà la rimozione perché non è presente un evento con ID -1.
 
 \end{itemize}
 
 \subsection{Test per la modifica di un evento}
 
+I file conference.txt, output.txt e oracle.txt sono conferenze formattate come precedentemente descritto. Il formato del file input.txt è descritto nella sottosezione che segue.
+
+\subsubsection{Formato del file \texttt{input.txt} per i Test di Modifica Evento}
+
+Per eseguire correttamente i test, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare la modifica di un singolo evento. Questo file contiene l'ID dell'evento che si desidera modificare, la tipologia di modifica (un numero da 1 a 4 che indica il campo che si desidera modificare: 1 - Nome, 2 - Tipo Evento, 3 - Data inizio, 4 - Data fine) , la modifica e il comando di uscita.
+Gli ID non validi vengono ignorati e la conferenza non viene modificata.
+Qualsiasi altro valore non valido richiede il reinserimento del dato.
+
+
+
+\paragraph{Esempio:}
+Dato il seguente file conference.txt:
+\begin{lstlisting}
+4 2
+3
+1 0 0 Evento test 1
+0 12 1 1 1970
+0 13 1 1 1970
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 0 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+1
+1
+Sala A
+50
+\end{lstlisting}
+
+Di seguito è riportato un esempio di come deve essere formattato il file \texttt{input.txt}:
+
+\begin{lstlisting}
+1
+1
+Evento test 4
+5
+\end{lstlisting}
+
+In questo esempio:
+\begin{itemize}
+    \item \texttt{1} è l'ID dell'evento "Evento test 1"
+    \item \texttt{1} indica che si desidera modificare il nome dell'evento.
+    \item \texttt{Evento test 4} è il nuovo nome dell'evento.
+    \item \texttt{5} indica l'uscita e il salvataggio della modifica.
+\end{itemize}
+Il file output.txt sarà quindi:
+
+\begin{lstlisting}
+4 2
+3
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 0 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+1 0 0 Evento test 4
+0 12 1 1 1970
+0 13 1 1 1970
+1
+1
+Sala A
+50
+\end{lstlisting}
+
+
+\subsubsection{Casi di test}
 \begin{itemize}
 
-	\item \textbf{TC060} : testiamo il caso in cui venga modificato un evento già presente con id 0.
+	\item \textbf{TC060} : testiamo il caso in cui venga modificato un evento già presente con ID 1.
 
 	\item \textbf{TC061} : testiamo il caso in cui nella modifica di un evento già presente, nell'inserimento del nome, diamo un invio. Il programma chiederà di reinserire il nome dell'evento.
 
@@ -1101,7 +2357,7 @@ Sala A
 	\item \textbf{TC064} : testiamo il caso in cui nella modifica di un evento già presente, nell'inserimento del nome, venga inserito un nome che superi il limite di 100 caratteri. Il programma chiederà di inserire nuovamente il nome dell'evento.
 
 	\item \textbf{TC065} : testiamo il caso in cui nella modifica di un evento già presente, nell'inserimento del nome, venga inserito un nome di esattamente 100 caratteri.
-	\item \textbf{TC066} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
+ 	\item \textbf{TC066} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
 
 	\item \textbf{TC067} : testiamo il caso in cui venga scelta una tipologia di evento corretta.
 
@@ -1130,6 +2386,69 @@ Sala A
 
 \subsection{Test per l'assegnazione di una sala a un evento}
 
+I file conference.txt, output.txt e oracle.txt sono conferenze formattate come precedentemente descritto. Il formato del file input.txt è descritto nella sottosezione che segue.
+
+\subsubsection{Formato del file \texttt{input.txt} per i Test di  assegnazione di una sala a un evento}
+
+Per eseguire correttamente i test, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare l'assegnazione di una sala a un evento. Questo file contiene l'ID dell'evento a cui si vuole assegnare la sala e l'ID della sala che si desidera assegnare.
+Gli ID non validi vengono ignorati e la conferenza non viene modificata.
+
+
+\paragraph{Esempio:}
+Dato il seguente file conference.txt:
+\begin{lstlisting}
+4 2
+3
+1 0 0 Evento test 1
+0 12 1 1 1970
+0 13 1 1 1970
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 0 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+1
+1
+Sala A
+50
+\end{lstlisting}
+
+Di seguito è riportato un esempio di come deve essere formattato il file \texttt{input.txt}:
+
+\begin{lstlisting}
+1
+1
+\end{lstlisting}
+
+In questo esempio:
+\begin{itemize}
+    \item \texttt{1} è l'ID dell'evento "Evento test 1"
+    \item \texttt{1} è l'ID della sala "Sala A".
+\end{itemize}
+Il file output.txt sarà quindi:
+
+\begin{lstlisting}
+4 2
+3
+1 0 1 Evento test 1
+0 12 1 1 1970
+0 13 1 1 1970
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 0 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+1
+1
+Sala A
+50
+\end{lstlisting}
+
+
+\subsubsection{Casi di test}
+
 \begin{itemize}
 
 
@@ -1148,6 +2467,68 @@ Sala A
 
 \subsection{Test per la liberazione di una sala assegnata a un evento}
 
+I file conference.txt, output.txt e oracle.txt sono conferenze formattate come precedentemente descritto. Il formato del file input.txt è descritto nella sottosezione che segue.
+
+\subsubsection{Formato del file \texttt{input.txt} per i Test di  liberazione di una sala assegnata a un evento}
+
+Per eseguire correttamente i test, il file \texttt{input.txt} deve essere formattato in modo specifico per rappresentare l'assegnazione di una sala a un evento. Questo file contiene l'ID dell'evento da cui si vuole rimuovere la sala.
+Gli ID non validi vengono ignorati e la conferenza non viene modificata.
+
+
+\paragraph{Esempio:}
+Dato il seguente file conference.txt:
+\begin{lstlisting}
+4 2
+3
+1 0 0 Evento test 1
+0 12 1 1 1970
+0 13 1 1 1970
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 0 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+1
+1
+Sala A
+50
+\end{lstlisting}
+
+Di seguito è riportato un esempio di come deve essere formattato il file \texttt{input.txt}:
+
+\begin{lstlisting}
+1
+\end{lstlisting}
+
+In questo esempio:
+\begin{itemize}
+    \item \texttt{1} è l'ID dell'evento "Evento test 1"
+\end{itemize}
+Il file output.txt sarà quindi:
+
+\begin{lstlisting}
+4 2
+3
+1 0 0 Evento test 1
+0 12 1 1 1970
+0 13 1 1 1970
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 0 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+1
+1
+Sala A
+50
+\end{lstlisting}
+
+
+\subsubsection{Casi di test}
+
+
 \begin{itemize}
 
 	\item \textbf{TC083} : testiamo la rimozione di una sala da un evento.
@@ -1161,12 +2542,59 @@ Sala A
 
 \subsection{Test per la visualizzazione del programma dela conferenza}
 
+I file conference.txt è una conferenza formattata come precedentemente descritto. I file output.txt e oracle.txt sono elenchi di eventi. Il file input.txt non è utilizzato. I test stampano gli eventi presenti nel file conference.txt in ordine cronologico.
+
+\paragraph{Esempio:}
+Dato il seguente file conference.txt:
+\begin{lstlisting}
+4 2
+3
+1 0 0 Evento test 1
+0 12 1 1 1970
+0 13 1 1 1970
+2 1 0 Evento test 2
+0 12 1 1 1970
+0 13 1 1 1970
+3 2 0 Evento test 3
+0 12 1 1 1970
+0 13 1 1 1970
+1
+1
+Sala A
+50
+\end{lstlisting}
+
+Il file output.txt sarà quindi:
+
+\begin{lstlisting}
+Id: 1
+Evento: "Evento test 1"
+Tipo: Workshop
+Data inizio: 1 Gennaio 1970, 12:00
+Data fine: 1 Gennaio 1970, 13:00
+
+Id: 2
+Evento: "Evento test 2"
+Tipo: Sessione di keynote
+Data inizio: 1 Gennaio 1970, 12:00
+Data fine: 1 Gennaio 1970, 13:00
+
+Id: 3
+Evento: "Evento test 3"
+Tipo: Panel di discussione
+Data inizio: 1 Gennaio 1970, 12:00
+Data fine: 1 Gennaio 1970, 13:00
+
+\end{lstlisting}
+
+\subsubsection{Casi di test}
+
 \begin{itemize}
 
 
 	\item \textbf{TC086} : testiamo la corretta visualizzazione degli eventi in ordine alfabetico, perché le date sono tutte uguali.
 
-	\item \textbf{TC087} : testiamo la corretta visualizzazione degli eventi con id non ordinati.
+	\item \textbf{TC087} : testiamo la corretta visualizzazione degli eventi con ID non ordinati.
 
 	\item \textbf{TC088} : testiamo la corretta visualizzazione degli eventi con tutte le sale assegnate.
 
@@ -1178,6 +2606,36 @@ Sala A
 
 	\item \textbf{TC092} : visualizzazione di lista di eventi vuota.
 \end{itemize}
+
+\begin{minipage}{\linewidth}
+\section{Compilazione e esecuzione programmi}
+
+\subsection{Compilazione e esecuzione dell'eseguibile principale}
+Per generare il file eseguibile principale, eseguire il comando:
+\begin{verbatim}
+make bin/progetto
+\end{verbatim}
+Il file risultante si troverà nella cartella \texttt{bin} e avrà il nome \texttt{progetto}. Il programma non richiede argomenti aggiuntivi da riga di comando per essere eseguito, ma può essere fornito il nome di un file di conferenza da cui leggere o in cui scrivere.
+
+\paragraph{Esempio:}
+\begin{verbatim}
+./progetto {conference.txt}
+\end{verbatim}
+
+
+\subsection{Compilazione e esecuzione del programma di testing}
+Per generare il file eseguibile per i test, eseguire il comando:
+\begin{verbatim}
+make tests/test
+\end{verbatim}
+Il file risultante si troverà nella cartella \texttt{tests} e avrà il nome \texttt{test}. L'eseguibile deve essere eseguito nella cartella contenente i test case (\texttt{tests}). Per l'esecuzione, il programma richiede un file di test suite e un file dove scrivere i risultati.
+
+\paragraph{Esempio:}
+\begin{verbatim}
+./test test_suite.txt result.txt
+\end{verbatim}
+
+\end{minipage}
 
 %-----------------------------------------------%
 
